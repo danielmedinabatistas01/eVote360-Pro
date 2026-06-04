@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="ViewModels\" />
+    <Folder Include="Services\" />
+    <Folder Include="Dtos\" />
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\eVote360Pro.Core.Domain\eVote360Pro.Core.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
