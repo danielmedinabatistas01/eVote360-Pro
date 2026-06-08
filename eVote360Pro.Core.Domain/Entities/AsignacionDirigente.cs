@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eVote360Pro.Core.Application.Dtos
+namespace eVote360Pro.Core.Domain.Entities
 {
-    internal class test
+    public class AsignacionDirigente
     {
     }
 }
