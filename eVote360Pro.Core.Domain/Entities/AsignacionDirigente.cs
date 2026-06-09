@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using eVote360Pro.Core.Domain.Common;
 
 namespace eVote360Pro.Core.Domain.Entities
 {
-    public class AsignacionDirigente
+    public class AsignacionDirigente: BaseEntity
     {
+        public required int UsuarioId { get; set; }
+        public required int PartidoPoliticoId { get; set; }
+        public required Usuario Usuario { get; set; } 
+        public required PartidoPolitico PartidoPolitico { get; set; }
     }
 }
