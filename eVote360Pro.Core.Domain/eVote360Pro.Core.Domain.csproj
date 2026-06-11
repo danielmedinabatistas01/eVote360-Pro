@@ -7,25 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
-=======
     <Folder Include="Exceptions\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Settings\" />
->>>>>>> eb1b559ac20d4f3cefdcf290b1a50940d224b9b1
+
     <Folder Include="Common\" />
     <Folder Include="Settings\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Exceptions\" />
-<<<<<<< HEAD
+
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Exceptions\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Settings\" />
-=======
->>>>>>> eb1b559ac20d4f3cefdcf290b1a50940d224b9b1
+
   </ItemGroup>
 
 </Project>
