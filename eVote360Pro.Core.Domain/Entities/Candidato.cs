@@ -20,8 +20,8 @@ namespace eVote360Pro.Core.Domain.Entities
         public int PartidoPoliticoId { get; set; }
 
 
-        //public PartidoPolitico? PartidoPolitico { get; set; }
-        //public ICollection<AsignacionCandidato>? Asignaciones { get; set; }
-        //public ICollection<Voto>? Votos { get; set; }
+        public PartidoPolitico? PartidoPolitico { get; set; }
+        public ICollection<AsignacionCandidato>? Asignaciones { get; set; }
+        public ICollection<Voto>? Votos { get; set; }
     }
 }

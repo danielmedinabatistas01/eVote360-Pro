@@ -1,4 +1,7 @@
-﻿using System;
+﻿using eVote360Pro.Core.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
 {
-    public class SolicitudAlianzaConfiguration : IEntityTypeConfiguration<SolicitudAlianza>
+    public class SolicitudAlianzaConfiguration : IEntityTypeConfiguration<AlianzaPolitica>
     {
-        public void Configure(EntityTypeBuilder<SolicitudAlianza> builder)
+        public void Configure(EntityTypeBuilder<AlianzaPolitica> builder)
         {
             builder.ToTable("SolicitudesAlianza");
 

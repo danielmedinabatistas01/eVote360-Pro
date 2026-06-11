@@ -15,6 +15,6 @@ namespace eVote360Pro.Core.Domain.Entities
 
         public bool Estado { get; set; }
 
-        //public ICollection<PartidoPolitico>? Partidos { get; set; }
+        public ICollection<PartidoPolitico>? Partidos { get; set; }
     }
 }
