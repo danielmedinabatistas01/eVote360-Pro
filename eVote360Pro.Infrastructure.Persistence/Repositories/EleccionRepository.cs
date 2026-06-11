@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eVote360Pro.Core.Application.Dtos
+namespace eVote360Pro.Infrastructure.Persistence.Repositories
 {
-    internal class test
+   public class EleccionRepository
     {
+     
     }
 }
