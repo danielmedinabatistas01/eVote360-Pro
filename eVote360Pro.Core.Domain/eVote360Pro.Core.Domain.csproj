@@ -12,6 +12,10 @@
     <Folder Include="Settings\" />
 
     <Folder Include="Common\" />
+
+    <Folder Include="Exceptions\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Settings\" />    <Folder Include="Common\" />
     <Folder Include="Settings\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Exceptions\" />
