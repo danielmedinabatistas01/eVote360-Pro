@@ -1,0 +1,13 @@
+﻿using eVote360Pro.Core.Domain.Common;
+
+namespace eVote360Pro.Core.Domain.Entities
+{
+    public class PuestoElectivo: BaseEntity
+    {
+        public required string  Nombre { get; set; }
+        public required string Descripcion { get; set; }
+        public required bool EsActivo { get; set; }
+        //public ICollection<AsignacionCandidato> AsignacionesCandidatos { get; set; }
+        //public ICollection<EleccionPuestoElectivo> Elecciones { get; set; }
+    }
+}
