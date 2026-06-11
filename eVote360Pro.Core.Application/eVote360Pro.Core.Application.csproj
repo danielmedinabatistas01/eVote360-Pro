@@ -10,4 +10,11 @@
     <ProjectReference Include="..\eVote360Pro.Core.Domain\eVote360Pro.Core.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Dtos\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Services\" />
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
+
 </Project>
