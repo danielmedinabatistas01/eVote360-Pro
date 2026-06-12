@@ -7,7 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.17" />
+
+    <Folder Include="Migrations\" />
+    <Folder Include="EntityConfiguration\" />
+    <Folder Include="Contexts\" />
+>>>>>>> eb1b559ac20d4f3cefdcf290b1a50940d224b9b1
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.16" />
+
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.16" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.16" />
     <Folder Include="Migrations\" />
     <Folder Include="EntityConfiguration\" />
