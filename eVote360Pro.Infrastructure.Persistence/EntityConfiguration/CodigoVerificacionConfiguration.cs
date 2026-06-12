@@ -21,9 +21,6 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
                 .IsRequired()
                 .HasMaxLength(6);
 
-            builder.Property(x => x.FechaGeneracion)
-                .IsRequired();
-
             builder.Property(x => x.FechaExpiracion)
                 .IsRequired();
 
@@ -35,10 +32,7 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
                 .HasForeignKey(x => x.CiudadanoId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(x => x.Eleccion)
-                .WithMany()
-                .HasForeignKey(x => x.EleccionId)
-                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

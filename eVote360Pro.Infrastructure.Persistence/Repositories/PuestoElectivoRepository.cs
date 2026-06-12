@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace eVote360Pro.Infrastructure.Persistence.Repositories
 {
-    internal class PuestoElectivoRepository
+    public class PuestoElectivoRepository
     {
     }
 }

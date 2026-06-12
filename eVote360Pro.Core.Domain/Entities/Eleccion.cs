@@ -11,8 +11,7 @@ namespace eVote360Pro.Core.Domain.Entities
 
         public bool Estado { get; set; }
 
-        // Relaciones
-        /* Activar despues de Daniel
+
         public ICollection<EleccionPuestoElectivo> PuestosElectivos { get; set; }
             = new List<EleccionPuestoElectivo>();
       
@@ -20,7 +19,6 @@ namespace eVote360Pro.Core.Domain.Entities
         public ICollection<Voto> Votos { get; set; }
             = new List<Voto>();
 
-          */
 
     }
 }

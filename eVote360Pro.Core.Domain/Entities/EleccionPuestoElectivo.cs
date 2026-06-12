@@ -2,7 +2,7 @@
 
 namespace eVote360Pro.Core.Domain.Entities
 {
-    public class EleccionPuestoElectivo: BaseEntity
+    public class EleccionPuestoElectivo : BaseEntity
     {
         public int EleccionId { get; set; }
 
@@ -10,7 +10,7 @@ namespace eVote360Pro.Core.Domain.Entities
 
         public Eleccion Eleccion { get; set; }
 
-        /* Agregar despues de Perla
-        public PuestoElectivo PuestoElectivo { get; set; } */
+
+        public PuestoElectivo PuestoElectivo { get; set; }
     }
 }

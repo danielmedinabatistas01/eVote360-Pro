@@ -11,11 +11,11 @@ namespace eVote360Pro.Core.Domain.Entities
 
             public DateTime FechaVotacion { get; set; }
 
-            /* Navegaciones agregar despues 
+
             public Eleccion Eleccion { get; set; }
 
             public ICollection<VotoDetalle> VotoDetalles { get; set; }
-                = new List<VotoDetalle>(); */
+                = new List<VotoDetalle>();
         
     }
 }
