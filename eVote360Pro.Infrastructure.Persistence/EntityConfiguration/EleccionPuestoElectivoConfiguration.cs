@@ -19,12 +19,12 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
                 .WithMany()
                 .HasForeignKey(epe => epe.EleccionId)
                 .OnDelete(DeleteBehavior.Restrict);
-            /* Agregar despues de Perla
+
             builder.HasOne(epe => epe.PuestoElectivo)
                 .WithMany()
                 .HasForeignKey(epe => epe.PuestoElectivoId)
                 .OnDelete(DeleteBehavior.Cascade);
-             */
+
         }
     }
 }

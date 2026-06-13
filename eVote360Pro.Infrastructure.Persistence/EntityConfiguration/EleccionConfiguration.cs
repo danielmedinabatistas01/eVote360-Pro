@@ -14,17 +14,17 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
                 .HasMaxLength(150);
             builder.Property(e => e.FechaRealizacion)
                 .IsRequired();
-            builder.Property(e => e.Estado)
+            builder.Property(e => e.EstadoEleccion)
                 .IsRequired();
-            // Relaciones
-            /* Activar despues de Daniel
+
             builder.HasMany(e => e.PuestosElectivos)
                 .WithOne(pe => pe.Eleccion)
+
                 .HasForeignKey(pe => pe.EleccionId);
             builder.HasMany(e => e.Votos)
                 .WithOne(v => v.Eleccion)
                 .HasForeignKey(v => v.EleccionId);
-             */
+
         }
     }
 }

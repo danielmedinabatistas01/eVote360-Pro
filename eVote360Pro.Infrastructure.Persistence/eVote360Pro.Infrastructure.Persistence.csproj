@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
   <ItemGroup>
 
@@ -12,27 +12,20 @@
     <Folder Include="EntityConfiguration\" />
     <Folder Include="Contexts\" />
   </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Contexts\" />
+		<Folder Include="EntityConfiguration\" />
+		<Folder Include="Migrations\" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.16" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.16" />
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.16" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.16" />
+	</ItemGroup>
 
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.16" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.16" />
-    <Folder Include="Migrations\" />
-    <Folder Include="EntityConfiguration\" />
-    <Folder Include="Contexts\" />
-
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\eVote360Pro.Core.Application\eVote360Pro.Core.Application.csproj" />
-    <ProjectReference Include="..\eVote360Pro.Core.Domain\eVote360Pro.Core.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Contexts\" />
-    <Folder Include="Migrations\" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\eVote360Pro.Core.Application\eVote360Pro.Core.Application.csproj" />
+		<ProjectReference Include="..\eVote360Pro.Core.Domain\eVote360Pro.Core.Domain.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -10,7 +10,7 @@ namespace eVote360Pro.Core.Domain.Entities
         public required string LogoUrl { get; set; }
         public required bool EsActivo { get; set; }
         public required AsignacionDirigente AsignacionDirigente { get; set; }
-        //public ICollection<Candidato> Candidatos { get; set; }
-        //public ICollection<AlianzaPolitica> Alianzas { get; set; }
+        public ICollection<Candidato> Candidatos { get; set; }
+        public ICollection<AlianzaPolitica> Alianzas { get; set; }
     }
 }

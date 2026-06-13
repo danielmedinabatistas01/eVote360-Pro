@@ -9,13 +9,13 @@ namespace eVote360Pro.Core.Domain.Entities
 
             public int CiudadanoId { get; set; }
 
-            public DateTime FechaVotacion { get; set; }
+            public DateTime FechaVoto { get; set; }
 
-            /* Navegaciones agregar despues 
+
             public Eleccion Eleccion { get; set; }
 
             public ICollection<VotoDetalle> VotoDetalles { get; set; }
-                = new List<VotoDetalle>(); */
+                = new List<VotoDetalle>();
         
     }
 }

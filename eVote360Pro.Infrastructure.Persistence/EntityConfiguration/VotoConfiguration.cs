@@ -18,14 +18,13 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
             builder.Property(x => x.CiudadanoId)
                 .IsRequired();
 
-            builder.Property(x => x.FechaVotacion)
+            builder.Property(x => x.FechaVoto)
                 .IsRequired();
 
-            /*
             builder.HasOne(x => x.Eleccion)
                 .WithMany(x => x.Votos)
                 .HasForeignKey(x => x.EleccionId)
-                .OnDelete(DeleteBehavior.Restrict); */
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

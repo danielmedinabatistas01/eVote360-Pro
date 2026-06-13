@@ -1,5 +1,4 @@
 ﻿using eVote360Pro.Core.Domain.Enums;
-
 namespace eVote360Pro.Core.Application.DTOs
 {
     public class EleccionDTO

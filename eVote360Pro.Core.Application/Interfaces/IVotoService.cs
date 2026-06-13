@@ -4,10 +4,12 @@ namespace eVote360Pro.Core.Application.Interfaces
 {
     public interface IVotoService
     {
-        Task<bool> RegistrarVotoAsync(VotoDTO dto);
+        Task CrearVotoAsync(VotoDTO dto);
 
         Task<bool> CiudadanoYaVotoAsync(int ciudadanoId, int eleccionId);
 
-        Task<int> ObtenerCantidadVotantesAsync(int eleccionId);
+        Task<int> CountCiudadanosVotaronAsync(int eleccionId);
+
+        Task<List<VotoDTO>> GetByEleccionIdAsync(int eleccionId);
     }
 }

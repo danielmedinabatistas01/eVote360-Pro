@@ -14,48 +14,51 @@ namespace eVote360Pro.Core.Application.Services
             _votoRepository = votoRepository;
         }
 
-        public async Task<bool> RegistrarVotoAsync(VotoDTO dto)
+        public async Task CrearVotoAsync(VotoDTO dto)
         {
-            bool yaVoto = await _votoRepository.CiudadanoYaVotoAsync(
-                dto.CiudadanoId,
-                dto.EleccionId);
-
-            if (yaVoto)
+            var entity = new Voto
             {
-                return false;
-            }
-
-            Voto voto = new()
-            {
-                CiudadanoId = dto.CiudadanoId,
                 EleccionId = dto.EleccionId,
-                FechaVotacion = dto.FechaVoto,
+                CiudadanoId = dto.CiudadanoId,
+                FechaVoto = DateTime.Now,
+                VotoDetalles = dto.VotoDetalles.Select(d => new VotoDetalle
+                {
+                    PuestoElectivoId = d.PuestoElectivoId,
+                    CandidatoId = d.CandidatoId
+                }).ToList()
             };
 
-            foreach (var detalle in dto.VotoDetalles)
-            {
-                voto.VotoDetalles.Add(new VotoDetalle
-                {
-                    CandidatoId = detalle.CandidatoId,
-                    PuestoElectivoId = detalle.PuestoElectivoId
-                });
-            }
-
-            await _votoRepository.AddAsync(voto);
-
-            return true;
+            await _votoRepository.AddAsync(entity);
         }
 
         public async Task<bool> CiudadanoYaVotoAsync(int ciudadanoId, int eleccionId)
         {
-            return await _votoRepository.CiudadanoYaVotoAsync(
-                ciudadanoId,
-                eleccionId);
+            return await _votoRepository.CiudadanoYaVotoAsync(ciudadanoId, eleccionId);
         }
 
-        public async Task<int> ObtenerCantidadVotantesAsync(int eleccionId)
+        public async Task<int> CountCiudadanosVotaronAsync(int eleccionId)
         {
             return await _votoRepository.CountCiudadanosVotaronAsync(eleccionId);
+        }
+
+        public async Task<List<VotoDTO>> GetByEleccionIdAsync(int eleccionId)
+        {
+            var votos = await _votoRepository.GetByEleccionIdAsync(eleccionId);
+
+            return votos.Select(x => new VotoDTO
+            {
+                Id = x.Id,
+                EleccionId = x.EleccionId,
+                CiudadanoId = x.CiudadanoId,
+                FechaVoto = x.FechaVoto,
+                VotoDetalles = x.VotoDetalles.Select(d => new VotoDetalleDTO
+                {
+                    Id = d.Id,
+                    VotoId = d.VotoId,
+                    PuestoElectivoId = d.PuestoElectivoId,
+                    CandidatoId = d.CandidatoId
+                }).ToList()
+            }).ToList();
         }
     }
 }

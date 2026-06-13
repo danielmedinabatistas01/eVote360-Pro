@@ -9,7 +9,7 @@ namespace eVote360Pro.Core.Domain.Entities
         public required string CorreoElectronico { get; set; }
         public required string NumeroIdentificacion { get; set; }
         public required bool EsActivo { get; set; }
-        //public ICollection<Voto> Votos { get; set; }
-        //public ICollection<CodigoVerificacion> CodigosVerificacion { get; set; }
+        public ICollection<Voto> Votos { get; set; }
+        public ICollection<CodigoVerificacion> CodigosVerificacion { get; set; }
     }
 }

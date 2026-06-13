@@ -14,12 +14,12 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
                 .IsRequired();
             builder.Property(x => x.PuestoElectivoId)
                 .IsRequired();
-            /* Agregar despues de Perla
+
             builder.HasOne(x => x.Voto)
                 .WithMany()
                 .HasForeignKey(x => x.VotoId)
                 .OnDelete(DeleteBehavior.Restrict);
-             */
+
         }
     }
 }

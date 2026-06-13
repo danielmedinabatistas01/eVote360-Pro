@@ -25,7 +25,7 @@ namespace eVote360Pro.Core.Application.Services
                 Id = x.Id,
                 Nombre = x.Nombre,
                 FechaRealizacion = x.FechaRealizacion,
-                EstadoEleccion = x.EstadoEleccion
+                EstadoEleccion = x.EstadoEleccion,
             }).ToList();
         }
 
