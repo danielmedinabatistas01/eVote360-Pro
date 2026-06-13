@@ -18,10 +18,17 @@
 		<Folder Include="Migrations\" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.16" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.16" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.16" />
+
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.16" />
+    <Folder Include="Migrations\" />
+    <Folder Include="EntityConfiguration\" />
+    <Folder Include="Contexts\" />
+
+  </ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\eVote360Pro.Core.Application\eVote360Pro.Core.Application.csproj" />
