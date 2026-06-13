@@ -1,0 +1,29 @@
+﻿using eVote360Pro.Core.Domain.Entities;
+using eVote360Pro.Core.Domain.Interfaces;
+using eVote360Pro.Infrastructure.Persistence.Contexts;
+using Microsoft.EntityFrameworkCore;
+
+namespace eVote360Pro.Infrastructure.Persistence.Repositories
+{
+    public class CandidatoRepository
+        : GenericRepository<Candidato>,
+          ICandidatoRepository
+    {
+        private readonly ApplicationDbContext _context;
+
+        public CandidatoRepository(ApplicationDbContext context)
+            : base(context)
+        {
+            _context = context;
+        }
+
+        public async Task<List<Candidato>> GetActivosAsync()
+        {
+            return await _context.Candidatos
+                .Where(x => x.Estado)
+                .ToListAsync();
+        }
+
+
+    }
+}

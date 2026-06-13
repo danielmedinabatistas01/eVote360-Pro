@@ -3,7 +3,7 @@ using eVote360Pro.Core.Domain.Enums;
 
 namespace eVote360Pro.Core.Application.DTOs
 {
-    public class UsuarioDTO
+    public class UsuarioDto
     {
         public int Id { get; set; }
 

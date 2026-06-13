@@ -87,7 +87,7 @@ namespace eVote360Pro.Core.Application.Services
             };
         }
 
-        public async Task CreateAsync(UsuarioDTO dto)
+        public async Task CreateAsync(UsuarioDto dto)
         {
             var entity = new Usuario
             {
@@ -106,7 +106,7 @@ namespace eVote360Pro.Core.Application.Services
             await _usuarioRepository.AddAsync(entity);
         }
 
-        public async Task UpdateAsync(UsuarioDTO dto)
+        public async Task UpdateAsync(UsuarioDto dto)
         {
             var usuario = await _usuarioRepository.GetById(dto.Id);
 

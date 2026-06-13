@@ -13,9 +13,9 @@ namespace eVote360Pro.Core.Application.Interfaces
 
         Task<UsuarioDesactivarViewModel?> GetDesactivarViewModelAsync(int id);
 
-        Task CreateAsync(UsuarioDTO dto);
+        Task CreateAsync(UsuarioDto dto);
 
-        Task UpdateAsync(UsuarioDTO dto);
+        Task UpdateAsync(UsuarioDto dto);
 
         Task ActivarAsync(int id);
 
