@@ -4,6 +4,8 @@ using eVote360Pro.Core.Domain.Interfaces;
 using eVote360Pro.Infrastructure.Persistence.Contexts;
 using eVote360Pro.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
+using eVote360Pro.Core.Domain.Settings;
+using eVote360Pro.Infrastructure.Shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
