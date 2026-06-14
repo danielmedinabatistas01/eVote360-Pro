@@ -9,7 +9,7 @@ namespace eVote360Pro.Core.Domain.Entities
 
             public int CiudadanoId { get; set; }
 
-            public DateTime FechaVotacion { get; set; }
+            public DateTime FechaVoto { get; set; }
 
 
             public Eleccion Eleccion { get; set; }

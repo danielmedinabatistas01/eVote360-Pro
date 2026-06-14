@@ -14,7 +14,7 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
                 .HasMaxLength(150);
             builder.Property(e => e.FechaRealizacion)
                 .IsRequired();
-            builder.Property(e => e.Estado)
+            builder.Property(e => e.EstadoEleccion)
                 .IsRequired();
 
             builder.HasMany(e => e.PuestosElectivos)

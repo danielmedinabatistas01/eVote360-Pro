@@ -6,6 +6,12 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
+  <ItemGroup>
+
+    <Folder Include="Migrations\" />
+    <Folder Include="EntityConfiguration\" />
+    <Folder Include="Contexts\" />
+  </ItemGroup>
 	<ItemGroup>
 		<Folder Include="Contexts\" />
 		<Folder Include="EntityConfiguration\" />
@@ -13,8 +19,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="MailKit" Version="4.17.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.16" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.16" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.16" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="9.0.16" />
+		<PackageReference Include="MimeKit" Version="4.17.0" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,5 +1,6 @@
 ﻿
 using eVote360Pro.Core.Domain.Common;
+using eVote360Pro.Core.Domain.Enums;
 
 namespace eVote360Pro.Core.Domain.Entities
 {
@@ -9,7 +10,7 @@ namespace eVote360Pro.Core.Domain.Entities
 
         public DateTime FechaRealizacion { get; set; }
 
-        public bool Estado { get; set; }
+        public EstadoEleccion EstadoEleccion { get; set; }
 
 
         public ICollection<EleccionPuestoElectivo> PuestosElectivos { get; set; }

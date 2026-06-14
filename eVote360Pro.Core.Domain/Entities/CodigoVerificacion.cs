@@ -9,7 +9,9 @@ namespace eVote360Pro.Core.Domain.Entities
 {
     public class CodigoVerificacion : BaseEntity
     {
+
         public int CiudadanoId { get; set; }
+        public Ciudadano? Ciudadano { get; set; }
 
         public int EleccionId { get; set; }
 

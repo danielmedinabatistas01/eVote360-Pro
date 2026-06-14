@@ -8,25 +8,24 @@
 
   <ItemGroup>
     <Folder Include="Exceptions\" />
-    <Folder Include="Settings\" />
-
     <Folder Include="Common\" />
-
-    <Folder Include="Exceptions\" />
-    <Folder Include="Settings\" />    <Folder Include="Common\" />
-    <Folder Include="Settings\" />
     <Folder Include="Exceptions\" />
 
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Exceptions\" />
-    <Folder Include="Settings\" />
 
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.17.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.16" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.16" />
+    <PackageReference Include="MimeKit" Version="4.17.0" />
   </ItemGroup>
 
 </Project>
