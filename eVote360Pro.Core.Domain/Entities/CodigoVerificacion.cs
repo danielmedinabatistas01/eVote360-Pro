@@ -13,10 +13,18 @@ namespace eVote360Pro.Core.Domain.Entities
         public int CiudadanoId { get; set; }
         public Ciudadano? Ciudadano { get; set; }
 
+        public int EleccionId { get; set; }
+
         public string Codigo { get; set; } = null!;
+
+        public DateTime FechaGeneracion { get; set; }
 
         public DateTime FechaExpiracion { get; set; }
 
         public bool Utilizado { get; set; }
+
+        public Ciudadano? Ciudadano { get; set; }
+
+        public Eleccion? Eleccion { get; set; }
     }
 }
