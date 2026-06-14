@@ -1,4 +1,6 @@
 ﻿using eVote360Pro.Core.Application.Interfaces;
+using eVote360Pro.Core.Domain.Entities;
+using eVote360Pro.Core.Domain.Interfaces;
 
 namespace eVote360Pro.Core.Application.Services
 {
@@ -6,21 +8,30 @@ namespace eVote360Pro.Core.Application.Services
         : IProcesoVotacionService
     {
         private readonly IOcrService _ocrService;
+        private readonly ICiudadanoRepository _ciudadanoRepository;
+        private readonly ICodigoVerificacionRepository _codigoRepository;
 
         public ProcesoVotacionService(
-            IOcrService ocrService)
+            IOcrService ocrService,
+            ICiudadanoRepository ciudadanoRepository,
+            ICodigoVerificacionRepository codigoRepository)
         {
             _ocrService = ocrService;
+            _ciudadanoRepository = ciudadanoRepository;
+            _codigoRepository = codigoRepository;
         }
-
-        public Task<bool> ValidarCedulaAsync(
+        public async Task<bool> ValidarCedulaAsync(
             string numeroDocumento)
         {
-            throw new NotImplementedException();
+            var ciudadano =
+                await _ciudadanoRepository
+                    .GetByCedulaAsync(numeroDocumento);
+
+            return ciudadano != null;
         }
 
         public async Task<bool> ValidarIdentidadOcrAsync(
-            string numeroDocumento,
+            string numeroDocumento, 
             string rutaImagen)
         {
             string? cedulaExtraida =
@@ -29,17 +40,47 @@ namespace eVote360Pro.Core.Application.Services
             return cedulaExtraida == numeroDocumento;
         }
 
-        public Task<string> GenerarCodigoAsync(
+        public async Task<string> GenerarCodigoAsync(
             int ciudadanoId)
         {
-            throw new NotImplementedException();
+            string codigo =
+                Random.Shared
+                    .Next(100000, 999999)
+                    .ToString();
+
+            await _codigoRepository.AddAsync(
+                new CodigoVerificacion
+                {
+                    CiudadanoId = ciudadanoId,
+                    Codigo = codigo,
+                    FechaGeneracion = DateTime.Now,
+                    FechaExpiracion = DateTime.Now.AddMinutes(5),
+                    Utilizado = false
+                });
+
+            return codigo;
         }
 
-        public Task<bool> ValidarCodigoAsync(
+        public async Task<bool> ValidarCodigoAsync(
             int ciudadanoId,
             string codigo)
         {
-            throw new NotImplementedException();
+            var entity =
+                await _codigoRepository
+                    .GetCodigoAsync(
+                        ciudadanoId,
+                        codigo);
+
+            if (entity == null)
+                return false;
+
+            if (entity.Utilizado)
+                return false;
+
+            if (entity.FechaExpiracion < DateTime.Now)
+                return false;
+
+            return true;
         }
     }
 }

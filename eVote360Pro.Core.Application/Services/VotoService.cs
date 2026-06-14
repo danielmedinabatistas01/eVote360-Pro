@@ -1,13 +1,7 @@
 ﻿using eVote360Pro.Core.Application.Dtos;
 using eVote360Pro.Core.Application.Interfaces;
-using eVote360Pro.Core.Domain;
+using eVote360Pro.Core.Domain.Interfaces;
 using eVote360Pro.Core.Domain.Entities;
-using eVote360Pro.Infrastructure.Persistence.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace eVote360Pro.Core.Application.Services
 {

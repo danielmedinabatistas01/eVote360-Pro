@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
 {
-    public class AlianzaPoliticaConfiguration : IEntityTypeConfiguration<AlianzaPolitica>
+    public class AlianzaPoliticaConfiguration
+        : IEntityTypeConfiguration<AlianzaPolitica>
     {
-        public void Configure(EntityTypeBuilder<AlianzaPolitica> builder)
+        public void Configure(
+            EntityTypeBuilder<AlianzaPolitica> builder)
         {
             builder.ToTable("AlianzasPoliticas");
 
