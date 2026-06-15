@@ -7,5 +7,9 @@ namespace eVote360Pro.Core.Domain.Interfaces
         Task<Usuario?> LoginAsync(string nombreUsuario, string contrasena);
 
         Task<int> CountAdministradoresActivosAsync();
+
+        Task<bool> ExisteNombreUsuarioAsync(string nombreUsuario, int? idExcluir = null);
+
+        Task<bool> ExisteCorreoElectronicoAsync(string correoElectronico, int? idExcluir = null);
     }
 }

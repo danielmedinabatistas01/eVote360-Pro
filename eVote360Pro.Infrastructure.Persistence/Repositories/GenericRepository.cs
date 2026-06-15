@@ -14,21 +14,18 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
             _context = context;
         }
 
-        public virtual async Task<TEntity?> AddAsync(TEntity entity)
+        public async Task<TEntity?> AddAsync(TEntity entity)
         {
             await _context.Set<TEntity>().AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
 
-        public virtual async Task<TEntity?> UpdateAsync(int id, TEntity entity)
+        public async Task<TEntity?> UpdateAsync(int id, TEntity entity)
         {
             var entry = await _context.Set<TEntity>().FindAsync(id);
 
-            if (entry == null)
-            {
-                return null;
-            }
+            if (entry == null) return null;
 
             _context.Entry(entry).CurrentValues.SetValues(entity);
             await _context.SaveChangesAsync();
@@ -36,7 +33,7 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
             return entry;
         }
 
-        public virtual async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var entity = await _context.Set<TEntity>().FindAsync(id);
 
@@ -47,22 +44,22 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
             }
         }
 
-        public virtual async Task<List<TEntity>> GetAllList()
+        public async Task<List<TEntity>> GetAllList()
         {
             return await _context.Set<TEntity>().ToListAsync();
         }
 
-        public virtual async Task<TEntity?> GetById(int id)
+        public async Task<TEntity?> GetById(int id)
         {
             return await _context.Set<TEntity>().FindAsync(id);
         }
 
-        public virtual IQueryable<TEntity> GetAllQuery()
+        public IQueryable<TEntity> GetAllQuery()
         {
             return _context.Set<TEntity>().AsQueryable();
         }
 
-        public virtual IQueryable<TEntity> GetAllQueryWithInclude(List<string> properties)
+        public IQueryable<TEntity> GetAllQueryWithInclude(List<string> properties)
         {
             var query = _context.Set<TEntity>().AsQueryable();
 

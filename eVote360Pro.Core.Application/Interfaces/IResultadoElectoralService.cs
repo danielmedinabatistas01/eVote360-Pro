@@ -4,6 +4,6 @@ namespace eVote360Pro.Core.Application.Interfaces
 {
     public interface IResultadoElectoralService
     {
-        Task<List<ResultadoElectoralViewModel>> GetResultadosPorEleccionAsync(int eleccionId);
+        Task<ResultadoElectoralIndexViewModel?> GetResultadosByEleccionIdAsync(int eleccionId);
     }
 }

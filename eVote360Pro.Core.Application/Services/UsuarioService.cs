@@ -94,6 +94,16 @@ namespace eVote360Pro.Core.Application.Services
 
         public async Task CreateAsync(UsuarioDto dto)
         {
+            if (await _usuarioRepository.ExisteNombreUsuarioAsync(dto.NombreUsuario))
+            {
+                throw new Exception("Ya existe un usuario con este nombre de usuario.");
+            }
+
+            if (await _usuarioRepository.ExisteCorreoElectronicoAsync(dto.CorreoElectronico))
+            {
+                throw new Exception("Ya existe un usuario con este correo electrónico.");
+            }
+
             var entity = new Usuario
             {
                 Nombre = dto.Nombre.Trim(),
@@ -125,6 +135,15 @@ namespace eVote360Pro.Core.Application.Services
 
         public async Task UpdateAsync(UsuarioDto dto)
         {
+            if (await _usuarioRepository.ExisteNombreUsuarioAsync(dto.NombreUsuario, dto.Id))
+            {
+                throw new Exception("Ya existe otro usuario con este nombre de usuario.");
+            }
+
+            if (await _usuarioRepository.ExisteCorreoElectronicoAsync(dto.CorreoElectronico, dto.Id))
+            {
+                throw new Exception("Ya existe otro usuario con este correo electrónico.");
+            }
             var usuario = await _usuarioRepository.GetById(dto.Id);
 
             if (usuario == null)

@@ -8,10 +8,12 @@
 
         public DateTime FechaRealizacion { get; set; }
 
-        public int CantidadPartidosParticipantes { get; set; }
+        public string Estado { get; set; } = string.Empty;
 
-        public int CantidadCandidatosParticipantes { get; set; }
+        public int TotalCiudadanosQueVotaron { get; set; }
 
-        public int CantidadCiudadanosVotaron { get; set; }
+        // Agregar después de Perla/Daniel:
+        // public int TotalPartidos { get; set; }
+        // public int TotalCandidatos { get; set; }
     }
 }

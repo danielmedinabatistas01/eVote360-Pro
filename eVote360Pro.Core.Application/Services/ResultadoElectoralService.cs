@@ -6,45 +6,64 @@ namespace eVote360Pro.Core.Application.Services
 {
     public class ResultadoElectoralService : IResultadoElectoralService
     {
+        private readonly IEleccionRepository _eleccionRepository;
         private readonly IVotoDetalleRepository _votoDetalleRepository;
 
-        public ResultadoElectoralService(IVotoDetalleRepository votoDetalleRepository)
+        public ResultadoElectoralService(
+            IEleccionRepository eleccionRepository,
+            IVotoDetalleRepository votoDetalleRepository)
         {
+            _eleccionRepository = eleccionRepository;
             _votoDetalleRepository = votoDetalleRepository;
         }
 
-        public async Task<List<ResultadoElectoralViewModel>> GetResultadosPorEleccionAsync(int eleccionId)
+        public async Task<ResultadoElectoralIndexViewModel?> GetResultadosByEleccionIdAsync(int eleccionId)
         {
+            var eleccion = await _eleccionRepository.GetById(eleccionId);
+
+            if (eleccion == null)
+                return null;
+
             var detalles = await _votoDetalleRepository.GetByEleccionIdAsync(eleccionId);
 
             var totalVotos = detalles.Count;
 
-            if (totalVotos == 0)
-                return new List<ResultadoElectoralViewModel>();
-
             var resultados = detalles
                 .GroupBy(x => new { x.PuestoElectivoId, x.CandidatoId })
-                .Select(g => new ResultadoElectoralViewModel
+                .Select(g => new ResultadoPorPuestoViewModel
                 {
                     PuestoElectivoId = g.Key.PuestoElectivoId,
+                    NombrePuesto = $"Puesto {g.Key.PuestoElectivoId}",
                     CandidatoId = g.Key.CandidatoId,
-                    NombreCandidato = g.Key.CandidatoId == null ? "Ninguno" : $"Candidato {g.Key.CandidatoId}",
+                    NombreCandidato = g.Key.CandidatoId == null
+                        ? "Ninguno"
+                        : $"Candidato {g.Key.CandidatoId}",
                     CantidadVotos = g.Count(),
-                    Porcentaje = Math.Round((decimal)g.Count() * 100 / totalVotos, 2)
+                    Porcentaje = totalVotos == 0
+                        ? 0
+                        : Math.Round((decimal)g.Count() * 100 / totalVotos, 2)
                 })
                 .ToList();
 
             foreach (var grupo in resultados.GroupBy(x => x.PuestoElectivoId))
             {
-                var mayorCantidad = grupo.Max(x => x.CantidadVotos);
+                var maxVotos = grupo.Max(x => x.CantidadVotos);
 
-                foreach (var item in grupo.Where(x => x.CantidadVotos == mayorCantidad))
+                foreach (var resultado in grupo)
                 {
-                    item.EsGanador = true;
+                    resultado.EsEmpate =
+                        resultado.CantidadVotos == maxVotos &&
+                        grupo.Count(x => x.CantidadVotos == maxVotos) > 1;
                 }
             }
 
-            return resultados;
+            return new ResultadoElectoralIndexViewModel
+            {
+                EleccionId = eleccion.Id,
+                NombreEleccion = eleccion.Nombre,
+                FechaRealizacion = eleccion.FechaRealizacion,
+                ResultadosPorPuesto = resultados
+            };
         }
     }
 }

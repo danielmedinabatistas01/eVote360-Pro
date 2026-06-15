@@ -4,6 +4,6 @@ namespace eVote360Pro.Core.Application.Interfaces
 {
     public interface IHomeAdministradorService
     {
-        Task<HomeAdministradorViewModel> GetResumenPorAnioAsync(int? anio);
+        Task<HomeAdministradorViewModel> GetResumenByAnioAsync(int anio);
     }
 }

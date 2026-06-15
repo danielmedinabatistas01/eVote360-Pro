@@ -17,9 +17,9 @@ namespace eVote360Pro.Core.Application.Services
             _votoRepository = votoRepository;
         }
 
-        public async Task<HomeAdministradorViewModel> GetResumenPorAnioAsync(int? anio)
+        public async Task<HomeAdministradorViewModel> GetResumenByAnioAsync(int anio)
         {
-            var elecciones = await _eleccionRepository.GetAllList();
+            var elecciones = await _eleccionRepository.GetAllOrdenadasAsync();
 
             var aniosDisponibles = elecciones
                 .Select(x => x.FechaRealizacion.Year)
@@ -27,11 +27,8 @@ namespace eVote360Pro.Core.Application.Services
                 .OrderByDescending(x => x)
                 .ToList();
 
-            int? anioSeleccionado = anio ?? aniosDisponibles.FirstOrDefault();
-
             var eleccionesFiltradas = elecciones
-                .Where(x => x.FechaRealizacion.Year == anioSeleccionado)
-                .OrderByDescending(x => x.FechaRealizacion)
+                .Where(x => x.FechaRealizacion.Year == anio)
                 .ToList();
 
             var resumenes = new List<ResumenEleccionViewModel>();
@@ -43,17 +40,15 @@ namespace eVote360Pro.Core.Application.Services
                     EleccionId = eleccion.Id,
                     NombreEleccion = eleccion.Nombre,
                     FechaRealizacion = eleccion.FechaRealizacion,
-                    CantidadPartidosParticipantes = 0,
-                    CantidadCandidatosParticipantes = 0,
-                    CantidadCiudadanosVotaron =
-                        await _votoRepository.CountCiudadanosVotaronAsync(eleccion.Id)
+                    Estado = eleccion.EstadoEleccion.ToString(),
+                    TotalCiudadanosQueVotaron = await _votoRepository.CountCiudadanosVotaronAsync(eleccion.Id)
                 });
             }
 
             return new HomeAdministradorViewModel
             {
+                Anio = anio,
                 AniosDisponibles = aniosDisponibles,
-                AnioSeleccionado = anioSeleccionado,
                 Resumenes = resumenes
             };
         }

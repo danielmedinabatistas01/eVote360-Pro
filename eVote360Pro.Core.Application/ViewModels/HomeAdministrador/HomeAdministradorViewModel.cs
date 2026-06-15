@@ -4,7 +4,9 @@
     {
         public List<int> AniosDisponibles { get; set; } = [];
 
-        public int? AnioSeleccionado { get; set; }
+        public int? Anio { get; set; }
+
+
 
         public List<ResumenEleccionViewModel> Resumenes { get; set; } = [];
     }

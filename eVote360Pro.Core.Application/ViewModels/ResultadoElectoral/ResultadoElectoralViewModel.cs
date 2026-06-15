@@ -1,12 +1,13 @@
 ﻿namespace eVote360Pro.Core.Application.ViewModels.ResultadoElectoral
 {
-    public class ResultadoElectoralViewModel
+    public class ResultadoElectoralIndexViewModel
     {
-        public int PuestoElectivoId { get; set; }
-        public int? CandidatoId { get; set; }
-        public string NombreCandidato { get; set; } = string.Empty;
-        public int CantidadVotos { get; set; }
-        public decimal Porcentaje { get; set; }
-        public bool EsGanador { get; set; }
+        public int EleccionId { get; set; }
+
+        public string NombreEleccion { get; set; } = string.Empty;
+
+        public DateTime FechaRealizacion { get; set; }
+
+        public List<ResultadoPorPuestoViewModel> ResultadosPorPuesto { get; set; } = new();
     }
 }

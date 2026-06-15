@@ -13,6 +13,8 @@ namespace eVote360Pro.Core.Domain.Entities
         public EstadoEleccion EstadoEleccion { get; set; }
 
 
+        // Relaciones
+
         public ICollection<EleccionPuestoElectivo> PuestosElectivos { get; set; }
             = new List<EleccionPuestoElectivo>();
       

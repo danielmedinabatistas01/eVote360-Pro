@@ -1,50 +1,229 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+    var isLoginPage = currentController == "Usuario" && currentAction == "Login";
+    var isCreateUserPage = currentController == "Usuario" && currentAction == "Create";
+
+    var hideMenu = isLoginPage || isCreateUserPage;
+}
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - eVote360_Pro</title>
+    <title>@ViewData["Title"] - eVote360 Pro</title>
+
     <script type="importmap"></script>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/eVote360_Pro.styles.css" asp-append-version="true" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">eVote360_Pro</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - eVote360_Pro - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+    <style>
+        body {
+        background: #F8FAFC;
+        font-family: 'Inter', Arial, sans-serif;
+        color: #374151;
+        }
+
+        .main-navbar {
+        background: #fff;
+        border-bottom: 1px solid #E5E7EB;
+        box-shadow: 0 4px 12px rgba(0,0,0,.04);
+        }
+
+        .navbar-brand {
+        font-weight: 800;
+        color: #1B3A6B !important;
+        letter-spacing: -.3px;
+        }
+
+        .brand-badge {
+        background: #EFF6FF;
+        color: #2563EB;
+        border-radius: 10px;
+        padding: .35rem .55rem;
+        margin-right: .4rem;
+        }
+
+        .nav-link {
+        font-size: .9rem;
+        font-weight: 600;
+        color: #374151 !important;
+        }
+
+        .nav-link:hover {
+        color: #2563EB !important;
+        }
+
+        .dropdown-menu {
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,.08);
+        padding: .5rem;
+        }
+
+        .dropdown-item {
+        border-radius: 8px;
+        font-size: .88rem;
+        font-weight: 500;
+        padding: .55rem .75rem;
+        }
+
+        .dropdown-item:hover {
+        background: #EFF6FF;
+        color: #1D4ED8;
+        }
+
+        .btn-logout {
+        background: #FEF2F2;
+        color: #B91C1C !important;
+        border-radius: 8px;
+        padding: .45rem .85rem !important;
+        font-size: .85rem;
+        font-weight: 700;
+        text-decoration: none;
+        }
+
+        .btn-logout:hover {
+        background: #FEE2E2;
+        color: #991B1B !important;
+        }
+
+        .app-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        }
+
+        .login-container {
+        padding: 0;
+        max-width: none;
+        }
+
+        .app-footer {
+        border-top: 1px solid #E5E7EB;
+        background: #fff;
+        color: #6B7280;
+        font-size: .85rem;
+        padding: 1rem 0;
+        margin-top: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    @if (!hideMenu)
+    {
+        <header>
+            <nav class="navbar navbar-expand-lg main-navbar">
+                <div class="container-fluid px-4">
+
+                    <a class="navbar-brand d-flex align-items-center"
+                       asp-controller="HomeAdministrador"
+                       asp-action="Index">
+                        <span class="brand-badge">🗳️</span>
+                        eVote360 Pro
+                    </a>
+
+                    <button class="navbar-toggler"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#mainNavbar"
+                            aria-controls="mainNavbar"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="mainNavbar">
+
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="HomeAdministrador"
+                                   asp-action="Index">
+                                    Home Administrador
+                                </a>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle"
+                                   href="#"
+                                   role="button"
+                                   data-bs-toggle="dropdown"
+                                   aria-expanded="false">
+                                    Módulos
+                                </a>
+
+                                <ul class="dropdown-menu">
+
+                                    <li>
+                                        <a class="dropdown-item"
+                                           asp-controller="Usuario"
+                                           asp-action="Index">
+                                            Usuarios
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item"
+                                           asp-controller="Eleccion"
+                                           asp-action="Index">
+                                            Elecciones
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item"
+                                           asp-controller="ResultadoElectoral"
+                                           asp-action="Index"
+                                           asp-route-eleccionId="1">
+                                            Resultados Electorales
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </li>
+
+                        </ul>
+
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link btn-logout"
+                                   asp-controller="Usuario"
+                                   asp-action="Login">
+                                    Cerrar sesión
+                                </a>
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+            </nav>
+        </header>
+    }
+    <main class="@(hideMenu ? "login-container" : "app-container") flex-grow-1">
+        @RenderBody()
+    </main>
+
+    @if (!hideMenu)
+    {
+        <footer class="app-footer">
+            <div class="container text-center">
+                &copy; 2026 - eVote360 Pro
+            </div>
+        </footer>
+    }
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>
