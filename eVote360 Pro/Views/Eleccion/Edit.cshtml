@@ -1,0 +1,121 @@
+﻿@model eVote360Pro.Core.Application.ViewModels.Eleccion.EleccionEditViewModel
+
+@{
+    ViewData["Title"] = "Editar elección";
+}
+
+<style>
+    .create-wrapper {
+        min-height: calc(100vh - 70px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        background: #F8FAFC;
+    }
+
+    .content-card {
+        width: 100%;
+        max-width: 520px;
+        background: #fff;
+        border: 1px solid #E5E7EB;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 8px 25px rgba(0,0,0,.05);
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+        .page-header h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #1B3A6B;
+            margin: 0 0 .35rem;
+        }
+
+        .page-header p {
+            font-size: .9rem;
+            color: #6B7280;
+            margin: 0;
+        }
+
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+        font-size: .9rem;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #D1D5DB;
+        padding: .65rem .75rem;
+        font-size: .9rem;
+    }
+
+    .buttons {
+        display: flex;
+        gap: .75rem;
+        margin-top: 1.5rem;
+    }
+
+    .btn-main {
+        flex: 1;
+        background: #2563EB;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: .7rem 1rem;
+        font-size: .9rem;
+        font-weight: 600;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .btn-delete {
+        flex: 1;
+        background: #FEF2F2;
+        color: #B91C1C;
+        border-radius: 8px;
+        padding: .7rem 1rem;
+        font-size: .9rem;
+        font-weight: 600;
+        text-decoration: none;
+        text-align: center;
+        border: none;
+    }
+</style>
+
+<div class="create-wrapper">
+    <div class="content-card">
+        <div class="page-header">
+            <h1>Editar elección</h1>
+            <p>Actualiza los datos del proceso electoral.</p>
+        </div>
+
+        <form asp-action="Edit" method="post">
+            <input asp-for="Id" type="hidden" />
+            <input asp-for="EstadoEleccion" type="hidden" />
+
+            <div class="mb-3">
+                <label asp-for="Nombre" class="form-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="FechaRealizacion" class="form-label">Fecha de realización</label>
+                <input asp-for="FechaRealizacion" type="date" class="form-control" />
+                <span asp-validation-for="FechaRealizacion" class="text-danger"></span>
+            </div>
+
+            <div class="buttons">
+                <button type="submit" class="btn-main">Actualizar</button>
+                <a asp-action="Index" class="btn-delete">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>

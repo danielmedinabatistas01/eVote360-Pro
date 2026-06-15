@@ -2,14 +2,10 @@
 {
     public class HomeAdministradorDTO
     {
-        public int Anio { get; set; }
+        public List<int> AniosDisponibles { get; set; } = new();
 
-        public int TotalElecciones { get; set; }
+        public int? Anio { get; set; }
 
-        public int TotalPartidos { get; set; }
-
-        public int TotalCandidatos { get; set; }
-
-        public int TotalCiudadanosQueVotaron { get; set; }
+        public List<ResumenEleccionDTO> Resumenes { get; set; } = new();
     }
 }

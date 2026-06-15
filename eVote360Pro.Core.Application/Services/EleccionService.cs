@@ -4,16 +4,17 @@ using eVote360Pro.Core.Application.ViewModels.Eleccion;
 using eVote360Pro.Core.Domain.Entities;
 using eVote360Pro.Core.Domain.Enums;
 using eVote360Pro.Core.Domain.Interfaces;
-
 namespace eVote360Pro.Core.Application.Services
 {
     public class EleccionService : IEleccionService
     {
         private readonly IEleccionRepository _eleccionRepository;
 
+
         public EleccionService(IEleccionRepository eleccionRepository)
         {
             _eleccionRepository = eleccionRepository;
+
         }
 
         public async Task<List<EleccionIndexViewModel>> GetAllAsync()

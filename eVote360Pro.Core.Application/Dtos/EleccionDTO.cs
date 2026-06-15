@@ -1,14 +1,16 @@
-﻿using eVote360Pro.Core.Domain.Enums;
+﻿
+using eVote360Pro.Core.Domain.Enums;
+
 namespace eVote360Pro.Core.Application.DTOs
 {
     public class EleccionDTO
     {
         public int Id { get; set; }
 
-        public string Nombre { get; set; } = string.Empty;
+        public required string Nombre { get; set; } = string.Empty;
 
-        public DateTime FechaRealizacion { get; set; }
+        public required DateTime FechaRealizacion { get; set; }
 
-        public EstadoEleccion EstadoEleccion { get; set; }
+        public required EstadoEleccion EstadoEleccion { get; set; }
     }
 }

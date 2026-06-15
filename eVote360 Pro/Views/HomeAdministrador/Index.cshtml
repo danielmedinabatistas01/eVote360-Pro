@@ -1,0 +1,164 @@
+﻿@model eVote360Pro.Core.Application.ViewModels.HomeAdministrador.HomeAdministradorViewModel
+
+@{
+    ViewData["Title"] = "Panel Administrador";
+}
+
+<style>
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+        .page-header h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1B3A6B;
+            margin: 0;
+        }
+
+        .page-header p {
+            color: #6B7280;
+            margin-top: .4rem;
+        }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,.04);
+    }
+
+    .stat-title {
+        color: #6B7280;
+        font-size: .85rem;
+        margin-bottom: .5rem;
+    }
+
+    .stat-value {
+        color: #1B3A6B;
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .content-card {
+        background: white;
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+
+    .quick-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .action-btn {
+        background: #2563EB;
+        color: white;
+        padding: .75rem 1.25rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: .2s;
+    }
+
+        .action-btn:hover {
+            background: #1D4ED8;
+            color: white;
+            text-decoration: none;
+        }
+</style>
+
+<div class="page-header">
+    <h1>Panel de Administración</h1>
+    <p>Resumen general del sistema electoral.</p>
+</div>
+
+<div class="stats-grid">
+
+   @*  <div class="stat-card">
+        <div class="stat-title">
+            Total Elecciones
+        </div>
+
+        <div class="stat-value">
+            @Model.TotalElecciones
+        </div>
+    </div> *@
+
+   @*  <div class="stat-card">
+        <div class="stat-title">
+            Total Partidos
+        </div>
+
+        <div class="stat-value">
+            @Model.TotalPartidos
+        </div>
+    </div> *@
+
+    @* <div class="stat-card">
+        <div class="stat-title">
+            Total Candidatos
+        </div>
+
+        <div class="stat-value">
+            @Model.TotalCandidatos
+        </div>
+    </div> *@
+
+   @*  <div class="stat-card">
+        <div class="stat-title">
+            Ciudadanos que votaron
+        </div>
+
+        <div class="stat-value">
+            @Model.TotalCiudadanosQueVotaron
+        </div>
+    </div> *@
+
+</div>
+
+<div class="content-card">
+
+    <h4 class="mb-4">Acciones rápidas</h4>
+
+    <div class="quick-actions">
+
+        <a asp-controller="Usuario"
+           asp-action="Index"
+           class="action-btn">
+            Usuarios
+        </a>
+
+        <a asp-controller="Eleccion"
+           asp-action="Index"
+           class="action-btn">
+            Elecciones
+        </a>
+
+        <a asp-controller="ResultadoElectoral"
+           asp-action="Index"
+           asp-route-eleccionId="1"
+           class="action-btn">
+            Resultados
+        </a>
+
+        <a asp-controller="Usuario"
+           asp-action="Login"
+           class="action-btn">
+            Cerrar Sesión
+        </a>
+
+    </div>
+
+</div>

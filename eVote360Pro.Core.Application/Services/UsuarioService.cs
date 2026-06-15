@@ -1,4 +1,5 @@
-﻿using eVote360Pro.Core.Application.DTOs;
+﻿using eVote360Pro.Core.Application.Dtos.User;
+using eVote360Pro.Core.Application.DTOs;
 using eVote360Pro.Core.Application.DTOs.Email;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.ViewModels.Usuario;
@@ -120,17 +121,24 @@ namespace eVote360Pro.Core.Application.Services
 
             await _usuarioRepository.AddAsync(entity);
 
-            await _emailService.SendAsync(new EmailRequestDTO
+            try
             {
-                To = entity.CorreoElectronico,
-                Subject = "Usuario creado - eVote360 Pro",
-                HtmlBody = $@"
-                    <h2>Bienvenido a eVote360 Pro</h2>
-                    <p>Hola {entity.Nombre} {entity.Apellido}, tu usuario ha sido creado correctamente.</p>
-                    <p><strong>Usuario:</strong> {entity.NombreUsuario}</p>
-                    <p><strong>Rol:</strong> {entity.RolUsuario}</p>
-                "
-            });
+                await _emailService.SendAsync(new EmailRequestDTO
+                {
+                    To = entity.CorreoElectronico,
+                    Subject = "Usuario creado - eVote360 Pro",
+                    HtmlBody = $@"
+                <h2>Bienvenido a eVote360 Pro</h2>
+                <p>Hola {entity.Nombre} {entity.Apellido}, tu usuario ha sido creado correctamente.</p>
+                <p><strong>Usuario:</strong> {entity.NombreUsuario}</p>
+                <p><strong>Rol:</strong> {entity.RolUsuario}</p>
+            "
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
 
         public async Task UpdateAsync(UsuarioDto dto)
@@ -199,11 +207,11 @@ namespace eVote360Pro.Core.Application.Services
             await _usuarioRepository.UpdateAsync(usuario.Id, usuario);
         }
 
-        public async Task<bool> LoginAsync(LoginViewModel vm)
+        public async Task<bool> LoginAsync(LoginDto dto)
         {
             var usuario = await _usuarioRepository.LoginAsync(
-                vm.NombreUsuario.Trim(),
-                vm.Contrasena
+                dto.NombreUsuario.Trim(),
+                dto.Contrasena
             );
 
             if (usuario == null)
@@ -212,7 +220,8 @@ namespace eVote360Pro.Core.Application.Services
             if (!usuario.Estado)
                 return false;
 
-            if (usuario.RolUsuario == RolUsuario.Dirigente && usuario.PartidoPoliticoId == null)
+            if (usuario.RolUsuario == RolUsuario.Dirigente &&
+                usuario.PartidoPoliticoId == null)
                 return false;
 
             return true;

@@ -11,4 +11,3 @@ namespace eVote360Pro.Core.Domain.Common
         public int Id { get; set; }
     }
 }
-

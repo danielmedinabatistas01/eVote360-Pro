@@ -18,7 +18,7 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
             builder.Property(x => x.CiudadanoId)
                 .IsRequired();
 
-            builder.Property(x => x.FechaVoto)
+            builder.Property(x => x.FechaVotacion)
                 .IsRequired();
 
             builder.HasOne(x => x.Eleccion)

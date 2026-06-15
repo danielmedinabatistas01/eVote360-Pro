@@ -1,0 +1,203 @@
+﻿@model List<eVote360Pro.Core.Application.ViewModels.Eleccion.EleccionIndexViewModel>
+@using eVote360Pro.Core.Domain.Enums
+
+@{
+    ViewData["Title"] = "Elecciones";
+}
+
+<style>
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+        .page-header h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1B3A6B;
+            margin: 0 0 .35rem;
+        }
+
+        .page-header p {
+            font-size: .9rem;
+            color: #6B7280;
+            margin: 0;
+        }
+
+    .content-card {
+        background: #fff;
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 1.5rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .top-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .btn-main {
+        background: #2563EB;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: .55rem 1rem;
+        font-size: .85rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-main:hover {
+            background: #1D4ED8;
+            color: #fff;
+            text-decoration: none;
+        }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: .85rem;
+    }
+
+        .custom-table thead {
+            background: #EFF4FF;
+        }
+
+        .custom-table th {
+            color: #1B3A6B;
+            font-weight: 700;
+            padding: .75rem;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .custom-table td {
+            padding: .75rem;
+            border-bottom: 1px solid #F3F4F6;
+            color: #374151;
+            vertical-align: middle;
+        }
+
+        .custom-table tbody tr:hover {
+            background: #F9FAFB;
+        }
+
+    .actions {
+        display: flex;
+        gap: .4rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-edit {
+        background: #FFFBEB;
+        color: #B45309;
+        border-radius: 6px;
+        padding: .35rem .65rem;
+        font-size: .78rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-edit:hover {
+            background: #FEF3C7;
+            color: #92400E;
+            text-decoration: none;
+        }
+
+    .btn-delete {
+        background: #FEF2F2;
+        color: #B91C1C;
+        border-radius: 6px;
+        padding: .35rem .65rem;
+        font-size: .78rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-delete:hover {
+            background: #FEE2E2;
+            color: #991B1B;
+            text-decoration: none;
+        }
+
+    .btn-success-custom {
+        background: #ECFDF5;
+        color: #047857;
+        border-radius: 6px;
+        padding: .35rem .65rem;
+        font-size: .78rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .btn-info-custom {
+        background: #EFF6FF;
+        color: #1D4ED8;
+        border-radius: 6px;
+        padding: .35rem .65rem;
+        font-size: .78rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+</style>
+
+<div class="page-header">
+    <h1>Elecciones</h1>
+    <p>Listado de procesos electorales registrados.</p>
+</div>
+
+<div class="content-card">
+    <div class="top-actions">
+        <a asp-action="Create" class="btn-main">Nueva elección</a>
+        <a asp-controller="HomeAdministrador" asp-action="Index" class="btn-edit">Volver al Home</a>
+    </div>
+
+    <table class="custom-table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Nombre</td>
+                    <td>@item.FechaRealizacion.ToShortDateString()</td>
+                    <td>@item.EstadoEleccion</td>
+                    <td>
+                        <div class="actions">
+                            @if (item.EstadoEleccion == EstadoEleccion.Configurada || item.EstadoEleccion == EstadoEleccion.Pendiente)
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn-edit">Editar</a>
+                                <a asp-action="Activar" asp-route-id="@item.Id" class="btn-success-custom">Activar</a>
+                            }
+
+                            @if (item.EstadoEleccion == EstadoEleccion.Activa)
+                            {
+                                <a asp-action="Finalizar" asp-route-id="@item.Id" class="btn-delete">Finalizar</a>
+                            }
+
+                            @if (item.EstadoEleccion == EstadoEleccion.Finalizada)
+                            {
+                                <a asp-controller="ResultadoElectoral"
+                                   asp-action="Index"
+                                   asp-route-eleccionId="@item.Id"
+                                   class="btn-info-custom">
+                                    Resultados
+                                </a>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

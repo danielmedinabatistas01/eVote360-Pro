@@ -1,5 +1,5 @@
-﻿using eVote360Pro.Core.Application.Interfaces;
-using eVote360Pro.Core.Application.ViewModels.HomeAdministrador;
+﻿using eVote360Pro.Core.Application.DTOs;
+using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Domain.Interfaces;
 
 namespace eVote360Pro.Core.Application.Services
@@ -17,7 +17,7 @@ namespace eVote360Pro.Core.Application.Services
             _votoRepository = votoRepository;
         }
 
-        public async Task<HomeAdministradorViewModel> GetResumenByAnioAsync(int anio)
+        public async Task<HomeAdministradorDTO> GetResumenByAnioAsync(int anio)
         {
             var elecciones = await _eleccionRepository.GetAllOrdenadasAsync();
 
@@ -31,21 +31,22 @@ namespace eVote360Pro.Core.Application.Services
                 .Where(x => x.FechaRealizacion.Year == anio)
                 .ToList();
 
-            var resumenes = new List<ResumenEleccionViewModel>();
+            var resumenes = new List<ResumenEleccionDTO>();
 
             foreach (var eleccion in eleccionesFiltradas)
             {
-                resumenes.Add(new ResumenEleccionViewModel
+                resumenes.Add(new ResumenEleccionDTO
                 {
                     EleccionId = eleccion.Id,
                     NombreEleccion = eleccion.Nombre,
                     FechaRealizacion = eleccion.FechaRealizacion,
                     Estado = eleccion.EstadoEleccion.ToString(),
-                    TotalCiudadanosQueVotaron = await _votoRepository.CountCiudadanosVotaronAsync(eleccion.Id)
+                    TotalCiudadanosQueVotaron =
+                        await _votoRepository.CountCiudadanoYaVotoAsync(eleccion.Id)
                 });
             }
 
-            return new HomeAdministradorViewModel
+            return new HomeAdministradorDTO
             {
                 Anio = anio,
                 AniosDisponibles = aniosDisponibles,

@@ -1,11 +1,11 @@
 ﻿using eVote360Pro.Core.Application.DTOs.Email;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Domain.Settings;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using MailKit.Net.Smtp;
-using MailKit.Security;
 
 namespace eVote360Pro.Infrastructure.Shared.Services
 {
@@ -14,7 +14,9 @@ namespace eVote360Pro.Infrastructure.Shared.Services
         private readonly MailSettings _mailSettings;
         private readonly ILogger<EmailService> _logger;
 
-        public EmailService(IOptions<MailSettings> mailSettings, ILogger<EmailService> logger)
+        public EmailService(
+            IOptions<MailSettings> mailSettings,
+            ILogger<EmailService> logger)
         {
             _mailSettings = mailSettings.Value;
             _logger = logger;
@@ -24,24 +26,37 @@ namespace eVote360Pro.Infrastructure.Shared.Services
         {
             try
             {
+                List<string> destinatarios = new();
+
                 if (!string.IsNullOrWhiteSpace(emailRequestDTO.To))
                 {
-                    emailRequestDTO.ToRange ??= new List<string>();
-                    emailRequestDTO.ToRange.Add(emailRequestDTO.To);
+                    destinatarios.Add(emailRequestDTO.To);
                 }
+
+                if (emailRequestDTO.ToRange != null)
+                {
+                    destinatarios.AddRange(emailRequestDTO.ToRange);
+                }
+
+                destinatarios = destinatarios
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Distinct()
+                    .ToList();
+
+                if (!destinatarios.Any())
+                    return;
 
                 MimeMessage email = new()
                 {
-                    Sender = MailboxAddress.Parse(_mailSettings.EmailFrom),
                     Subject = emailRequestDTO.Subject
                 };
 
-                foreach (var toItem in emailRequestDTO.ToRange ?? new List<string>())
+                email.From.Add(MailboxAddress.Parse(_mailSettings.EmailFrom));
+                email.Sender = MailboxAddress.Parse(_mailSettings.EmailFrom);
+
+                foreach (var toItem in destinatarios)
                 {
-                    if (!string.IsNullOrWhiteSpace(toItem))
-                    {
-                        email.To.Add(MailboxAddress.Parse(toItem));
-                    }
+                    email.To.Add(MailboxAddress.Parse(toItem));
                 }
 
                 BodyBuilder builder = new()
@@ -68,6 +83,7 @@ namespace eVote360Pro.Infrastructure.Shared.Services
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 _logger.LogError(ex, "Ocurrió un error enviando el correo.");
             }
         }

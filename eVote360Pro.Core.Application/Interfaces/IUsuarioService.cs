@@ -1,4 +1,5 @@
-﻿using eVote360Pro.Core.Application.DTOs;
+﻿using eVote360Pro.Core.Application.Dtos.User;
+using eVote360Pro.Core.Application.DTOs;
 using eVote360Pro.Core.Application.ViewModels.Usuario;
 
 namespace eVote360Pro.Core.Application.Interfaces
@@ -21,6 +22,6 @@ namespace eVote360Pro.Core.Application.Interfaces
 
         Task DesactivarAsync(int id);
 
-        Task<bool> LoginAsync(LoginViewModel vm);
+        Task<bool> LoginAsync(LoginDto dto);
     }
 }

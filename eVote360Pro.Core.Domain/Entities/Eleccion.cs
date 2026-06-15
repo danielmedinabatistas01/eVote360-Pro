@@ -6,14 +6,12 @@ namespace eVote360Pro.Core.Domain.Entities
 {
     public class Eleccion: BaseEntity
     {
-        public string Nombre { get; set; } = string.Empty;
+        public required string Nombre { get; set; } = string.Empty;
 
-        public DateTime FechaRealizacion { get; set; }
+        public required DateTime FechaRealizacion { get; set; }
 
-        public EstadoEleccion EstadoEleccion { get; set; }
+        public required EstadoEleccion EstadoEleccion { get; set; } = EstadoEleccion.Pendiente;
 
-
-        // Relaciones
 
         public ICollection<EleccionPuestoElectivo> PuestosElectivos { get; set; }
             = new List<EleccionPuestoElectivo>();
@@ -21,6 +19,7 @@ namespace eVote360Pro.Core.Domain.Entities
 
         public ICollection<Voto> Votos { get; set; }
             = new List<Voto>();
+
 
 
     }

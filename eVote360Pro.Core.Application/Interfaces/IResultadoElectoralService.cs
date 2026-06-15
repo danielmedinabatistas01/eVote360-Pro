@@ -1,9 +1,9 @@
-﻿using eVote360Pro.Core.Application.ViewModels.ResultadoElectoral;
+﻿using eVote360Pro.Core.Application.DTOs;
 
 namespace eVote360Pro.Core.Application.Interfaces
 {
     public interface IResultadoElectoralService
     {
-        Task<ResultadoElectoralIndexViewModel?> GetResultadosByEleccionIdAsync(int eleccionId);
+        Task<List<ResultadoElectoralDTO>> GetResultadosByEleccionIdAsync(int eleccionId);
     }
 }

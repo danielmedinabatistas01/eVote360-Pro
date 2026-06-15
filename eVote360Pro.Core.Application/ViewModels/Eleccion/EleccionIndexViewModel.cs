@@ -6,9 +6,9 @@ namespace eVote360Pro.Core.Application.ViewModels.Eleccion
     {
         public int Id { get; set; }
 
-        public string Nombre { get; set; } = string.Empty;
+        public required string Nombre { get; set; } = string.Empty;
 
-        public DateTime FechaRealizacion { get; set; }
+        public required DateTime FechaRealizacion { get; set; }
 
         public EstadoEleccion EstadoEleccion { get; set; }
     }

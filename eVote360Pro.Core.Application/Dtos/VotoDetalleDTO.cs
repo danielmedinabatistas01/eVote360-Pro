@@ -4,10 +4,10 @@
     {
         public int Id { get; set; }
 
-        public int VotoId { get; set; }
+        public required int VotoId { get; set; }
 
-        public int PuestoElectivoId { get; set; }
+        public required int PuestoElectivoId { get; set; }
 
-        public int? CandidatoId { get; set; }
+        public  int? CandidatoId { get; set; }
     }
 }

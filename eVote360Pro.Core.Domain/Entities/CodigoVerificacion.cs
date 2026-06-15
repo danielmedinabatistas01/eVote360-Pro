@@ -23,8 +23,6 @@ namespace eVote360Pro.Core.Domain.Entities
 
         public bool Utilizado { get; set; }
 
-        public Ciudadano? Ciudadano { get; set; }
-
         public Eleccion? Eleccion { get; set; }
     }
 }

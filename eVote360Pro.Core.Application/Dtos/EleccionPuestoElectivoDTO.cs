@@ -4,8 +4,8 @@
     {
         public int Id { get; set; }
 
-        public int EleccionId { get; set; }
+        public required int EleccionId { get; set; }
 
-        public int PuestoElectivoId { get; set; }
+        public required int PuestoElectivoId { get; set; }
     }
 }

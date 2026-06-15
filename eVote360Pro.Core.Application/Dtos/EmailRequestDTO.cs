@@ -3,11 +3,8 @@
     public class EmailRequestDTO
     {
         public string? To { get; set; }
-
-        public List<string>? ToRange { get; set; } = new();
-
-        public string Subject { get; set; } = string.Empty;
-
-        public string HtmlBody { get; set; } = string.Empty;
+        public required string Subject { get; set; } = string.Empty;
+        public required string HtmlBody { get; set; } = string.Empty;
+        public List<string>? ToRange { get; set; }
     }
 }
