@@ -3,29 +3,27 @@ using eVote360Pro.Core.Application.Dtos;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Domain.Entities;
 using eVote360Pro.Core.Domain.Interfaces;
-using Org.BouncyCastle.Crypto;
 
 namespace eVote360Pro.Core.Application.Services
 {
-    public class VotoService: GenericService<VotoDto, Voto>, IVotoService
+    public class VotoService
+        : GenericService<VotoDto, Voto>, IVotoService
     {
-        private readonly IVotoRepository _repository;
-        private readonly IMapper _mapper;
+        private readonly IVotoRepository _votoRepository;
 
         public VotoService(
-            IVotoRepository repository,
+            IVotoRepository votoRepository,
             IMapper mapper)
-            : base(repository, mapper)
+            : base(votoRepository, mapper)
         {
-            _repository = repository;
-            _mapper = mapper;
+            _votoRepository = votoRepository;
         }
 
         public async Task<bool> CiudadanoYaVotoAsync(
             int ciudadanoId,
             int eleccionId)
         {
-            return await _repository
+            return await _votoRepository
                 .CiudadanoYaVotoAsync(
                     ciudadanoId,
                     eleccionId);
@@ -54,21 +52,35 @@ namespace eVote360Pro.Core.Application.Services
                     "El ciudadano ya votó en esta elección.");
             }
 
-            var voto =
-                _mapper.Map<Voto>(dto);
+            var voto = _mapper.Map<Voto>(dto);
 
             voto.FechaVoto = DateTime.Now;
 
-            await _repository.AddAsync(voto);
+            await _votoRepository.AddAsync(voto);
         }
 
         public async Task<int>
             CountCiudadanosVotaronAsync(
             int eleccionId)
         {
-            return await _repository
+            return await _votoRepository
                 .CountCiudadanosVotaronAsync(
                     eleccionId);
+        }
+
+        public async Task<List<VotoDto>>
+            GetByEleccionIdAsync(int eleccionId)
+        {
+            var votos =
+                await _votoRepository
+                    .GetByEleccionIdAsync(eleccionId);
+
+            return _mapper.Map<List<VotoDto>>(votos);
+        }
+
+        public Task CrearVotoAsync(VotoDto dto)
+        {
+            throw new NotImplementedException();
         }
     }
 }
