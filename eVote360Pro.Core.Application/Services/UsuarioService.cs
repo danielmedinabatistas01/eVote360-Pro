@@ -1,4 +1,5 @@
 ﻿using eVote360Pro.Core.Application.DTOs;
+using eVote360Pro.Core.Application.DTOs.Email;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.ViewModels.Usuario;
 using eVote360Pro.Core.Domain.Entities;
@@ -10,10 +11,14 @@ namespace eVote360Pro.Core.Application.Services
     public class UsuarioService : IUsuarioService
     {
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IEmailService _emailService;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository)
+        public UsuarioService(
+            IUsuarioRepository usuarioRepository,
+            IEmailService emailService)
         {
             _usuarioRepository = usuarioRepository;
+            _emailService = emailService;
         }
 
         public async Task<List<UsuarioIndexViewModel>> GetAllAsync()
@@ -104,6 +109,18 @@ namespace eVote360Pro.Core.Application.Services
             };
 
             await _usuarioRepository.AddAsync(entity);
+
+            await _emailService.SendAsync(new EmailRequestDTO
+            {
+                To = entity.CorreoElectronico,
+                Subject = "Usuario creado - eVote360 Pro",
+                HtmlBody = $@"
+                    <h2>Bienvenido a eVote360 Pro</h2>
+                    <p>Hola {entity.Nombre} {entity.Apellido}, tu usuario ha sido creado correctamente.</p>
+                    <p><strong>Usuario:</strong> {entity.NombreUsuario}</p>
+                    <p><strong>Rol:</strong> {entity.RolUsuario}</p>
+                "
+            });
         }
 
         public async Task UpdateAsync(UsuarioDto dto)

@@ -15,5 +15,6 @@ namespace eVote360Pro.Core.Domain.Entities
         public RolUsuario RolUsuario { get; set; }
         public bool Estado { get; set; } = true;
         public int? PartidoPoliticoId { get; set; }
+        public AsignacionDirigente? AsignacionDirigente { get; set; }
     }
 }
