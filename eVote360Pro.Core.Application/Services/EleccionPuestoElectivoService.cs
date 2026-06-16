@@ -13,16 +13,16 @@ namespace eVote360Pro.Core.Application.Services
         private readonly IEleccionPuestoElectivoRepository _repository;
 
         public EleccionPuestoElectivoService(
-     IEleccionPuestoElectivoRepository repository,
-     IMapper mapper)
-     : base(repository, mapper)
+            IEleccionPuestoElectivoRepository repository,
+            IMapper mapper)
+            : base(repository, mapper)
         {
             _repository = repository;
         }
 
         public async Task AsignarAsync(EleccionPuestoElectivoDTO dto)
         {
-            await AddAsync(dto);
+            await base.AddAsync(dto);
         }
 
         public async Task<List<EleccionPuestoElectivoDTO>> GetByEleccionIdAsync(int eleccionId)

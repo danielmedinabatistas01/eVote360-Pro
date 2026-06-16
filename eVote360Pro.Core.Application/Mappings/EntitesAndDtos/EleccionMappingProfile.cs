@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using eVote360Pro.Core.Application.Dtos;
+using eVote360Pro.Core.Application.DTOs;
 using eVote360Pro.Core.Domain.Entities;
 
 namespace eVote360Pro.Core.Application.Mappings.EntitesAndDtos
 {
-    public class VotoDtoMappingProfile : Profile
+    public class EleccionProfile : Profile
     {
-        public VotoDtoMappingProfile()
+        public EleccionProfile()
         {
-            CreateMap<Voto, VotoDto>()
+            CreateMap<Eleccion, EleccionDTO>()
                 .ReverseMap();
         }
     }

@@ -1,5 +1,4 @@
-﻿using eVote360Pro.Core.Application.Dtos.User;
-using eVote360Pro.Core.Application.DTOs;
+﻿using eVote360Pro.Core.Application.DTOs;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.ViewModels.Usuario;
 using eVote360Pro.Core.Domain.Enums;
@@ -10,47 +9,37 @@ namespace eVote360_Pro.Controllers
     public class UsuarioController : Controller
     {
         private readonly IUsuarioService _usuarioService;
+        private readonly IUserSession _userSession;
 
-        public UsuarioController(IUsuarioService usuarioService)
+        public UsuarioController(
+            IUsuarioService usuarioService,
+            IUserSession userSession)
         {
             _usuarioService = usuarioService;
+            _userSession = userSession;
         }
 
         public async Task<IActionResult> Index()
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             var usuarios = await _usuarioService.GetAllAsync();
+
             return View(usuarios);
         }
-        public IActionResult Login()
-        {
-            return View(new LoginViewModel());
-        }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel vm)
-        {
-            if (!ModelState.IsValid)
-                return View(vm);
-
-            var dto = new LoginDto
-            {
-                NombreUsuario = vm.NombreUsuario,
-                Contrasena = vm.Contrasena
-            };
-
-            var loginCorrecto = await _usuarioService.LoginAsync(dto);
-
-            if (!loginCorrecto)
-            {
-                ModelState.AddModelError("", "Usuario o contraseña incorrectos, usuario inactivo o dirigente sin partido asignado.");
-                return View(vm);
-            }
-
-            return RedirectToAction("Index", "HomeAdministrador");
-        }
         public IActionResult Create()
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             return View(new UsuarioCreateViewModel
             {
                 Estado = true
@@ -61,6 +50,12 @@ namespace eVote360_Pro.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(UsuarioCreateViewModel vm)
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             if (!ModelState.IsValid)
                 return View(vm);
 
@@ -91,8 +86,15 @@ namespace eVote360_Pro.Controllers
                 return View(vm);
             }
         }
+
         public async Task<IActionResult> Edit(int id)
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             var vm = await _usuarioService.GetByIdAsync(id);
 
             if (vm == null)
@@ -105,6 +107,12 @@ namespace eVote360_Pro.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UsuarioEditViewModel vm)
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             if (!ModelState.IsValid)
                 return View(vm);
 
@@ -139,6 +147,12 @@ namespace eVote360_Pro.Controllers
 
         public async Task<IActionResult> Activar(int id)
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             var vm = await _usuarioService.GetActivarViewModelAsync(id);
 
             if (vm == null)
@@ -151,12 +165,25 @@ namespace eVote360_Pro.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ActivarConfirmado(int id)
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             await _usuarioService.ActivarAsync(id);
+
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Desactivar(int id)
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             var vm = await _usuarioService.GetDesactivarViewModelAsync(id);
 
             if (vm == null)
@@ -169,13 +196,15 @@ namespace eVote360_Pro.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DesactivarConfirmado(int id)
         {
-            await _usuarioService.DesactivarAsync(id);
-            return RedirectToAction(nameof(Index));
-        }
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
 
-        public IActionResult Logout()
-        {
-            return RedirectToAction(nameof(Login));
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
+            await _usuarioService.DesactivarAsync(id);
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

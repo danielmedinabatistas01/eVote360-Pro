@@ -22,6 +22,6 @@ namespace eVote360Pro.Core.Application.Interfaces
 
         Task DesactivarAsync(int id);
 
-        Task<bool> LoginAsync(LoginDto dto);
+        Task<UsuarioDto?> LoginAsync(LoginDto dto);
     }
 }

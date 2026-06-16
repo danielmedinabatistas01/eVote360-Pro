@@ -8,7 +8,6 @@ using eVote360Pro.Infrastructure.Persistence.Contexts;
 using eVote360Pro.Infrastructure.Persistence.Repositories;
 using eVote360Pro.Infrastructure.Shared.Services;
 using Microsoft.EntityFrameworkCore;
-using eVote360_Pro.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,11 +17,13 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<IUserSession, UserSession>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
@@ -31,14 +32,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.Configure<MailSettings>(
     builder.Configuration.GetSection("MailSettings"));
 
+builder.Services.AddAutoMapper(typeof(GeneralProfile).Assembly);
+
 // Repositorios
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IEleccionRepository, EleccionRepository>();
 builder.Services.AddScoped<IVotoRepository, VotoRepository>();
 builder.Services.AddScoped<IEleccionPuestoElectivoRepository, EleccionPuestoElectivoRepository>();
 builder.Services.AddScoped<IVotoDetalleRepository, VotoDetalleRepository>();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IUserSession, UserSession>();
 
 // Servicios
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
@@ -49,14 +50,6 @@ builder.Services.AddScoped<IVotoDetalleService, VotoDetalleService>();
 builder.Services.AddScoped<IResultadoElectoralService, ResultadoElectoralService>();
 builder.Services.AddScoped<IHomeAdministradorService, HomeAdministradorService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddAutoMapper(cfg =>
-{
-    cfg.AddProfile<GeneralProfile>();
-});
-
-
-builder.Services.AddApplicationLayerIoc();
-builder.Services.AddPersistenceLayerIoc();
 
 var app = builder.Build();
 
@@ -67,16 +60,18 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseRouting();
-app.UseAuthorization();
+
 app.UseSession();
 
+app.UseAuthorization();
 
 app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=Login}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-app.Run();
+await app.RunAsync();

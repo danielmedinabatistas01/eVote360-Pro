@@ -1,6 +1,6 @@
-﻿using eVote360Pro.Core.Application.Helpers;
+﻿using eVote360Pro.Core.Application.DTOs;
+using eVote360Pro.Core.Application.Helpers;
 using eVote360Pro.Core.Application.Interfaces;
-using eVote360Pro.Core.Application.ViewModels.Usuario;
 using eVote360Pro.Core.Domain.Enums;
 
 namespace eVote360_Pro.Middlewares
@@ -17,15 +17,15 @@ namespace eVote360_Pro.Middlewares
         public bool HasUser()
         {
             var usuario = _httpContextAccessor.HttpContext?
-                .Session.Get<UsuarioViewModel>("Usuario");
+                .Session.Get<UsuarioDto>("Usuario");
 
             return usuario != null;
         }
 
-        public UsuarioViewModel? GetUserSession()
+        public UsuarioDto? GetUserSession()
         {
             return _httpContextAccessor.HttpContext?
-                .Session.Get<UsuarioViewModel>("Usuario");
+                .Session.Get<UsuarioDto>("Usuario");
         }
 
         public bool IsAdmin()
@@ -42,14 +42,6 @@ namespace eVote360_Pro.Middlewares
 
             return usuario != null &&
                    usuario.RolUsuario == RolUsuario.Dirigente;
-        }
-
-        public bool IsCiudadano()
-        {
-            var usuario = GetUserSession();
-
-            return usuario != null &&
-                   usuario.RolUsuario == RolUsuario.Ciudadano;
         }
     }
 }

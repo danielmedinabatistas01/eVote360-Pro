@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using eVote360Pro.Core.Application.Dtos.User;
+﻿using eVote360Pro.Core.Application.Dtos.User;
 using eVote360Pro.Core.Application.DTOs;
+using eVote360Pro.Core.Application.Helpers;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.ViewModels.Usuario;
 using eVote360Pro.Core.Domain.Enums;
@@ -11,18 +11,28 @@ namespace eVote360_Pro.Controllers
     public class LoginController : Controller
     {
         private readonly IUsuarioService _usuarioService;
-        private readonly IMapper _mapper;
+        private readonly IUserSession _userSession;
 
         public LoginController(
             IUsuarioService usuarioService,
-            IMapper mapper)
+            IUserSession userSession)
         {
             _usuarioService = usuarioService;
-            _mapper = mapper;
+            _userSession = userSession;
         }
 
         public IActionResult Index()
         {
+            if (_userSession.HasUser())
+            {
+                var usuarioSession = _userSession.GetUserSession();
+
+                if (usuarioSession != null)
+                {
+                    return RedirigirPorRol(usuarioSession.RolUsuario);
+                }
+            }
+
             return View(new LoginViewModel
             {
                 NombreUsuario = "",
@@ -40,32 +50,47 @@ namespace eVote360_Pro.Controllers
                 return View(vm);
             }
 
-            var loginCorrecto = await _usuarioService.LoginAsync(new LoginDto
+            var usuarioDto = await _usuarioService.LoginAsync(new LoginDto
             {
                 NombreUsuario = vm.NombreUsuario,
                 Contrasena = vm.Contrasena
             });
 
-            if (!loginCorrecto)
+            if (usuarioDto == null)
             {
                 ModelState.AddModelError("", "Usuario o contraseña incorrectos, usuario inactivo o dirigente sin partido asignado.");
                 vm.Contrasena = "";
                 return View(vm);
             }
 
-            return RedirectToAction("Index", "HomeAdministrador");
+            HttpContext.Session.Set<UsuarioDto>("Usuario", usuarioDto);
+
+            return RedirigirPorRol(usuarioDto.RolUsuario);
         }
 
         public IActionResult Logout()
         {
-            HttpContext.Session.Clear();
+            HttpContext.Session.Remove("Usuario");
 
             return RedirectToAction("Index", "Login");
         }
 
         public IActionResult AccessDenied()
         {
-            return View();
+            if (_userSession.HasUser())
+                return View();
+
+            return RedirectToAction("Index", "Login");
+        }
+
+        private IActionResult RedirigirPorRol(RolUsuario rol)
+        {
+            return rol switch
+            {
+                RolUsuario.Administrador => RedirectToAction("Index", "HomeAdministrador"),
+                RolUsuario.Dirigente => RedirectToAction("Index", "HomeDirigente"),
+                _ => RedirectToAction("Index", "Login")
+            };
         }
     }
 }

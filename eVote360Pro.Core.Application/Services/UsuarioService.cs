@@ -209,23 +209,33 @@ namespace eVote360Pro.Core.Application.Services
             await _usuarioRepository.UpdateAsync(usuario.Id, usuario);
         }
 
-        public async Task<bool> LoginAsync(LoginDto dto)
+        public async Task<UsuarioDto?> LoginAsync(LoginDto dto)
         {
             var usuario = await _usuarioRepository.LoginAsync(
-       dto.NombreUsuario.Trim(),
-       PasswordEncryptation.ComputeSha256Hash(dto.Contrasena)
-   );
+                dto.NombreUsuario.Trim(),
+                PasswordEncryptation.ComputeSha256Hash(dto.Contrasena)
+            );
+
             if (usuario == null)
-                return false;
+                return null;
 
             if (!usuario.Estado)
-                return false;
+                return null;
 
-            if (usuario.RolUsuario == RolUsuario.Dirigente &&
-                usuario.PartidoPoliticoId == null)
-                return false;
+            if (usuario.RolUsuario == RolUsuario.Dirigente && usuario.PartidoPoliticoId == null)
+                return null;
 
-            return true;
+            return new UsuarioDto
+            {
+                Id = usuario.Id,
+                Nombre = usuario.Nombre,
+                Apellido = usuario.Apellido,
+                NombreUsuario = usuario.NombreUsuario,
+                CorreoElectronico = usuario.CorreoElectronico,
+                RolUsuario = usuario.RolUsuario,
+                Estado = usuario.Estado,
+                PartidoPoliticoId = usuario.PartidoPoliticoId
+            };
         }
     }
 }
