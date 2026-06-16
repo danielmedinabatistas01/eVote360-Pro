@@ -27,5 +27,20 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
                     x.CiudadanoId == ciudadanoId &&
                     x.EleccionId == eleccionId);
         }
+
+        public async Task<int> CountCiudadanosVotaronAsync(int eleccionId)
+        {
+            return await _context.Votos
+                .CountAsync(x =>
+                    x.EleccionId == eleccionId);
+        }
+
+        public async Task<List<Voto>>GetByEleccionIdAsync(int eleccionId)
+        {
+            return await _context.Votos
+                .Where(x =>
+                    x.EleccionId == eleccionId)
+                .ToListAsync();
+        }
     }
 }

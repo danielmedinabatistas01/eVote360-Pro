@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace eVote360Pro.Core.Domain.Entities
 {
-    public class AlianzaPolitica : BaseEntity
+    public class AlianzaPolitica : BaseEntity<int>
     {
         public required string Nombre { get; set; } = null!;
 

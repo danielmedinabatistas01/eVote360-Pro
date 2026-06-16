@@ -1,8 +1,7 @@
 ﻿namespace eVote360Pro.Core.Application.ViewModels.Ciudadano
 {
-    public class CiudadanoViewModel
+    public class CiudadanoViewModel: BasicViewModel<int>
     {
-        public int Id { get; set; }
 
         public required string NombreCompleto { get; set; }
 

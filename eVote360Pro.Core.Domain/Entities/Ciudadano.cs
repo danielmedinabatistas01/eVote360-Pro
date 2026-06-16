@@ -2,7 +2,7 @@
 
 namespace eVote360Pro.Core.Domain.Entities
 {
-    public class Ciudadano: BaseEntity
+    public class Ciudadano: BaseEntity<int>
     {
         public required string Nombre { get; set; }
         public required string Apellido { get; set; }

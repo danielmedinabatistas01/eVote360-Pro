@@ -1,11 +1,13 @@
+using eVote360Pro.Core.Application;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.Services;
 using eVote360Pro.Core.Domain.Interfaces;
+using eVote360Pro.Core.Domain.Settings;
+using eVote360Pro.Infrastructure.Persistence;
 using eVote360Pro.Infrastructure.Persistence.Contexts;
 using eVote360Pro.Infrastructure.Persistence.Repositories;
-using Microsoft.EntityFrameworkCore;
-using eVote360Pro.Core.Domain.Settings;
 using eVote360Pro.Infrastructure.Shared.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +34,10 @@ builder.Services.AddScoped<IVotoService, VotoService>();
 builder.Services.AddScoped<IVotoDetalleService, VotoDetalleService>();
 builder.Services.AddScoped<IResultadoElectoralService, ResultadoElectoralService>();
 builder.Services.AddScoped<IHomeAdministradorService, HomeAdministradorService>();
+
+
+builder.Services.AddApplicationLayerIoc();
+builder.Services.AddPersistenceLayerIoc();
 
 var app = builder.Build();
 

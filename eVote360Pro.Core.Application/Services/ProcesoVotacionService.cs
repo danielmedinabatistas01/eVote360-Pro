@@ -41,7 +41,8 @@ namespace eVote360Pro.Core.Application.Services
         }
 
         public async Task<string> GenerarCodigoAsync(
-            int ciudadanoId)
+            int ciudadanoId,
+            int eleccionId)
         {
             string codigo =
                 Random.Shared
@@ -52,9 +53,11 @@ namespace eVote360Pro.Core.Application.Services
                 new CodigoVerificacion
                 {
                     CiudadanoId = ciudadanoId,
+                    EleccionId = eleccionId,
                     Codigo = codigo,
                     FechaGeneracion = DateTime.Now,
-                    FechaExpiracion = DateTime.Now.AddMinutes(5),
+                    FechaExpiracion =
+                        DateTime.Now.AddMinutes(5),
                     Utilizado = false
                 });
 
@@ -63,12 +66,14 @@ namespace eVote360Pro.Core.Application.Services
 
         public async Task<bool> ValidarCodigoAsync(
             int ciudadanoId,
+            int eleccionId,
             string codigo)
         {
             var entity =
                 await _codigoRepository
                     .GetCodigoAsync(
                         ciudadanoId,
+                        eleccionId,
                         codigo);
 
             if (entity == null)

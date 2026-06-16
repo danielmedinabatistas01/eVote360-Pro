@@ -22,16 +22,6 @@ namespace eVote360Pro.Core.Application.Services
             _alianzaRepository = alianzaRepository;
         }
 
-        public Task ActivarAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DesactivarAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<List<AlianzaPoliticaDto>>
             GetActivosAsync()
         {
@@ -40,6 +30,36 @@ namespace eVote360Pro.Core.Application.Services
 
             return _mapper.Map<List<AlianzaPoliticaDto>>
                 (alianzas);
+        }
+
+        public async Task ActivarAsync(int id)
+        {
+            var alianza =
+                await _alianzaRepository.GetById(id);
+
+            if (alianza == null)
+                throw new Exception(
+                    "Alianza política no encontrada.");
+
+            alianza.Estado = true;
+
+            await _alianzaRepository
+                .UpdateAsync(id, alianza);
+        }
+
+        public async Task DesactivarAsync(int id)
+        {
+            var alianza =
+                await _alianzaRepository.GetById(id);
+
+            if (alianza == null)
+                throw new Exception(
+                    "Alianza política no encontrada.");
+
+            alianza.Estado = false;
+
+            await _alianzaRepository
+                .UpdateAsync(id, alianza);
         }
     }
 }

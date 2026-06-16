@@ -4,7 +4,7 @@ using eVote360Pro.Core.Domain.Enums;
 
 namespace eVote360Pro.Core.Domain.Entities
 {
-    public class Usuario: BaseEntity
+    public class Usuario: BaseEntity<int>
 
     {
         public string Nombre { get; set; } = string.Empty;

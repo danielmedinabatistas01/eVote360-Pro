@@ -7,5 +7,7 @@ namespace eVote360Pro.Core.Domain.Interfaces
         Task<bool> ExisteDocumentoAsync(string documento);
         Task<bool> ExisteCorreoAsync(string correo);
         Task<Ciudadano?> ObtenerPorDocumentoAsync(string documento);
+
+        Task<Ciudadano?> GetByCedulaAsync(string cedula);
     }
 }

@@ -1,38 +1,44 @@
-﻿using eVote360Pro.Core.Application.Dtos;
+﻿using AutoMapper;
+using eVote360Pro.Core.Application.Dtos;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Domain.Entities;
 using eVote360Pro.Core.Domain.Interfaces;
-using eVote360Pro.Infrastructure.Persistence.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace eVote360Pro.Core.Application.Services
 {
-    public class CodigoVerificacionService : ICodigoVerificacionService
+    public class CodigoVerificacionService
+        : GenericService<
+            CodigoVerificacionDto,
+            CodigoVerificacion>,
+          ICodigoVerificacionService
     {
-        private readonly ICodigoVerificacionRepository _repository;
+        private readonly ICodigoVerificacionRepository
+            _codigoRepository;
 
         public CodigoVerificacionService(
-            ICodigoVerificacionRepository repository)
+            ICodigoVerificacionRepository codigoRepository,
+            IMapper mapper)
+            : base(codigoRepository, mapper)
         {
-            _repository = repository;
+            _codigoRepository = codigoRepository;
         }
 
         public async Task<string> GenerarCodigoAsync(
-    int ciudadanoId)
+            int ciudadanoId,
+            int eleccionId)
         {
             string codigo =
-                Random.Shared.Next(100000, 999999)
-                .ToString();
+                Random.Shared
+                    .Next(100000, 999999)
+                    .ToString();
 
-            await _repository.AddAsync(
+            await _codigoRepository.AddAsync(
                 new CodigoVerificacion
                 {
                     CiudadanoId = ciudadanoId,
+                    EleccionId = eleccionId,
                     Codigo = codigo,
+                    FechaGeneracion = DateTime.Now,
                     FechaExpiracion =
                         DateTime.Now.AddMinutes(5),
                     Utilizado = false
@@ -43,12 +49,15 @@ namespace eVote360Pro.Core.Application.Services
 
         public async Task<bool> ValidarCodigoAsync(
     int ciudadanoId,
+    int eleccionId,
     string codigo)
         {
             var entity =
-                await _repository.GetCodigoAsync(
-                    ciudadanoId,
-                    codigo);
+                await _codigoRepository
+                    .GetCodigoAsync(
+                        ciudadanoId,
+                        eleccionId,
+                        codigo);
 
             if (entity == null)
                 return false;
@@ -63,20 +72,22 @@ namespace eVote360Pro.Core.Application.Services
         }
 
         public async Task MarcarComoUtilizadoAsync(
-    int codigoId)
+            int codigoId)
         {
             var codigo =
-                await _repository.GetById(codigoId);
+                await _codigoRepository
+                    .GetById(codigoId);
 
             if (codigo == null)
-                throw new Exception("Código no encontrado.");
+                throw new Exception(
+                    "Código no encontrado.");
 
             codigo.Utilizado = true;
 
-            await _repository.UpdateAsync(
-                codigoId,
-                codigo);
+            await _codigoRepository
+                .UpdateAsync(
+                    codigoId,
+                    codigo);
         }
-
     }
 }

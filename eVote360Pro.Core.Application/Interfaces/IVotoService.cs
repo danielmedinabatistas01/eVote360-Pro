@@ -9,11 +9,11 @@ using eVote360Pro.Core.Application.DTOs;
 namespace eVote360Pro.Core.Application.Interfaces
 {
     public interface IVotoService
+        : IGenericService<VotoDto>
     {
         Task<bool> CiudadanoYaVotoAsync(
             int ciudadanoId,
             int eleccionId);
-        Task CrearVotoAsync(VotoDto dto);
 
         Task RegistrarVotoAsync(
             VotoDto dto);

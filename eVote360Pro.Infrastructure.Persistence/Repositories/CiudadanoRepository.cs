@@ -36,6 +36,13 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
             return await _context.Set<Ciudadano>()
                 .FirstOrDefaultAsync(x => x.NumeroIdentificacion == documento);
         }
+
+        public async Task<Ciudadano?> GetByCedulaAsync(string cedula)
+        {
+            return await _context.Ciudadanos
+                .FirstOrDefaultAsync(
+                    x => x.NumeroIdentificacion == cedula);
+        }
     }        
     
 }

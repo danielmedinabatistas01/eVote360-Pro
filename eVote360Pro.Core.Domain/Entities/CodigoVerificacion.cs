@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace eVote360Pro.Core.Domain.Entities
 {
-    public class CodigoVerificacion : BaseEntity
+    public class CodigoVerificacion : BaseEntity<int>
     {
 
         public int CiudadanoId { get; set; }
