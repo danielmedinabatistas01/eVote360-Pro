@@ -42,7 +42,7 @@ namespace eVote360Pro.Core.Application.Services
                     FechaRealizacion = eleccion.FechaRealizacion,
                     Estado = eleccion.EstadoEleccion.ToString(),
                     TotalCiudadanosQueVotaron =
-                        await _votoRepository.CountCiudadanoYaVotoAsync(eleccion.Id)
+                        await _votoRepository.CountCiudadanosVotaronAsync(eleccion.Id)
                 });
             }
 

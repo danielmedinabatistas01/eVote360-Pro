@@ -24,8 +24,8 @@ namespace eVote360Pro.Core.Application.Services
             string numeroDocumento)
         {
             var ciudadano =
-                await _ciudadanoRepository
-                    .GetByCedulaAsync(numeroDocumento);
+          await _ciudadanoRepository
+         .ObtenerPorDocumentoAsync(numeroDocumento);
 
             return ciudadano != null;
         }

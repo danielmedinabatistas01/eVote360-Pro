@@ -19,68 +19,47 @@ namespace eVote360Pro.Core.Application.Services
             _votoRepository = votoRepository;
         }
 
-        public async Task<bool> CiudadanoYaVotoAsync(
-            int ciudadanoId,
-            int eleccionId)
+        public async Task<bool> CiudadanoYaVotoAsync(int ciudadanoId, int eleccionId)
         {
-            return await _votoRepository
-                .CiudadanoYaVotoAsync(
-                    ciudadanoId,
-                    eleccionId);
+            return await _votoRepository.CiudadanoYaVotoAsync(ciudadanoId, eleccionId);
         }
 
-        public async Task<bool> PuedeVotarAsync(
-            int ciudadanoId,
-            int eleccionId)
+        public async Task<bool> PuedeVotarAsync(int ciudadanoId, int eleccionId)
         {
-            return !await CiudadanoYaVotoAsync(
-                ciudadanoId,
-                eleccionId);
+            return !await CiudadanoYaVotoAsync(ciudadanoId, eleccionId);
         }
 
-        public async Task RegistrarVotoAsync(
-            VotoDto dto)
+        public async Task RegistrarVotoAsync(VotoDto dto)
         {
-            bool yaVoto =
-                await CiudadanoYaVotoAsync(
-                    dto.CiudadanoId,
-                    dto.EleccionId);
+            bool yaVoto = await CiudadanoYaVotoAsync(
+                dto.CiudadanoId,
+                dto.EleccionId);
 
             if (yaVoto)
             {
-                throw new Exception(
-                    "El ciudadano ya votó en esta elección.");
+                throw new Exception("El ciudadano ya votó en esta elección.");
             }
 
-            var voto = _mapper.Map<Voto>(dto);
+            dto.FechaVotacion = DateTime.Now;
 
-            voto.FechaVoto = DateTime.Now;
-
-            await _votoRepository.AddAsync(voto);
+            await AddAsync(dto);
         }
 
-        public async Task<int>
-            CountCiudadanosVotaronAsync(
-            int eleccionId)
+        public async Task CrearVotoAsync(VotoDto dto)
         {
-            return await _votoRepository
-                .CountCiudadanosVotaronAsync(
-                    eleccionId);
+            await RegistrarVotoAsync(dto);
         }
 
-        public async Task<List<VotoDto>>
-            GetByEleccionIdAsync(int eleccionId)
+        public async Task<int> CountCiudadanosVotaronAsync(int eleccionId)
         {
-            var votos =
-                await _votoRepository
-                    .GetByEleccionIdAsync(eleccionId);
+            return await _votoRepository.CountCiudadanosVotaronAsync(eleccionId);
+        }
+
+        public async Task<List<VotoDto>> GetByEleccionIdAsync(int eleccionId)
+        {
+            var votos = await _votoRepository.GetByEleccionIdAsync(eleccionId);
 
             return _mapper.Map<List<VotoDto>>(votos);
-        }
-
-        public Task CrearVotoAsync(VotoDto dto)
-        {
-            throw new NotImplementedException();
         }
     }
 }

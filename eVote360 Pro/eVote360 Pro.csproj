@@ -20,6 +20,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.16" />
     <PackageReference Include="MimeKit" Version="4.17.0" />
+	  <PackageReference Include="AutoMapper" Version="16.1.1" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.16">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -31,6 +33,7 @@
     <ProjectReference Include="..\eVote360Pro.Core.Application\eVote360Pro.Core.Application.csproj" />
     <ProjectReference Include="..\eVote360Pro.Core.Domain\eVote360Pro.Core.Domain.csproj" />
     <ProjectReference Include="..\eVote360Pro.Infrastructure.Persistence\eVote360Pro.Infrastructure.Persistence.csproj" />
+    <ProjectReference Include="..\eVote360Pro.Infrastructure.Shared\eVote360Pro.Infrastructure.Shared.csproj" />
   </ItemGroup>
 
 </Project>

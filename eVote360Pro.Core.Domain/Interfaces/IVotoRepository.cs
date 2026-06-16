@@ -6,6 +6,8 @@ namespace eVote360Pro.Core.Domain.Interfaces
     {
         Task<bool> CiudadanoYaVotoAsync(int ciudadanoId, int eleccionId);
 
-        Task<int> CountCiudadanoYaVotoAsync(int eleccionId);
+        Task<int> CountCiudadanosVotaronAsync(int eleccionId);
+
+        Task<List<Voto>> GetByEleccionIdAsync(int eleccionId);
     }
 }

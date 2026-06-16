@@ -1,6 +1,7 @@
 ﻿using eVote360Pro.Core.Application.Dtos.User;
 using eVote360Pro.Core.Application.DTOs;
 using eVote360Pro.Core.Application.DTOs.Email;
+using eVote360Pro.Core.Application.Helpers;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.ViewModels.Usuario;
 using eVote360Pro.Core.Domain.Entities;
@@ -111,7 +112,7 @@ namespace eVote360Pro.Core.Application.Services
                 Apellido = dto.Apellido.Trim(),
                 NombreUsuario = dto.NombreUsuario.Trim(),
                 CorreoElectronico = dto.CorreoElectronico.Trim(),
-                Contrasena = dto.Contrasena,
+                Contrasena = PasswordEncryptation.ComputeSha256Hash(dto.Contrasena),
                 RolUsuario = dto.RolUsuario,
                 Estado = true,
                 PartidoPoliticoId = dto.RolUsuario == RolUsuario.Dirigente
@@ -169,7 +170,8 @@ namespace eVote360Pro.Core.Application.Services
 
             if (!string.IsNullOrWhiteSpace(dto.Contrasena))
             {
-                usuario.Contrasena = dto.Contrasena;
+                usuario.Contrasena =
+                    PasswordEncryptation.ComputeSha256Hash(dto.Contrasena);
             }
 
             await _usuarioRepository.UpdateAsync(usuario.Id, usuario);
@@ -210,10 +212,9 @@ namespace eVote360Pro.Core.Application.Services
         public async Task<bool> LoginAsync(LoginDto dto)
         {
             var usuario = await _usuarioRepository.LoginAsync(
-                dto.NombreUsuario.Trim(),
-                dto.Contrasena
-            );
-
+       dto.NombreUsuario.Trim(),
+       PasswordEncryptation.ComputeSha256Hash(dto.Contrasena)
+   );
             if (usuario == null)
                 return false;
 

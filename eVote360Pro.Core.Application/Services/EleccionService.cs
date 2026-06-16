@@ -1,20 +1,25 @@
-﻿using eVote360Pro.Core.Application.DTOs;
+﻿using AutoMapper;
+using eVote360Pro.Core.Application.DTOs;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.ViewModels.Eleccion;
 using eVote360Pro.Core.Domain.Entities;
 using eVote360Pro.Core.Domain.Enums;
 using eVote360Pro.Core.Domain.Interfaces;
+
 namespace eVote360Pro.Core.Application.Services
 {
-    public class EleccionService : IEleccionService
+    public class EleccionService
+        : GenericService<EleccionDTO, Eleccion>,
+          IEleccionService
     {
         private readonly IEleccionRepository _eleccionRepository;
 
-
-        public EleccionService(IEleccionRepository eleccionRepository)
+        public EleccionService(
+            IEleccionRepository eleccionRepository,
+            IMapper mapper)
+            : base(eleccionRepository, mapper)
         {
             _eleccionRepository = eleccionRepository;
-
         }
 
         public async Task<List<EleccionIndexViewModel>> GetAllAsync()
@@ -30,7 +35,7 @@ namespace eVote360Pro.Core.Application.Services
             }).ToList();
         }
 
-        public async Task<EleccionEditViewModel?> GetByIdAsync(int id)
+        public async Task<EleccionEditViewModel?> GetEditViewModelByIdAsync(int id)
         {
             var eleccion = await _eleccionRepository.GetById(id);
 
@@ -104,30 +109,17 @@ namespace eVote360Pro.Core.Application.Services
 
             await _eleccionRepository.UpdateAsync(eleccion.Id, eleccion);
         }
-        public async Task CreateAsync(EleccionDTO dto)
-        {
-            var entity = new Eleccion
-            {
-                Nombre = dto.Nombre.Trim(),
-                FechaRealizacion = dto.FechaRealizacion,
-                EstadoEleccion = dto.EstadoEleccion
-            };
 
-            await _eleccionRepository.AddAsync(entity);
+        public override async Task AddAsync(EleccionDTO dto)
+        {
+            dto.Nombre = dto.Nombre.Trim();
+            await base.AddAsync(dto);
         }
 
-        public async Task UpdateAsync(EleccionDTO dto)
+        public override async Task UpdateAsync(int id, EleccionDTO dto)
         {
-            var eleccion = await _eleccionRepository.GetById(dto.Id);
-
-            if (eleccion == null)
-                return;
-
-            eleccion.Nombre = dto.Nombre.Trim();
-            eleccion.FechaRealizacion = dto.FechaRealizacion;
-            eleccion.EstadoEleccion = dto.EstadoEleccion;
-
-            await _eleccionRepository.UpdateAsync(eleccion.Id, eleccion);
+            dto.Nombre = dto.Nombre.Trim();
+            await base.UpdateAsync(id, dto);
         }
 
         public async Task<bool> ExisteEleccionActivaAsync()
@@ -142,13 +134,7 @@ namespace eVote360Pro.Core.Application.Services
             if (eleccion == null)
                 return null;
 
-            return new EleccionDTO
-            {
-                Id = eleccion.Id,
-                Nombre = eleccion.Nombre,
-                FechaRealizacion = eleccion.FechaRealizacion,
-                EstadoEleccion = eleccion.EstadoEleccion
-            };
+            return _mapper.Map<EleccionDTO>(eleccion);
         }
     }
 }
