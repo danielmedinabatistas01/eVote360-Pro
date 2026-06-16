@@ -12,7 +12,7 @@ namespace eVote360Pro.Core.Application.Dtos
 
         public int EleccionId { get; set; }
 
-        public int CiudadanoId { get; set; }    
+        public int CiudadanoId { get; set; }
 
         public DateTime FechaVotacion { get; set; }
     }

@@ -9,7 +9,6 @@ namespace eVote360Pro.Core.Application.Interfaces
 {
     public interface IAsignacionCandidatoService
     {
-        Task<List<AsignacionCandidatoDto>> GetAllAsync();
 
         Task AsignarCandidatoAsync(AsignacionCandidatoDto dto);
 

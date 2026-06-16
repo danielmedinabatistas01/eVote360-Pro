@@ -25,6 +25,16 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
                 .WithMany(x => x.Votos)
                 .HasForeignKey(x => x.EleccionId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.Ciudadano)
+                .WithMany()
+                .HasForeignKey(x => x.CiudadanoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(x => x.VotoDetalles)
+                .WithOne(x => x.Voto)
+                .HasForeignKey(x => x.VotoId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

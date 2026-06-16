@@ -21,69 +21,6 @@ namespace eVote360Pro.Core.Application.Services
             _repository = repository;
         }
 
-        public async Task<List<CodigoVerificacionDto>> GetAllAsync()
-        {
-            var asignaciones = await _repository.GetAllList();
-
-            return asignaciones.Select(x => new CodigoVerificacionDto
-            {
-                Id = x.Id,
-                Codigo = x.Codigo,
-                CiudadanoId = x.CiudadanoId,
-                FechaExpiracion = x.FechaExpiracion,
-                Utilizado = x.Utilizado
-
-
-
-            }).ToList();
-        }
-
-        public async Task<CodigoVerificacionDto?> GetByIdAsync(int id)
-        {
-            var codigo = await _repository.GetById(id);
-
-            if (codigo == null)
-                return null;
-
-            return new CodigoVerificacionDto
-            {
-                Id = codigo.Id,
-                Codigo = codigo.Codigo,
-                CiudadanoId = codigo.CiudadanoId,
-                FechaExpiracion = codigo.FechaExpiracion,
-                Utilizado = codigo.Utilizado
-            };
-        }
-
-        public async Task AddAsync(CodigoVerificacionDto dto)
-        {
-            await _repository.AddAsync(new CodigoVerificacion
-            {
-                Id = dto.Id,
-                Codigo = dto.Codigo,
-                CiudadanoId = dto.CiudadanoId,
-                FechaExpiracion = dto.FechaExpiracion,
-                Utilizado = dto.Utilizado
-            });
-        }
-
-        public async Task UpdateAsync(int id, CodigoVerificacionDto dto)
-        {
-            await _repository.UpdateAsync(id, new CodigoVerificacion
-            {
-                Id = id,
-                Codigo = dto.Codigo,
-                CiudadanoId = dto.CiudadanoId,
-                FechaExpiracion = dto.FechaExpiracion,
-                Utilizado = dto.Utilizado
-            });
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            await _repository.DeleteAsync(id);
-        }
-
         public async Task<string> GenerarCodigoAsync(
     int ciudadanoId)
         {

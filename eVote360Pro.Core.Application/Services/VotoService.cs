@@ -1,67 +1,86 @@
-﻿using eVote360Pro.Core.Application.Dtos;
+﻿using AutoMapper;
+using eVote360Pro.Core.Application.Dtos;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Domain.Entities;
 using eVote360Pro.Core.Domain.Interfaces;
 
 namespace eVote360Pro.Core.Application.Services
 {
-    public class VotoService : IVotoService
+    public class VotoService
+        : GenericService<VotoDto, Voto>, IVotoService
     {
-        private readonly IVotoRepository _repository;
+        private readonly IVotoRepository _votoRepository;
 
-        public VotoService(IVotoRepository repository)
+        public VotoService(
+            IVotoRepository votoRepository,
+            IMapper mapper)
+            : base(votoRepository, mapper)
         {
-            _repository = repository;
+            _votoRepository = votoRepository;
         }
 
-        public async Task CrearVotoAsync(VotoDto dto)
+        public async Task<bool> CiudadanoYaVotoAsync(
+            int ciudadanoId,
+            int eleccionId)
         {
-            await RegistrarVotoAsync(dto);
+            return await _votoRepository
+                .CiudadanoYaVotoAsync(
+                    ciudadanoId,
+                    eleccionId);
         }
 
-        public async Task<int> CountCiudadanosVotaronAsync(int eleccionId)
+        public async Task<bool> PuedeVotarAsync(
+            int ciudadanoId,
+            int eleccionId)
         {
-            var votos = await _repository.GetAllList();
-            return votos.Count(x => x.EleccionId == eleccionId);
+            return !await CiudadanoYaVotoAsync(
+                ciudadanoId,
+                eleccionId);
         }
 
-        public async Task<List<VotoDto>> GetByEleccionIdAsync(int eleccionId)
+        public async Task RegistrarVotoAsync(
+            VotoDto dto)
         {
-            var votos = await _repository.GetAllList();
+            bool yaVoto =
+                await CiudadanoYaVotoAsync(
+                    dto.CiudadanoId,
+                    dto.EleccionId);
 
-            return votos
-                .Where(x => x.EleccionId == eleccionId)
-                .Select(x => new VotoDto
-                {
-                    Id = x.Id,
-                    CiudadanoId = x.CiudadanoId,
-                    EleccionId = x.EleccionId,
-                    FechaVotacion = x.FechaVotacion
-                })
-                .ToList();
-        }
-
-        public async Task<bool> CiudadanoYaVotoAsync(int ciudadanoId, int eleccionId)
-        {
-            return await _repository.CiudadanoYaVotoAsync(ciudadanoId, eleccionId);
-        }
-
-        public async Task<bool> PuedeVotarAsync(int ciudadanoId, int eleccionId)
-        {
-            return !await _repository.CiudadanoYaVotoAsync(ciudadanoId, eleccionId);
-        }
-
-        public async Task RegistrarVotoAsync(VotoDto dto)
-        {
-            if (await _repository.CiudadanoYaVotoAsync(dto.CiudadanoId, dto.EleccionId))
-                throw new Exception("El ciudadano ya votó.");
-
-            await _repository.AddAsync(new Voto
+            if (yaVoto)
             {
-                CiudadanoId = dto.CiudadanoId,
-                EleccionId = dto.EleccionId,
-                FechaVotacion = DateTime.Now
-            });
+                throw new Exception(
+                    "El ciudadano ya votó en esta elección.");
+            }
+
+            var voto = _mapper.Map<Voto>(dto);
+
+            voto.FechaVoto = DateTime.Now;
+
+            await _votoRepository.AddAsync(voto);
+        }
+
+        public async Task<int>
+            CountCiudadanosVotaronAsync(
+            int eleccionId)
+        {
+            return await _votoRepository
+                .CountCiudadanosVotaronAsync(
+                    eleccionId);
+        }
+
+        public async Task<List<VotoDto>>
+            GetByEleccionIdAsync(int eleccionId)
+        {
+            var votos =
+                await _votoRepository
+                    .GetByEleccionIdAsync(eleccionId);
+
+            return _mapper.Map<List<VotoDto>>(votos);
+        }
+
+        public Task CrearVotoAsync(VotoDto dto)
+        {
+            throw new NotImplementedException();
         }
     }
 }

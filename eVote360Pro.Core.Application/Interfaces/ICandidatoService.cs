@@ -7,17 +7,8 @@ using System.Threading.Tasks;
 
 namespace eVote360Pro.Core.Application.Interfaces
 {
-    public interface ICandidatoService
+    public interface ICandidatoService : IGenericService<CandidatoDto>
     {
-        Task<List<CandidatoDto>> GetAllAsync();
-
-        Task<CandidatoDto?> GetByIdAsync(int id);
-
-        Task AddAsync(CandidatoDto dto);
-
-        Task UpdateAsync(int id, CandidatoDto dto);
-
-        Task DeleteAsync(int id);
 
         Task ActivarCandidatoAsync(int id);
 

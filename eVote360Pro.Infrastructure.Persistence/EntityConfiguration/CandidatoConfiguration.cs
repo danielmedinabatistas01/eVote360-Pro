@@ -32,8 +32,13 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
                 .IsRequired();
 
             builder.HasOne(x => x.PartidoPolitico)
-                .WithMany(x => x.Candidatos)
+                .WithMany()
                 .HasForeignKey(x => x.PartidoPoliticoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(x => x.Asignaciones)
+                .WithOne(x => x.Candidato)
+                .HasForeignKey(x => x.CandidatoId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }
