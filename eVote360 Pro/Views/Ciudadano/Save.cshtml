@@ -1,0 +1,51 @@
+﻿@model eVote360Pro.Core.Application.ViewModels.Ciudadano.CiudadanoViewModel
+
+@{
+    bool isEdit = Model.Id != 0;
+    ViewData["Title"] = isEdit ? "Editar Ciudadano" : "Nuevo Ciudadano";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            <h4>@(isEdit ? "Modificar Datos de Ciudadano" : "Inscribir Nuevo Ciudadano")</h4>
+        </div>
+        <div class="card-body">
+            
+            <form asp-action="@(isEdit ? "Edit" : "Create")" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="EsActivo" />
+
+                <div class="mb-3">
+                    <label asp-for="NumeroIdentidad" class="form-label">Cédula de Identidad</label>
+                    @if (isEdit)
+                    {
+                        <input asp-for="NumeroIdentidad" class="form-control" placeholder="XXX-XXXXXXX-X" readonly />
+                    }
+                    else
+                    {
+                        <input asp-for="NumeroIdentidad" class="form-control" placeholder="XXX-XXXXXXX-X" />
+                    }
+                    <span asp-validation-for="NumeroIdentidad" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="NombreCompleto" class="form-label">Nombres</label>
+                    <input asp-for="NombreCompleto" class="form-control" />
+                    <span asp-validation-for="NombreCompleto" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a asp-action="Index" class="btn btn-secondary">Regresar</a>
+                    <button type="submit" class="btn btn-primary">Guardar Ciudadano</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

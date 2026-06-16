@@ -1,0 +1,70 @@
+﻿@model List<eVote360Pro.Core.Application.ViewModels.Ciudadano.CiudadanoViewModel>
+
+@{
+    ViewData["Title"] = "Ciudadanos";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Padrón de Ciudadanos</h2>
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-person-plus"></i> Registrar Ciudadano</a>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> <strong>Error de Validación:</strong> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Cédula / Documento</th>
+                        <th>Nombre Completo</th>
+                        <th>Estado</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model == null || !Model.Any())
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No hay ciudadanos inscritos en el padrón.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var ciudadano in Model)
+                        {
+                            <tr>
+                                <td><strong>@ciudadano.NumeroIdentidad</strong></td>
+                                <td>@ciudadano.NombreCompleto</td>
+                                <td>
+                                    @if (ciudadano.EsActivo)
+                                    {
+                                        <span class="badge bg-success">Activo (Habilitado para Votar)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Inactivo / Baneado</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <a asp-action="Edit" asp-route-id="@ciudadano.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i> Editar</a>
+
+                                    <form asp-action="DeletePost" asp-route-id="@ciudadano.Id" method="post" class="d-inline" onsubmit="return confirm('¿Seguro que deseas revocar la activación de este ciudadano?');">
+                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-person-x"></i> Desactivar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

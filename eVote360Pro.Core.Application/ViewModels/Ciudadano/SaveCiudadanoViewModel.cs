@@ -3,14 +3,14 @@
     public class SaveCiudadanoViewModel: BasicViewModel<int>
     {
 
-        public required string Nombre { get; set; }
+        public string Nombre { get; set; } = null!;
 
-        public required string Apellido { get; set; }
+        public string Apellido { get; set; } = null!;
 
-        public required string NumeroIdentidad { get; set; }
+        public string NumeroIdentidad { get; set; } = null!;
 
-        public required string CorreoElectronico { get; set; }
+        public string CorreoElectronico { get; set; } = null!;
 
-        public required bool EsActivo { get; set; }
+        public bool EsActivo { get; set; } 
     }
 }

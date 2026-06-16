@@ -1,0 +1,76 @@
+﻿@model List<eVote360Pro.Core.Application.ViewModels.PartidoPolitico.PartidoPoliticoViewModel>
+
+@{
+    ViewData["Title"] = "Partidos Políticos";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Listado de Partidos Políticos</h2>
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Nuevo Partido</a>
+    </div>
+
+    <!-- ¡ESTO CAPTURA EL ERROR DE NEGOCIO DEL SERVICIO! -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> <strong>No se pudo realizar la acción:</strong> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Logo</th>
+                        <th>Nombre</th>
+                        <th>Siglas</th>
+                        <th>Estado</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model == null || !Model.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">No hay partidos políticos registrados.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var partido in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <img src="@partido.LogoUrl" alt="Logo" class="img-thumbnail" style="max-height: 50px; max-width: 50px;" onerror="this.src='https://via.placeholder.com/50'" />
+                                </td>
+                                <td>@partido.Nombre</td>
+                                <td><span class="badge bg-secondary">@partido.Siglas</span></td>
+                                <td>
+                                    @if (partido.Activo)
+                                    {
+                                        <span class="badge bg-success">Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Inactivo</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <a asp-action="Edit" asp-route-id="@partido.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i> Editar</a>
+
+                                    <!-- Formulario en POST para el borrado seguro según rúbrica -->
+                                    <form asp-action="DeletePost" asp-route-id="@partido.Id" method="post" class="d-inline" onsubmit="return confirm('¿Seguro que deseas desactivar este partido político?');">
+                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Desactivar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

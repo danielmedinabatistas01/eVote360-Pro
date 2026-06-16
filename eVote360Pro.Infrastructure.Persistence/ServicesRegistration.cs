@@ -1,4 +1,6 @@
-﻿using eVote360Pro.Core.Domain.Interfaces;
+﻿using eVote360Pro.Core.Application.Interfaces;
+using eVote360Pro.Core.Application.Services;
+using eVote360Pro.Core.Domain.Interfaces;
 using eVote360Pro.Infrastructure.Persistence.Repositories;
 using eVote360Pro.Infrastructure.Persistence.Shared;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,9 +36,26 @@ namespace eVote360Pro.Infrastructure.Persistence
                 ICiudadanoRepository,
                 CiudadanoRepository>();
 
+            //services.AddTransient<
+            //    IOcrService,
+            //    OcrService>();
+
             services.AddTransient<
-                IOcrService,
-                OcrService>();
+    IAsignacionDirigenteService,
+    AsignacionDirigenteService>();
+
+            services.AddTransient<
+                IPartidoPoliticoService,
+                PartidoPoliticoService>();
+
+            services.AddTransient<
+                IPuestoElectivoService,
+                PuestoElectivoService>();
+
+            services.AddTransient<
+                ICiudadanoService,
+                CiudadanoService>();
+
         }
     }
 }

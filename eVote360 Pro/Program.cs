@@ -2,7 +2,6 @@ using eVote360Pro.Core.Application;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.Services;
 using eVote360Pro.Core.Domain.Interfaces;
-using eVote360Pro.Core.Domain.Settings;
 using eVote360Pro.Infrastructure.Persistence;
 using eVote360Pro.Infrastructure.Persistence.Contexts;
 using eVote360Pro.Infrastructure.Persistence.Repositories;
@@ -21,8 +20,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 //Franklin
 // Repositorios
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddScoped<IEleccionRepository, EleccionRepository>();
+//builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+//builder.Services.AddScoped<IEleccionRepository, EleccionRepository>();
 builder.Services.AddScoped<IEleccionPuestoElectivoRepository, EleccionPuestoElectivoRepository>();
 builder.Services.AddScoped<IVotoRepository, VotoRepository>();
 builder.Services.AddScoped<IVotoDetalleRepository, VotoDetalleRepository>();

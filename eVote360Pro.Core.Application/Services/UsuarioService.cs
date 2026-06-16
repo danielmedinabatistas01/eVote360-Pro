@@ -96,6 +96,7 @@ namespace eVote360Pro.Core.Application.Services
         {
             var entity = new Usuario
             {
+                Id = 0, // Let the database generate the ID
                 Nombre = dto.Nombre.Trim(),
                 Apellido = dto.Apellido.Trim(),
                 NombreUsuario = dto.NombreUsuario.Trim(),
