@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace eVote360Pro.Core.Domain.Common
 {
-    public class BaseEntity
+    public class BaseEntity<Tkey>
     {
-        public int Id { get; set; }
+        public Tkey Id { get; set; }
     }
 }

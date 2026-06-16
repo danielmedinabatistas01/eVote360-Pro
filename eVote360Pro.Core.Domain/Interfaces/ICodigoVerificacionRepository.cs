@@ -11,6 +11,7 @@ namespace eVote360Pro.Core.Domain.Interfaces
     {
         Task<CodigoVerificacion?> GetCodigoAsync(
             int ciudadanoId,
+            int eleccionId,
             string codigo);
     }
 }

@@ -16,10 +16,12 @@ namespace eVote360Pro.Core.Application.Interfaces
             string rutaImagen);
 
         Task<string> GenerarCodigoAsync(
-            int ciudadanoId);
+            int ciudadanoId,
+            int eleccionId);
 
         Task<bool> ValidarCodigoAsync(
             int ciudadanoId,
+            int eleccionId,
             string codigo);
     }
 }

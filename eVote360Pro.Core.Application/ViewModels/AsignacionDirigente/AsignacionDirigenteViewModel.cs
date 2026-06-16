@@ -1,8 +1,7 @@
 ﻿namespace eVote360Pro.Core.Application.ViewModels.AsignacionDirigente
 {
-    public class AsignacionDirigenteViewModel
+    public class AsignacionDirigenteViewModel : BasicViewModel<int>
     {
-        public int Id { get; set; }
 
         public required int UsuarioId { get; set; }
 

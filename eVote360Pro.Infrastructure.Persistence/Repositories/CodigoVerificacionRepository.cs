@@ -17,15 +17,17 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
             _context = context;
         }
 
-        public async Task<CodigoVerificacion?> GetCodigoAsync(
-            int ciudadanoId,
-            string codigo)
+        public async Task<CodigoVerificacion?>
+          GetCodigoAsync(
+                int ciudadanoId,
+                int eleccionId,
+                string codigo)
         {
             return await _context.CodigosVerificacion
                 .FirstOrDefaultAsync(x =>
                     x.CiudadanoId == ciudadanoId &&
-                    x.Codigo == codigo &&
-                    !x.Utilizado);
+                    x.EleccionId == eleccionId &&
+                    x.Codigo == codigo);
         }
     }
 }

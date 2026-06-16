@@ -2,7 +2,7 @@
 
 namespace eVote360Pro.Core.Domain.Entities
 {
-    public class AsignacionCandidato : BaseEntity
+    public class AsignacionCandidato : BaseEntity<int>
     {
         public required int CandidatoId { get; set; }
         public Candidato? Candidato { get; set; }

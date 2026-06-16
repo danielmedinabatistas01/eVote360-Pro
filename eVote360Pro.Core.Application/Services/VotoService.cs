@@ -7,7 +7,8 @@ using eVote360Pro.Core.Domain.Interfaces;
 namespace eVote360Pro.Core.Application.Services
 {
     public class VotoService
-        : GenericService<VotoDto, Voto>, IVotoService
+        : GenericService<VotoDto, Voto>,
+          IVotoService
     {
         private readonly IVotoRepository _votoRepository;
 

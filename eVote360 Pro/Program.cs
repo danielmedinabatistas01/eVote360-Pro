@@ -54,6 +54,10 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<GeneralProfile>();
 });
 
+
+builder.Services.AddApplicationLayerIoc();
+builder.Services.AddPersistenceLayerIoc();
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
