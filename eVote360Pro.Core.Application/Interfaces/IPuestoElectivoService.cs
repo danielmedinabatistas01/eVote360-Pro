@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using eVote360Pro.Core.Application.Dtos;
 
 namespace eVote360Pro.Core.Application.Interfaces
 {
-    internal interface IPuestoElectivoService
+    public interface IPuestoElectivoService
+        : IGenericService<PuestoElectivoDto>
     {
     }
 }
