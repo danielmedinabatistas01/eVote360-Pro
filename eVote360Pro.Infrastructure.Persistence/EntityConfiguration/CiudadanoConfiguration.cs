@@ -16,6 +16,10 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
                    .IsRequired()
                    .HasMaxLength(100);
 
+            builder.Property(x => x.Apellido)
+                .IsRequired()
+                .HasMaxLength(100);
+
             builder.Property(x => x.NumeroIdentificacion)
                    .IsRequired()
                    .HasMaxLength(11);

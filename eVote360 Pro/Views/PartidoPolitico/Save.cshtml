@@ -1,0 +1,59 @@
+﻿@model eVote360Pro.Core.Application.ViewModels.PartidoPolitico.SavePartidoPoliticoViewModel
+
+@{
+    bool isEdit = Model.Id != 0;
+    ViewData["Title"] = isEdit ? "Editar Partido" : "Nuevo Partido";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            <h4>@(isEdit ? "Modificar Partido Político" : "Registrar Partido Político")</h4>
+        </div>
+        <div class="card-body">
+
+            <form asp-action="@(isEdit ? "Edit" : "Create")" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="EsActivo" />
+                <input type="hidden" asp-for="LogoUrl" />
+
+                <div class="mb-3">
+                    <label asp-for="Nombre" class="form-label">Nombre del Partido</label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Ej. Partido de la Liberación Dominicana" />
+                    <span asp-validation-for="Nombre" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Siglas" class="form-label">Siglas</label>
+                    <input asp-for="Siglas" class="form-control" placeholder="Ej. PLD" />
+                    <span asp-validation-for="Siglas" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="LogoFile" class="form-label">Logo del Partido (Imagen)</label>
+                    <input asp-for="LogoFile" class="form-control" type="file" accept="image/*" />
+                    <span asp-validation-for="LogoFile" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Descripcion" class="form-label">Descripción</label>
+                    <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Descripcion" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

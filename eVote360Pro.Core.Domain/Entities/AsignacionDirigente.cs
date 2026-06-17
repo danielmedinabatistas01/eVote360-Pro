@@ -6,7 +6,7 @@ namespace eVote360Pro.Core.Domain.Entities
     {
         public required int UsuarioId { get; set; }
         public required int PartidoPoliticoId { get; set; }
-        public required Usuario Usuario { get; set; } 
-        public required PartidoPolitico PartidoPolitico { get; set; }
+        public  Usuario? Usuario { get; set; } 
+        public  PartidoPolitico? PartidoPolitico { get; set; }
     }
 }

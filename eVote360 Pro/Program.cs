@@ -3,6 +3,7 @@ using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.Mappings;
 using eVote360Pro.Core.Application.Services;
 using eVote360Pro.Core.Domain.Interfaces;
+using eVote360Pro.Infrastructure.Persistence;
 using eVote360Pro.Core.Domain.Settings;
 using eVote360Pro.Infrastructure.Persistence.Contexts;
 using eVote360Pro.Infrastructure.Persistence.Repositories;
@@ -35,6 +36,9 @@ builder.Services.Configure<MailSettings>(
 builder.Services.AddAutoMapper(typeof(GeneralProfile).Assembly);
 
 // Repositorios
+//builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+//builder.Services.AddScoped<IEleccionRepository, EleccionRepository>();
+builder.Services.AddScoped<IEleccionPuestoElectivoRepository, EleccionPuestoElectivoRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IEleccionRepository, EleccionRepository>();
 builder.Services.AddScoped<IVotoRepository, VotoRepository>();

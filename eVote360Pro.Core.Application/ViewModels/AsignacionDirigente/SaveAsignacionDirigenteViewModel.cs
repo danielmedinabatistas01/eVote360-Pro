@@ -3,8 +3,8 @@
     public class SaveAsignacionDirigenteViewModel: BasicViewModel<int>
     {
 
-        public required int UsuarioId { get; set; }
+        public int UsuarioId { get; set; } = 0;
 
-        public required int PartidoPoliticoId { get; set; }
+        public int PartidoPoliticoId { get; set; } = 0; 
     }
 }

@@ -3,9 +3,10 @@
     public class CiudadanoViewModel: BasicViewModel<int>
     {
 
-        public required string NombreCompleto { get; set; }
+        public required string Nombre { get; set; }
 
-        public required string NumeroIdentidad { get; set; }
+        public required string Apellido { get; set; }
+        public required string NumeroIdentificacion { get; set; }
 
         public required string CorreoElectronico { get; set; }
 

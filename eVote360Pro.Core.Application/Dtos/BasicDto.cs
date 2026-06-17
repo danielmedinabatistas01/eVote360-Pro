@@ -8,6 +8,6 @@ namespace eVote360Pro.Core.Application.Dtos
 {
     public class BasicDto<TKey>
     {
-        public required TKey Id { get; set; }
+        public TKey Id { get; set; }
     }
 }
