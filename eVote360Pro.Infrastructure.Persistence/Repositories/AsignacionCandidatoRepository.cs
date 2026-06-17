@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace eVote360Pro.Infrastructure.Persistence.Repositories
 {
-    public class AsignacionCandidatoRepository: GenericRepository<AsignacionCandidato>, IAsignacionCandidatoRepository
+    public class AsignacionCandidatoRepository : GenericRepository<AsignacionCandidato>, IAsignacionCandidatoRepository
     {
         private readonly ApplicationDbContext _context;
 
@@ -48,5 +48,99 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
                     x.PuestoElectivoId == puestoId &&
                     x.EleccionId == eleccionId);
         }
+
+        public async Task<AsignacionCandidato?>
+    ObtenerAsignacionOrigenAsync(
+    int candidatoId)
+        {
+            return await _context
+                .AsignacionesCandidatos
+                .FirstOrDefaultAsync(x =>
+                    x.CandidatoId ==
+                    candidatoId);
+        }
+
+        public async Task<bool>
+    PerteneceAlPartidoAsync(
+    int asignacionId,
+    int partidoId)
+        {
+            return await _context
+                .AsignacionesCandidatos
+                .AnyAsync(x =>
+                    x.Id == asignacionId
+                    &&
+                    x.PartidoPoliticoId ==
+                    partidoId);
+        }
+
+
+        public async Task<bool>
+        TieneAsignacionVigenteAsync(
+        int candidatoId)
+        {
+            return await _context
+                .AsignacionesCandidatos
+                .AnyAsync(x =>
+                    x.CandidatoId ==
+                    candidatoId);
+        }
+
+
+        public async Task<bool>
+        CandidatoTieneAsignacionAsync(
+        int candidatoId,
+        int partidoId)
+        {
+            return await _context
+                .AsignacionesCandidatos
+                .AnyAsync(x =>
+                    x.CandidatoId ==
+                    candidatoId
+                    &&
+                    x.PartidoPoliticoId ==
+                    partidoId);
+        }
+
+
+
+        public async Task<bool>
+        ExisteAsignacionPorPuestoAsync(
+        int puestoId,
+        int partidoId)
+        {
+            return await _context
+                .AsignacionesCandidatos
+                .AnyAsync(x =>
+                    x.PuestoElectivoId ==
+                    puestoId
+                    &&
+                    x.PartidoPoliticoId ==
+                    partidoId);
+        }
+
+        public async Task<List<AsignacionCandidato>>
+            ObtenerPorPartidoAsync(
+            int partidoId)
+        {
+            return await _context
+                .AsignacionesCandidatos
+                .Where(x =>
+                    x.PartidoPoliticoId ==
+                    partidoId)
+                .ToListAsync();
+        }
+
+        public async Task<bool>
+    HaParticipadoEnEleccionAsync(
+    int candidatoId)
+        {
+            return await _context
+                .AsignacionesCandidatos
+                .AnyAsync(x =>
+                    x.CandidatoId ==
+                    candidatoId);
+        }
+
     }
 }

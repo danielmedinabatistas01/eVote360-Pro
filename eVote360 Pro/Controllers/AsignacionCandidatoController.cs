@@ -12,7 +12,8 @@ namespace eVote360_Pro.Controllers
         private readonly IAsignacionCandidatoService
             _service;
 
-        private readonly IMapper _mapper;
+        private readonly IMapper
+            _mapper;
 
         public AsignacionCandidatoController(
             IAsignacionCandidatoService service,
@@ -22,35 +23,80 @@ namespace eVote360_Pro.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var asignaciones =
-                await _service.GetAllAsync();
-
-            return View(
-                _mapper.Map<
-                    List<AsignacionCandidatoViewModel>>
-                    (asignaciones));
+            return View();
         }
 
         public IActionResult Create()
         {
-            return View("Save",
+            return View(
                 new SaveAsignacionCandidatoViewModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(
-            SaveAsignacionCandidatoViewModel vm)
+        public async Task<IActionResult>
+            Create(
+                SaveAsignacionCandidatoViewModel vm)
         {
-            if (!ModelState.IsValid)
-                return View("Save", vm);
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(vm);
+                }
 
-            await _service.AsignarCandidatoAsync(
-                _mapper.Map<
-                    AsignacionCandidatoDto>(vm));
+                var dto =
+                    _mapper.Map<
+                        AsignacionCandidatoDto>(
+                            vm);
 
-            return RedirectToAction(nameof(Index));
+                // Obtendrás este valor
+                // del usuario autenticado
+                int partidoDirigenteId = 0;
+
+                await _service
+                    .AsignarCandidatoAsync(
+                        dto,
+                        partidoDirigenteId);
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(
+                    "",
+                    ex.Message);
+
+                return View(vm);
+            }
+        }
+
+        public async Task<IActionResult>
+            Delete(
+                int id)
+        {
+            try
+            {
+                int partidoDirigenteId = 0;
+
+                await _service
+                    .EliminarAsignacionAsync(
+                        id,
+                        partidoDirigenteId);
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] =
+                    ex.Message;
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
         }
     }
 }

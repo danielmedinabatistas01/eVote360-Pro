@@ -17,11 +17,34 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
             _context = context;
         }
 
+        public Task<bool> ExisteEleccionActivaAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<Candidato>> GetActivosAsync()
         {
             return await _context.Candidatos
                 .Where(x => x.Estado)
                 .ToListAsync();
+        }
+
+        public async Task<bool>HaParticipadoEnEleccionAsync(int candidatoId)
+        {
+            return await _context
+                .AsignacionesCandidatos
+                .AnyAsync(x =>
+                    x.CandidatoId ==
+                    candidatoId);
+        }
+
+        public async Task<bool>TieneAsignacionVigenteAsync(int candidatoId)
+        {
+            return await _context
+                .AsignacionesCandidatos
+                .AnyAsync(x =>
+                    x.CandidatoId ==
+                    candidatoId);
         }
 
 

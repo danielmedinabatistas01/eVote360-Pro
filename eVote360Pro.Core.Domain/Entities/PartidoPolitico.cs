@@ -11,6 +11,9 @@ namespace eVote360Pro.Core.Domain.Entities
         public required bool EsActivo { get; set; }
         public required AsignacionDirigente AsignacionDirigente { get; set; }
         public ICollection<Candidato> Candidatos { get; set; }
-        public ICollection<AlianzaPolitica> Alianzas { get; set; }
+        public ICollection<AlianzaPolitica> AlianzasEnviadas { get; set; }
+        public ICollection<AlianzaPolitica> AlianzasRecibidas { get; set; }
+
+        public ICollection<AsignacionCandidato> AsignacionesCandidatos { get; set; } = new List<AsignacionCandidato>();
     }
 }

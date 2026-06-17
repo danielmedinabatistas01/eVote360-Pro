@@ -7,13 +7,26 @@ using System.Threading.Tasks;
 
 namespace eVote360Pro.Core.Application.Interfaces
 {
-    public interface IAlianzaPoliticaService : IGenericService<AlianzaPoliticaDto>
+    public interface IAlianzaPoliticaService
+     : IGenericService<AlianzaPoliticaDto>
     {
+        Task<List<AlianzaPoliticaDto>>
+            GetActivosAsync();
 
-        Task ActivarAsync(int id);
+        Task CrearSolicitudAsync(
+            int partidoOrigenId,
+            int partidoDestinoId);
 
-        Task DesactivarAsync(int id);
+        Task AceptarSolicitudAsync(
+            int alianzaId);
 
-        Task<List<AlianzaPoliticaDto>> GetActivosAsync();
+        Task RechazarSolicitudAsync(
+            int alianzaId);
+
+        Task EliminarSolicitudAsync(
+            int alianzaId);
+
+        Task EliminarAlianzaAsync(
+            int alianzaId);
     }
 }

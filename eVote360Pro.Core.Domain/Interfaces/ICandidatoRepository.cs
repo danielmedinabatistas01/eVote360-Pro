@@ -6,6 +6,14 @@ namespace eVote360Pro.Core.Domain.Interfaces
     {
         Task<List<Candidato>> GetActivosAsync();
 
+        Task<bool> ExisteEleccionActivaAsync();
+
+        Task<bool> HaParticipadoEnEleccionAsync(
+            int candidatoId);
+
+        Task<bool> TieneAsignacionVigenteAsync(
+            int candidatoId);
+
 
     }
 }

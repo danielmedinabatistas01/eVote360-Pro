@@ -10,20 +10,32 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
         public void Configure(
             EntityTypeBuilder<AlianzaPolitica> builder)
         {
-            builder.ToTable("AlianzasPoliticas");
+            builder.ToTable(
+                "AlianzasPoliticas");
 
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.Nombre)
-                .IsRequired()
-                .HasMaxLength(150);
-
-            builder.Property(x => x.Descripcion)
-                .IsRequired()
-                .HasMaxLength(500);
-
             builder.Property(x => x.Estado)
+                .IsRequired()
+                .HasMaxLength(20);
+
+            builder.Property(
+                x => x.FechaSolicitud)
                 .IsRequired();
+
+            builder.Property(
+                x => x.Vigente)
+                .IsRequired();
+
+            builder.HasOne(x => x.PartidoOrigen)
+                .WithMany(x => x.AlianzasEnviadas)
+                .HasForeignKey(x => x.PartidoOrigenId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.PartidoDestino)
+                .WithMany(x => x.AlianzasRecibidas)
+                .HasForeignKey(x => x.PartidoDestinoId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

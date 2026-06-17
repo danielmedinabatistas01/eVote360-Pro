@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace eVote360Pro.Core.Application.ViewModels.Candidato
 {
@@ -13,6 +9,8 @@ namespace eVote360Pro.Core.Application.ViewModels.Candidato
         public string Apellido { get; set; } = null!;
 
         public string FotoUrl { get; set; } = null!;
+
+        public IFormFile? Foto { get; set; }
 
         public bool Estado { get; set; }
 

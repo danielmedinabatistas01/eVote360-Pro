@@ -1,17 +1,29 @@
-﻿using eVote360Pro.Core.Application.Interfaces;
+﻿using eVote360_Pro.Helpers;
+using eVote360Pro.Core.Application.Dtos;
+using eVote360Pro.Core.Application.Interfaces;
+using eVote360Pro.Core.Application.ViewModels.Ocr;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 
 namespace eVote360_Pro.Controllers
 {
-    public class ProcesoVotacionController : Controller
+    public class ProcesoVotacionController
+        : Controller
     {
-        private readonly IProcesoVotacionService _service;
+        private readonly IProcesoVotacionService
+            _procesoService;
+
+        private readonly IVotoService
+            _votoService;
 
         public ProcesoVotacionController(
-            IProcesoVotacionService service)
+            IProcesoVotacionService procesoService,
+            IVotoService votoService)
         {
-            _service = service;
+            _procesoService =
+                procesoService;
+
+            _votoService =
+                votoService;
         }
 
         public IActionResult Index()
@@ -20,144 +32,192 @@ namespace eVote360_Pro.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ValidarCedula(
-            string cedula)
+        public async Task<IActionResult>
+            ValidarCedula(
+                string cedula)
         {
-            bool valido =
-                await _service
-                    .ValidarCedulaAsync(cedula);
+            try
+            {
+                bool existe =
+                    await _procesoService
+                        .ValidarCedulaAsync(
+                            cedula);
 
-            if (!valido)
+                if (!existe)
+                {
+                    ModelState.AddModelError(
+                        "",
+                        "La cédula no se encuentra registrada.");
+
+                    return View("Index");
+                }
+
+                TempData["Cedula"] =
+                    cedula;
+
+                return RedirectToAction(
+                    nameof(ValidacionOcr));
+            }
+            catch (Exception ex)
             {
                 ModelState.AddModelError(
                     "",
-                    "La cédula no existe en el sistema.");
+                    ex.Message);
 
                 return View("Index");
             }
-
-            TempData["Cedula"] = cedula;
-
-            return RedirectToAction(
-                nameof(ValidacionOcr));
         }
 
-        [HttpGet]
-        public IActionResult ValidacionOcr()
+        public IActionResult
+            ValidacionOcr()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> ValidacionOcr(
-            IFormFile imagenCedula)
+        public async Task<IActionResult>
+    ValidacionOcr(
+        OcrViewModel vm)
         {
-            if (imagenCedula == null ||
-                imagenCedula.Length == 0)
+            try
             {
-                ModelState.AddModelError(
-                    "",
-                    "Debe seleccionar una imagen.");
+                string? ruta =
+                    FileManager.Upload(
+                        vm.ImagenCedula,
+                        0,
+                        "cedulas");
 
-                return View();
-            }
+                string rutaFisica =
+                    Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        ruta);
 
-            string? cedula =
-                TempData["Cedula"]?.ToString();
+                bool coincide =
+                    await _procesoService
+                        .ValidarIdentidadOcrAsync(
+                            vm.Cedula,
+                            rutaFisica);
 
-            if (string.IsNullOrEmpty(cedula))
-            {
+                if (!coincide)
+                {
+                    ModelState.AddModelError(
+                        "",
+                        "La cédula no coincide.");
+
+                    return View(vm);
+                }
+
                 return RedirectToAction(
-                    nameof(Index));
+                    nameof(Codigo));
             }
-
-            TempData["Cedula"] = cedula;
-
-            string uploadsFolder =
-                Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "wwwroot",
-                    "uploads");
-
-            if (!Directory.Exists(
-                uploadsFolder))
-            {
-                Directory.CreateDirectory(
-                    uploadsFolder);
-            }
-
-            string fileName =
-                Guid.NewGuid() +
-                Path.GetExtension(
-                    imagenCedula.FileName);
-
-            string rutaImagen =
-                Path.Combine(
-                    uploadsFolder,
-                    fileName);
-
-            using (var stream =
-                new FileStream(
-                    rutaImagen,
-                    FileMode.Create))
-            {
-                await imagenCedula
-                    .CopyToAsync(stream);
-            }
-
-            bool coincide =
-                await _service
-                    .ValidarIdentidadOcrAsync(
-                        cedula,
-                        rutaImagen);
-
-            if (!coincide)
+            catch (Exception ex)
             {
                 ModelState.AddModelError(
                     "",
-                    "La imagen no coincide con la cédula ingresada.");
+                    ex.Message);
 
-                return View();
+                return View(vm);
             }
-
-            return RedirectToAction(
-                nameof(Codigo));
         }
 
-        [HttpGet]
-        public IActionResult Codigo()
+        public IActionResult
+            Codigo()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Codigo(
-            int ciudadanoId,
-            int eleccionId,
-            string codigo)
+        public async Task<IActionResult>
+            Codigo(
+                int ciudadanoId,
+                int eleccionId,
+                string codigo)
         {
-            bool valido =
-                await _service
-                    .ValidarCodigoAsync(
-                        ciudadanoId,
-                        eleccionId,
-                        codigo);
+            try
+            {
+                bool valido =
+                    await _procesoService
+                        .ValidarCodigoAsync(
+                            ciudadanoId,
+                            eleccionId,
+                            codigo);
 
-            if (!valido)
+                if (!valido)
+                {
+                    ModelState.AddModelError(
+                        "",
+                        "Código inválido o expirado.");
+
+                    return View();
+                }
+
+                TempData["CiudadanoId"] =
+                    ciudadanoId;
+
+                TempData["EleccionId"] =
+                    eleccionId;
+
+                return RedirectToAction(
+                    nameof(Votar));
+            }
+            catch (Exception ex)
             {
                 ModelState.AddModelError(
                     "",
-                    "Código inválido o expirado.");
+                    ex.Message);
 
                 return View();
             }
-
-            return RedirectToAction(
-                nameof(Puestos));
         }
 
-        [HttpGet]
-        public IActionResult Puestos()
+        public IActionResult
+            Votar()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult>
+            Votar(
+                VotoDto dto)
+        {
+            try
+            {
+                bool puedeVotar =
+                    await _votoService
+                        .PuedeVotarAsync(
+                            dto.CiudadanoId,
+                            dto.EleccionId);
+
+                if (!puedeVotar)
+                {
+                    ModelState.AddModelError(
+                        "",
+                        "El ciudadano ya votó en esta elección.");
+
+                    return View(dto);
+                }
+
+                await _votoService
+                    .RegistrarVotoAsync(
+                        dto);
+
+                return RedirectToAction(
+                    nameof(Confirmacion));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(
+                    "",
+                    ex.Message);
+
+                return View(dto);
+            }
+        }
+
+        public IActionResult
+            Confirmacion()
         {
             return View();
         }
