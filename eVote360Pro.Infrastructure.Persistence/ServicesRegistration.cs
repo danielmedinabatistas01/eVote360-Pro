@@ -25,6 +25,26 @@ namespace eVote360Pro.Infrastructure.Persistence
                 AsignacionCandidatoRepository>();
 
             services.AddTransient<
+                IAsignacionDirigenteRepository,
+                AsignacionDirigenteRepository>();
+
+            services.AddTransient<
+                IPartidoPoliticoRepository,
+                PartidoPoliticoRepository>();
+
+            services.AddTransient<
+                IPuestoElectivoRepository,
+                PuestoElectivoRepository>();
+
+            services.AddTransient<
+                ICiudadanoRepository,
+                CiudadanoRepository>();
+
+            services.AddTransient<
+                IEleccionRepository,
+                EleccionRepository>();
+
+            services.AddTransient<
                 IVotoRepository,
                 VotoRepository>();
 
@@ -33,29 +53,8 @@ namespace eVote360Pro.Infrastructure.Persistence
                 CodigoVerificacionRepository>();
 
             services.AddTransient<
-                ICiudadanoRepository,
-                CiudadanoRepository>();
-
-            //services.AddTransient<
-            //    IOcrService,
-            //    OcrService>();
-
-            services.AddTransient<
-    IAsignacionDirigenteService,
-    AsignacionDirigenteService>();
-
-            services.AddTransient<
-                IPartidoPoliticoService,
-                PartidoPoliticoService>();
-
-            services.AddTransient<
-                IPuestoElectivoService,
-                PuestoElectivoService>();
-
-            services.AddTransient<
-                ICiudadanoService,
-                CiudadanoService>();
-
+                    IUsuarioRepository,
+                    UsuarioRepository>();
         }
     }
 }

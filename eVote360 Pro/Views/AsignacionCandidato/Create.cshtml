@@ -1,0 +1,37 @@
+﻿@using eVote360Pro.Core.Application.ViewModels.AsignacionCandidato
+@model SaveAsignacionCandidatoViewModel
+
+<form method="post">
+
+    <div class="content-card">
+
+        <h1>Nueva Asignación</h1>
+
+        <div class="mb-3">
+
+            <label>Candidato</label>
+
+            <select asp-for="CandidatoId"
+                    class="form-select">
+            </select>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label>Puesto Electivo</label>
+
+            <select asp-for="PuestoElectivoId"
+                    class="form-select">
+            </select>
+
+        </div>
+
+        <button class="btn-main"
+                type="submit">
+            Guardar
+        </button>
+
+    </div>
+
+</form>

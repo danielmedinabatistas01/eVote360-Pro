@@ -16,15 +16,19 @@
             private readonly IMapper
                 _mapper;
 
-            public CandidatoController(
-                ICandidatoService service,
-                IMapper mapper)
-            {
-                _service = service;
-                _mapper = mapper;
-            }
+        private readonly IUserSession _userSession;
 
-            public async Task<IActionResult>
+        public CandidatoController(
+            ICandidatoService service,
+            IMapper mapper,
+            IUserSession userSession)
+        {
+            _service = service;
+            _mapper = mapper;
+            _userSession = userSession;
+        }
+
+        public async Task<IActionResult>
                 Index()
             {
                 var candidatos =
@@ -50,6 +54,40 @@
         Create(
         SaveCandidatoViewModel vm)
         {
+
+            var usuario = _userSession.GetUserSession();
+
+            if (usuario == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            if (!_userSession.IsDirigente())
+            {
+                ModelState.AddModelError(
+                    "",
+                    "Solo los dirigentes pueden crear candidatos.");
+
+                return View(vm);
+            }
+
+            if (!usuario.PartidoPoliticoId.HasValue)
+            {
+                ModelState.AddModelError(
+                    "",
+                    "No tiene un partido político asignado.");
+
+                return View(vm);
+            }
+
+            var dto = _mapper.Map<CandidatoDto>(vm);
+
+            dto.PartidoPoliticoId =
+                usuario.PartidoPoliticoId.Value;
+
+            dto.Estado = true;
+
+
             try
             {
                 if (!ModelState.IsValid)
@@ -94,9 +132,6 @@
                         0,
                         "candidatos");
 
-                var dto =
-                    _mapper.Map<CandidatoDto>(vm);
-
                 dto.FotoUrl =
                     fotoUrl;
 
@@ -107,9 +142,13 @@
             }
             catch (Exception ex)
             {
+                var error =
+                    ex.InnerException?.Message
+                    ?? ex.Message;
+
                 ModelState.AddModelError(
                     "",
-                    ex.Message);
+                    error);
 
                 return View(vm);
             }
@@ -180,32 +219,50 @@
                 }
             }
 
-            public async Task<IActionResult>
-                Delete(
-                    int id)
+        public async Task<IActionResult>
+            Delete(int id)
+        {
+            var dto =
+                await _service.GetByIdAsync(id);
+
+            if (dto == null)
             {
-                try
-                {
-                    await _service.DeleteAsync(id);
-
-                    FileManager.Delete(
-                        id,
-                        "candidatos");
-
-                    return RedirectToAction(
-                        nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    TempData["Error"] =
-                        ex.Message;
-
-                    return RedirectToAction(
-                        nameof(Index));
-                }
+                return RedirectToAction(
+                    nameof(Index));
             }
 
-            public async Task<IActionResult>
+            var vm =
+                _mapper.Map<CandidatoViewModel>(dto);
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult>
+            Delete(CandidatoViewModel vm)
+        {
+            try
+            {
+                await _service.DeleteAsync(vm.Id);
+
+                FileManager.Delete(
+                    vm.Id,
+                    "candidatos");
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] =
+                    ex.Message;
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
+        }
+
+        public async Task<IActionResult>
                 Activar(
                     int id)
             {

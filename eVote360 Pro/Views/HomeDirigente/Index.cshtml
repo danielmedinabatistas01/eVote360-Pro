@@ -1,0 +1,105 @@
+﻿@{
+    ViewData["Title"] = "Home Dirigente";
+}
+
+<style>
+    .dashboard-container {
+        min-height: calc(100vh - 70px);
+        background: #F8FAFC;
+        padding: 2rem;
+    }
+
+    .dashboard-title {
+        font-family: 'Syne', sans-serif;
+        color: #1B3A6B;
+        font-weight: 700;
+        margin-bottom: 2rem;
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+        gap: 1.5rem;
+    }
+
+    .card-module {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        border: 1px solid #E5E7EB;
+        box-shadow: 0 8px 25px rgba(0,0,0,.05);
+        transition: .2s;
+    }
+
+        .card-module:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-module h3 {
+            color: #1B3A6B;
+        }
+
+    .btn-main {
+        background: #2563EB;
+        color: white;
+        text-decoration: none;
+        padding: .75rem 1rem;
+        border-radius: 8px;
+        display: inline-block;
+        margin-top: 1rem;
+    }
+</style>
+
+<div class="dashboard-container">
+
+    <h1 class="dashboard-title">
+        Panel del Dirigente
+    </h1>
+
+    <div class="cards">
+
+        <div class="card-module">
+            <h3>Candidatos</h3>
+            <p>
+                Gestionar candidatos del partido.
+            </p>
+
+            <a asp-controller="Candidato"
+               asp-action="Index"
+               class="btn-main">
+                Entrar
+            </a>
+        </div>
+
+        <div class="card-module">
+            <h3>Alianzas</h3>
+
+            <p>
+                Gestionar solicitudes y alianzas.
+            </p>
+
+            <a asp-controller="AlianzaPolitica"
+               asp-action="Index"
+               class="btn-main">
+                Entrar
+            </a>
+        </div>
+
+        <div class="card-module">
+            <h3>Asignaciones</h3>
+
+            <p>
+                Asignar candidatos a puestos.
+            </p>
+
+            <a asp-controller="AsignacionCandidato"
+               asp-action="Index"
+               class="btn-main">
+                Entrar
+            </a>
+        </div>
+
+    </div>
+
+</div>

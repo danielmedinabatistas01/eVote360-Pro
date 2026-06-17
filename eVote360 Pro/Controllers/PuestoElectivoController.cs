@@ -28,6 +28,7 @@ namespace eVote360_Pro.Controllers
             return View("Save", new PuestoElectivoViewModel()
             {
                 Nombre = string.Empty,
+                Descripcion = string.Empty,
                 EsActivo = true
             });
         }

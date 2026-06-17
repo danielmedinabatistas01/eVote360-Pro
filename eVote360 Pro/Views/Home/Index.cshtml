@@ -1,8 +1,94 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .confirm-wrapper {
+        min-height: calc(100vh - 70px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        background: #F8FAFC;
+    }
+
+    .content-card {
+        width: 100%;
+        max-width: 600px;
+        background: white;
+        border: 1px solid #E5E7EB;
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: 0 8px 25px rgba(0,0,0,.05);
+        text-align: center;
+    }
+
+    h1 {
+        font-family: 'Syne', sans-serif;
+        color: #1B3A6B;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: .75rem;
+    }
+
+    p {
+        color: #6B7280;
+        margin-bottom: 2rem;
+    }
+
+    .buttons {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-main {
+        flex: 1;
+        background: #2563EB;
+        color: white;
+        border-radius: 8px;
+        padding: .9rem;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .btn-delete {
+        flex: 1;
+        background: #FEF2F2;
+        color: #B91C1C;
+        border-radius: 8px;
+        padding: .9rem;
+        text-decoration: none;
+        font-weight: 600;
+    }
+</style>
+
+<div class="confirm-wrapper">
+
+    <div class="content-card">
+
+        <h1>eVote360 Pro</h1>
+
+        <p>
+            Bienvenido al sistema de votación electrónica.
+            Seleccione una opción para continuar.
+        </p>
+
+        <div class="buttons">
+
+            <a asp-controller="ProcesoVotacion"
+               asp-action="Index"
+               class="btn-main">
+                Votar
+            </a>
+
+            <a asp-controller="Login"
+               asp-action="Index"
+               class="btn-delete">
+                Acceder
+            </a>
+
+        </div>
+
+    </div>
+
 </div>

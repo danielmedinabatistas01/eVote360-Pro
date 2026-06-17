@@ -8,12 +8,13 @@ namespace eVote360Pro.Core.Application.Interfaces
 
         Task<bool> PuedeVotarAsync(int ciudadanoId, int eleccionId);
 
-        Task RegistrarVotoAsync(VotoDto dto);
+        Task<int> RegistrarVotoAsync(VotoDto dto);
 
         Task CrearVotoAsync(VotoDto dto);
 
         Task<int> CountCiudadanosVotaronAsync(int eleccionId);
 
         Task<List<VotoDto>> GetByEleccionIdAsync(int eleccionId);
+
     }
 }

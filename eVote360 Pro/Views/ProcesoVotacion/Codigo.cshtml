@@ -1,0 +1,64 @@
+﻿@model eVote360Pro.Core.Application.ViewModels.CodigoVerificacion.CodigoVerificacionViewModel
+
+@{
+    ViewData["Title"] = "Código";
+}
+
+<div class="confirm-wrapper">
+
+    <div class="content-card">
+
+        <h1>Código de verificación</h1>
+
+        <p>
+            Ingrese el código enviado a su correo electrónico.
+        </p>
+
+        <form asp-action="Codigo"
+              method="post">
+
+            <input asp-for="CiudadanoId"
+                   type="hidden" />
+
+            <input asp-for="EleccionId"
+                   type="hidden" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3">
+            </div>
+
+            <div class="mb-3 text-start">
+
+                <label asp-for="Codigo"
+                       class="form-label">
+                    Código
+                </label>
+
+                <input asp-for="Codigo"
+                       class="form-control" />
+
+                <span asp-validation-for="Codigo"
+                      class="text-danger">
+                </span>
+
+            </div>
+
+            <div class="buttons">
+
+                <a asp-action="ValidacionOcr"
+                   class="btn-delete">
+                    Volver
+                </a>
+
+                <button type="submit"
+                        class="btn-main">
+                    Verificar
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

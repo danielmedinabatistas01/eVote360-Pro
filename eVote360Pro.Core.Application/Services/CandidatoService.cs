@@ -109,6 +109,8 @@ namespace eVote360Pro.Core.Application.Services
         public override async Task AddAsync(
     CandidatoDto dto)
         {
+
+
             if (string.IsNullOrWhiteSpace(
                 dto.Nombre))
             {
@@ -165,6 +167,13 @@ namespace eVote360Pro.Core.Application.Services
             {
                 throw new Exception(
                     "No se puede editar un candidato mientras exista una elección activa.");
+            }
+
+            if (candidato.PartidoPoliticoId !=
+                usuario.PartidoPoliticoId)
+            {
+                throw new Exception(
+                    "No puede modificar candidatos de otros partidos.");
             }
 
             bool participo =

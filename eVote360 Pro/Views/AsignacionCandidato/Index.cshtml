@@ -1,0 +1,63 @@
+﻿@using eVote360Pro.Core.Application.ViewModels.AsignacionCandidato
+@model List<AsignacionCandidatoViewModel>
+
+<div class="page-container">
+
+    <div class="content-card">
+
+        <div class="d-flex justify-content-between">
+
+            <h2>Asignaciones</h2>
+
+            <a asp-action="Create"
+               class="btn-main">
+                Agregar Asignación
+            </a>
+
+        </div>
+
+        <table class="table">
+
+            <thead>
+
+                <tr>
+                    <th>Candidato</th>
+                    <th>Puesto</th>
+                    <th>Elección</th>
+                    <th></th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@item.CandidatoId</td>
+
+                        <td>@item.PuestoElectivoId</td>
+
+                        <td>@item.EleccionId</td>
+
+                        <td>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@item.Id"
+                               class="btn-delete">
+                                Eliminar
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

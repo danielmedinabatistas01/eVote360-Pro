@@ -1,7 +1,9 @@
 ﻿using eVote360_Pro.Helpers;
 using eVote360Pro.Core.Application.Dtos;
+using eVote360Pro.Core.Application.DTOs;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.ViewModels.Ocr;
+using eVote360Pro.Core.Application.ViewModels.Voto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eVote360_Pro.Controllers
@@ -15,15 +17,22 @@ namespace eVote360_Pro.Controllers
         private readonly IVotoService
             _votoService;
 
+        private readonly IVotoDetalleService
+            _votoDetalleService;
+
         public ProcesoVotacionController(
             IProcesoVotacionService procesoService,
-            IVotoService votoService)
+            IVotoService votoService,
+            IVotoDetalleService votoDetalleService)
         {
             _procesoService =
                 procesoService;
 
             _votoService =
                 votoService;
+
+            _votoDetalleService =
+                votoDetalleService;
         }
 
         public IActionResult Index()
@@ -220,6 +229,55 @@ namespace eVote360_Pro.Controllers
             Confirmacion()
         {
             return View();
+        }
+    
+
+        [HttpPost]
+            public async Task<IActionResult>
+        Votar(
+            EmitirVotoViewModel vm)
+            {
+                try
+                {
+                    var votoId =
+                        await _votoService
+                            .RegistrarVotoAsync(
+                                new VotoDto
+                                {
+                                    CiudadanoId =
+                                        vm.CiudadanoId,
+
+                                    EleccionId =
+                                        vm.EleccionId
+                                });
+
+                    foreach (var item in vm.Selecciones)
+                    {
+                        await _votoDetalleService
+                            .CreateAsync(
+                                new VotoDetalleDTO
+                                {
+                                    VotoId = votoId,
+
+                                    PuestoElectivoId =
+                                        item.PuestoElectivoId,
+
+                                    CandidatoId =
+                                        item.CandidatoId
+                                });
+                    }
+
+                    return RedirectToAction(
+                        nameof(Confirmacion));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(
+                        "",
+                        ex.Message);
+
+                    return View(vm);
+                }
         }
     }
 }

@@ -1,0 +1,64 @@
+﻿@model eVote360Pro.Core.Application.ViewModels.Ocr.OcrViewModel
+
+@{
+    ViewData["Title"] = "Verificación OCR";
+}
+
+<div class="confirm-wrapper">
+
+    <div class="content-card">
+
+        <h1>Verificación de identidad</h1>
+
+        <p>
+            Suba una imagen de su documento para validar su identidad.
+        </p>
+
+        <form asp-action="ValidacionOcr"
+              method="post"
+              enctype="multipart/form-data">
+
+            <input asp-for="Cedula"
+                   type="hidden" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3">
+            </div>
+
+            <div class="mb-3 text-start">
+
+                <label asp-for="ImagenCedula"
+                       class="form-label">
+                    Imagen de la cédula
+                </label>
+
+                <input asp-for="ImagenCedula"
+                       type="file"
+                       class="form-control"
+                       accept=".jpg,.jpeg,.png" />
+
+                <span asp-validation-for="ImagenCedula"
+                      class="text-danger">
+                </span>
+
+            </div>
+
+            <div class="buttons">
+
+                <a asp-action="Index"
+                   class="btn-delete">
+                    Volver
+                </a>
+
+                <button type="submit"
+                        class="btn-main">
+                    Validar
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
