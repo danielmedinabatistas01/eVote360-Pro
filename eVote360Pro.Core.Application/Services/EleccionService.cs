@@ -13,13 +13,16 @@ namespace eVote360Pro.Core.Application.Services
           IEleccionService
     {
         private readonly IEleccionRepository _eleccionRepository;
+        private readonly IAsignacionCandidatoRepository _asignacionCandidatoRepository;
 
         public EleccionService(
-            IEleccionRepository eleccionRepository,
-            IMapper mapper)
-            : base(eleccionRepository, mapper)
+       IEleccionRepository eleccionRepository,
+       IAsignacionCandidatoRepository asignacionCandidatoRepository,
+       IMapper mapper)
+       : base(eleccionRepository, mapper)
         {
             _eleccionRepository = eleccionRepository;
+            _asignacionCandidatoRepository = asignacionCandidatoRepository;
         }
 
         public async Task<List<EleccionIndexViewModel>> GetAllAsync()
@@ -83,27 +86,51 @@ namespace eVote360Pro.Core.Application.Services
 
         public async Task ActivarAsync(int id)
         {
-            var eleccion = await _eleccionRepository.GetById(id);
+            var eleccion = await _eleccionRepository.GetByIdWithPuestosAsync(id);
 
             if (eleccion == null)
-                return;
+                throw new Exception("La elección no existe.");
+
+            if (eleccion.EstadoEleccion != EstadoEleccion.Pendiente)
+                throw new Exception("Solo se pueden activar elecciones pendientes.");
 
             var existeActiva = await _eleccionRepository.ExisteEleccionActivaAsync();
 
             if (existeActiva)
-                return;
+                throw new Exception("Ya existe una elección activa.");
+
+            if (eleccion.PuestosElectivos == null || !eleccion.PuestosElectivos.Any())
+                throw new Exception("La elección debe tener puestos electivos asignados antes de activarse.");
+
+            var asignaciones = await _asignacionCandidatoRepository.ObtenerPorEleccionAsync(eleccion.Id);
+
+            if (!asignaciones.Any())
+                throw new Exception("La elección debe tener candidatos asignados antes de activarse.");
+
+            foreach (var puesto in eleccion.PuestosElectivos)
+            {
+                bool tieneCandidato = asignaciones.Any(x =>
+                    x.PuestoElectivoId == puesto.PuestoElectivoId);
+
+                if (!tieneCandidato)
+                    throw new Exception("Todos los puestos electivos deben tener al menos un candidato asignado.");
+            }
 
             eleccion.EstadoEleccion = EstadoEleccion.Activa;
 
             await _eleccionRepository.UpdateAsync(eleccion.Id, eleccion);
         }
 
+
         public async Task FinalizarAsync(int id)
         {
             var eleccion = await _eleccionRepository.GetById(id);
 
             if (eleccion == null)
-                return;
+                throw new Exception("La elección no existe.");
+
+            if (eleccion.EstadoEleccion != EstadoEleccion.Activa)
+                throw new Exception("Solo se pueden finalizar elecciones activas.");
 
             eleccion.EstadoEleccion = EstadoEleccion.Finalizada;
 

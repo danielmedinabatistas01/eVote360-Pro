@@ -27,6 +27,13 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(x => x.EstadoEleccion == EstadoEleccion.Activa);
         }
 
+        public async Task<Eleccion?> GetByIdWithPuestosAsync(int id)
+        {
+            return await _context.Elecciones
+                .Include(x => x.PuestosElectivos)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task<List<Eleccion>> GetAllOrdenadasAsync()
         {
             return await _context.Elecciones

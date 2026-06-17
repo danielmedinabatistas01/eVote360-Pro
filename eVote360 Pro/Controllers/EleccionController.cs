@@ -63,7 +63,7 @@ namespace eVote360_Pro.Controllers
             {
                 Nombre = vm.Nombre,
                 FechaRealizacion = vm.FechaRealizacion,
-                EstadoEleccion = EstadoEleccion.Configurada
+                EstadoEleccion = EstadoEleccion.Pendiente
             };
 
             await _eleccionService.AddAsync(dto);

@@ -8,6 +8,8 @@ namespace eVote360Pro.Core.Domain.Interfaces
 
         Task<Eleccion?> GetEleccionActivaAsync();
 
+        Task<Eleccion?> GetByIdWithPuestosAsync(int id);
+
         Task<List<Eleccion>> GetAllOrdenadasAsync();
     }
 }

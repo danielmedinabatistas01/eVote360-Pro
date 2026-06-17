@@ -40,6 +40,7 @@ builder.Services.AddScoped<IEleccionRepository, EleccionRepository>();
 builder.Services.AddScoped<IVotoRepository, VotoRepository>();
 builder.Services.AddScoped<IEleccionPuestoElectivoRepository, EleccionPuestoElectivoRepository>();
 builder.Services.AddScoped<IVotoDetalleRepository, VotoDetalleRepository>();
+builder.Services.AddScoped<IAsignacionCandidatoRepository, AsignacionCandidatoRepository>();
 
 // Servicios
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
@@ -71,7 +72,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Login}/{action=Index}/{id?}")
+   pattern: "{controller=Login}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 await app.RunAsync();

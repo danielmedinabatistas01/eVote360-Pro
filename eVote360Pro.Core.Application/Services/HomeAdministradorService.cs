@@ -8,13 +8,16 @@ namespace eVote360Pro.Core.Application.Services
     {
         private readonly IEleccionRepository _eleccionRepository;
         private readonly IVotoRepository _votoRepository;
+        private readonly IAsignacionCandidatoRepository _asignacionCandidatoRepository;
 
         public HomeAdministradorService(
             IEleccionRepository eleccionRepository,
-            IVotoRepository votoRepository)
+            IVotoRepository votoRepository,
+            IAsignacionCandidatoRepository asignacionCandidatoRepository)
         {
             _eleccionRepository = eleccionRepository;
             _votoRepository = votoRepository;
+            _asignacionCandidatoRepository = asignacionCandidatoRepository;
         }
 
         public async Task<HomeAdministradorDTO> GetResumenByAnioAsync(int anio)
@@ -35,20 +38,38 @@ namespace eVote360Pro.Core.Application.Services
 
             foreach (var eleccion in eleccionesFiltradas)
             {
+                var asignaciones = await _asignacionCandidatoRepository
+                    .ObtenerPorEleccionAsync(eleccion.Id);
+
+                var cantidadPartidos = asignaciones
+                    .Where(x => x.Candidato != null)
+                    .Select(x => x.Candidato!.PartidoPoliticoId)
+                    .Distinct()
+                    .Count();
+
+                var cantidadCandidatos = asignaciones
+                    .Select(x => x.CandidatoId)
+                    .Distinct()
+                    .Count();
+
+                var cantidadCiudadanosVotaron = await _votoRepository
+                    .CountCiudadanosVotaronAsync(eleccion.Id);
+
                 resumenes.Add(new ResumenEleccionDTO
                 {
                     EleccionId = eleccion.Id,
                     NombreEleccion = eleccion.Nombre,
                     FechaRealizacion = eleccion.FechaRealizacion,
                     Estado = eleccion.EstadoEleccion.ToString(),
-                    TotalCiudadanosQueVotaron =
-                        await _votoRepository.CountCiudadanosVotaronAsync(eleccion.Id)
+                    CantidadPartidosParticipantes = cantidadPartidos,
+                    CantidadCandidatosParticipantes = cantidadCandidatos,
+                    CantidadCiudadanosVotaron = cantidadCiudadanosVotaron
                 });
             }
 
             return new HomeAdministradorDTO
             {
-                Anio = anio,
+                AnioSeleccionado = anio,
                 AniosDisponibles = aniosDisponibles,
                 Resumenes = resumenes
             };

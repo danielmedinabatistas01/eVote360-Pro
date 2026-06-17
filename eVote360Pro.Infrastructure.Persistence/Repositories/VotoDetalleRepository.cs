@@ -17,9 +17,11 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
         public async Task<List<VotoDetalle>> GetByEleccionIdAsync(int eleccionId)
         {
             return await _context.VotoDetalles
-                .Include(x => x.Voto)
-                .Where(x => x.Voto.EleccionId == eleccionId)
-                .ToListAsync();
+        .Include(x => x.Voto)
+        .Include(x => x.PuestoElectivo)
+        .Include(x => x.Candidato)
+        .Where(x => x.Voto.EleccionId == eleccionId)
+        .ToListAsync();
         }
     }
 }

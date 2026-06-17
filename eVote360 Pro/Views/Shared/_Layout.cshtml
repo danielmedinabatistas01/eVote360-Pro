@@ -192,13 +192,16 @@
                         </ul>
 
                         <ul class="navbar-nav ms-auto">
-                            <li class="nav-item">
-                                <a class="nav-link btn-logout"
-                                   asp-controller="Usuario"
-                                   asp-action="Login">
-                                    Cerrar sesión
-                                </a>
-                            </li>
+                            @if (currentController != "Login")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link btn-logout"
+                                       asp-controller="Usuario"
+                                       asp-action="Login">
+                                        Cerrar sesión
+                                    </a>
+                                </li>
+                            }
                         </ul>
 
                     </div>

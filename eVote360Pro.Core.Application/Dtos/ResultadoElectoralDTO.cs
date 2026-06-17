@@ -6,6 +6,8 @@
 
         public int PuestoElectivoId { get; set; }
 
+        public string NombrePuestoElectivo { get; set; } = string.Empty;
+
         public int? CandidatoId { get; set; }
 
         public string NombreCandidato { get; set; } = string.Empty;

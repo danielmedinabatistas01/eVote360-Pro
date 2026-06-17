@@ -31,5 +31,21 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
                     x.RolUsuario == RolUsuario.Administrador &&
                     x.Estado);
         }
+
+        public async Task<bool> ExisteNombreUsuarioAsync(string nombreUsuario, int? idExcluir = null)
+        {
+            return await _context.Usuarios
+                .AnyAsync(x =>
+                    x.NombreUsuario == nombreUsuario &&
+                    (!idExcluir.HasValue || x.Id != idExcluir.Value));
+        }
+
+        public async Task<bool> ExisteCorreoElectronicoAsync(string correoElectronico, int? idExcluir = null)
+        {
+            return await _context.Usuarios
+                .AnyAsync(x =>
+                    x.CorreoElectronico == correoElectronico &&
+                    (!idExcluir.HasValue || x.Id != idExcluir.Value));
+        }
     }
 }

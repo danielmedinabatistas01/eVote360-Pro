@@ -4,12 +4,13 @@ namespace eVote360Pro.Core.Application.ViewModels.Usuario
 {
     public class LoginViewModel
     {
-        [Required(ErrorMessage = "Debe ingresar el nombre de usuario.")]
-        [DataType(DataType.Text)]
+        [Required(ErrorMessage = "El nombre de usuario es requerido.")]
+        [Display(Name = "Nombre de Usuario")]
         public string NombreUsuario { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Debe ingresar la contraseña.")]
+        [Required(ErrorMessage = "La contraseña es requerida.")]
         [DataType(DataType.Password)]
+        [Display(Name = "Contraseña")]
         public string Contrasena { get; set; } = string.Empty;
     }
 }

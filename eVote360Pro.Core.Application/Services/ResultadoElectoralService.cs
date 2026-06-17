@@ -18,20 +18,29 @@ namespace eVote360Pro.Core.Application.Services
             var detalles = await _votoDetalleRepository.GetByEleccionIdAsync(eleccionId);
 
             var resultados = detalles
-                .GroupBy(x => new { x.PuestoElectivoId, x.CandidatoId })
-                .Select(g => new ResultadoElectoralDTO
-                {
-                    EleccionId = eleccionId,
-                    PuestoElectivoId = g.Key.PuestoElectivoId,
-                    CandidatoId = g.Key.CandidatoId,
-                    NombreCandidato = g.Key.CandidatoId == null
-                        ? "Ninguno"
-                        : $"Candidato {g.Key.CandidatoId}",
-                    CantidadVotos = g.Count(),
-                    Porcentaje = 0,
-                    EsEmpate = false
-                })
-                .ToList();
+        .GroupBy(x => new
+        {
+         x.PuestoElectivoId,
+         NombrePuesto = x.PuestoElectivo != null
+             ? x.PuestoElectivo.Nombre
+             : $"Puesto {x.PuestoElectivoId}",
+         x.CandidatoId,
+         NombreCandidato = x.Candidato != null
+             ? x.Candidato.Nombre + " " + x.Candidato.Apellido
+             : "Ninguno"
+        })
+        .Select(g => new ResultadoElectoralDTO
+        {
+         EleccionId = eleccionId,
+         PuestoElectivoId = g.Key.PuestoElectivoId,
+         NombrePuestoElectivo = g.Key.NombrePuesto,
+         CandidatoId = g.Key.CandidatoId,
+         NombreCandidato = g.Key.NombreCandidato,
+         CantidadVotos = g.Count(),
+         Porcentaje = 0,
+         EsEmpate = false
+          })
+          .ToList();
 
             foreach (var grupo in resultados.GroupBy(x => x.PuestoElectivoId))
             {
