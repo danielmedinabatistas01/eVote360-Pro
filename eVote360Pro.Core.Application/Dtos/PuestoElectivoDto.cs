@@ -1,7 +1,7 @@
-﻿
+
 namespace eVote360Pro.Core.Application.Dtos
 {
-    public class PuestoElectivoDto
+    public class PuestoElectivoDto : BasicDto<int>
     {
         public required string Nombre { get; set; }
         public required string Descripcion { get; set; }

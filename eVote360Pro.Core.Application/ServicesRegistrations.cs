@@ -1,4 +1,4 @@
-﻿    using eVote360Pro.Core.Application.Interfaces;
+    using eVote360Pro.Core.Application.Interfaces;
     using eVote360Pro.Core.Application.Services;
     using Microsoft.Extensions.DependencyInjection;
     using System.Reflection;
@@ -53,8 +53,32 @@ namespace eVote360Pro.Core.Application
                     CiudadanoService>();
 
             services.AddTransient<
-    IOcrService,
-    OcrService>();
+                    IOcrService,
+                    OcrService>();
+
+            services.AddTransient<
+                    IUsuarioService,
+                    UsuarioService>();
+
+            services.AddTransient<
+                    IEleccionService,
+                    EleccionService>();
+
+            services.AddTransient<
+                    IEleccionPuestoElectivoService,
+                    EleccionPuestoElectivoService>();
+
+            services.AddTransient<
+                    IVotoDetalleService,
+                    VotoDetalleService>();
+
+            services.AddTransient<
+                    IResultadoElectoralService,
+                    ResultadoElectoralService>();
+
+            services.AddTransient<
+                    IHomeAdministradorService,
+                    HomeAdministradorService>();
         }
         }
     }

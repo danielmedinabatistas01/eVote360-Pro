@@ -1,4 +1,4 @@
-﻿@using eVote360Pro.Core.Application.ViewModels.AsignacionCandidato
+@using eVote360Pro.Core.Application.ViewModels.AsignacionCandidato
 @model SaveAsignacionCandidatoViewModel
 
 <form method="post">
@@ -12,7 +12,9 @@
             <label>Candidato</label>
 
             <select asp-for="CandidatoId"
+                    asp-items="@(new SelectList(ViewBag.Candidatos, "Id", "Nombre"))"
                     class="form-select">
+                <option value="">Seleccione un candidato...</option>
             </select>
 
         </div>
@@ -22,7 +24,21 @@
             <label>Puesto Electivo</label>
 
             <select asp-for="PuestoElectivoId"
+                    asp-items="@(new SelectList(ViewBag.Puestos, "Id", "Nombre"))"
                     class="form-select">
+                <option value="">Seleccione un puesto...</option>
+            </select>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label>Elección</label>
+
+            <select asp-for="EleccionId"
+                    asp-items="@(new SelectList(ViewBag.Elecciones, "Id", "Nombre"))"
+                    class="form-select">
+                <option value="">Seleccione una elección...</option>
             </select>
 
         </div>

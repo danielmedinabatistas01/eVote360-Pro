@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using eVote360Pro.Core.Application.Dtos;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.ViewModels.PuestoElectivo;
@@ -10,21 +10,38 @@ namespace eVote360_Pro.Controllers
     {
         private readonly IPuestoElectivoService _service;
         private readonly IMapper _mapper;
+        private readonly IUserSession _userSession;
 
-        public PuestoElectivoController(IPuestoElectivoService service, IMapper mapper)
+        public PuestoElectivoController(
+            IPuestoElectivoService service,
+            IMapper mapper,
+            IUserSession userSession)
         {
             _service = service;
             _mapper = mapper;
+            _userSession = userSession;
         }
 
         public async Task<IActionResult> Index()
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             var puestos = await _service.GetAllAsync();
             return View(_mapper.Map<List<PuestoElectivoViewModel>>(puestos));
         }
 
         public IActionResult Create()
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             return View("Save", new PuestoElectivoViewModel()
             {
                 Nombre = string.Empty,
@@ -36,6 +53,12 @@ namespace eVote360_Pro.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(PuestoElectivoViewModel vm)
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             if (!ModelState.IsValid) return View("Save", vm);
 
             try
@@ -53,6 +76,12 @@ namespace eVote360_Pro.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             var dto = await _service.GetByIdAsync(id);
             if (dto == null) return RedirectToAction(nameof(Index));
 
@@ -63,6 +92,12 @@ namespace eVote360_Pro.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(PuestoElectivoViewModel vm)
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             if (!ModelState.IsValid) return View("Save", vm);
 
             try
@@ -81,6 +116,12 @@ namespace eVote360_Pro.Controllers
         [HttpPost]
         public async Task<IActionResult> DeletePost(int id)
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             try
             {
                 await _service.DeleteAsync(id);

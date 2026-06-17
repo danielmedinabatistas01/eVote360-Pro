@@ -22,6 +22,17 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<List<Candidato>>
+            GetByPartidoPoliticoAsync(
+                int partidoPoliticoId)
+        {
+            return await _context.Candidatos
+                .Where(x =>
+                    x.PartidoPoliticoId ==
+                    partidoPoliticoId)
+                .ToListAsync();
+        }
+
         public async Task<List<Candidato>> GetActivosAsync()
         {
             return await _context.Candidatos

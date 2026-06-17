@@ -16,5 +16,6 @@ namespace eVote360Pro.Core.Application.Interfaces
 
         Task<List<CandidatoDto>> GetActivosAsync();
 
+        Task<List<CandidatoDto>> GetByPartidoPoliticoAsync(int partidoPoliticoId);
     }
 }
