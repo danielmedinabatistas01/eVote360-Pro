@@ -4,11 +4,11 @@ using eVote360Pro.Core.Domain.Entities;
 
 namespace eVote360Pro.Core.Application.Mappings.EntitesAndDtos
 {
-    public class AsignacionCandidatoDtoMappingProfile : Profile
+    public class PuestoElectivoProfile : Profile
     {
-        public AsignacionCandidatoDtoMappingProfile()
+        public PuestoElectivoProfile()
         {
-            CreateMap<AsignacionCandidato, AsignacionCandidatoDto>()
+            CreateMap<PuestoElectivo, PuestoElectivoDto>()
                 .ReverseMap();
         }
     }
