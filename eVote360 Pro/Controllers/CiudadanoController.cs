@@ -27,8 +27,9 @@ namespace eVote360_Pro.Controllers
         {
             return View("Save", new CiudadanoViewModel()
             {
-                NumeroIdentidad = string.Empty,
-                NombreCompleto = string.Empty,
+                NumeroIdentificacion = string.Empty,
+                Nombre = string.Empty,
+                Apellido = string.Empty,
                 CorreoElectronico = string.Empty,
                 EsActivo = true
             });

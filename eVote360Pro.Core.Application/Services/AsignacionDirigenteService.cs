@@ -11,15 +11,21 @@ namespace eVote360Pro.Core.Application.Services
     {
         private readonly IAsignacionDirigenteRepository _asignacionRepository;
         private readonly IEleccionRepository _eleccionRepository;
+        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IPartidoPoliticoRepository _partidoRepository;
         private readonly IMapper _mapper;
 
         public AsignacionDirigenteService(
             IAsignacionDirigenteRepository asignacionRepository,
             IEleccionRepository eleccionRepository,
+            IUsuarioRepository usuarioRepository,
+            IPartidoPoliticoRepository partidoRepository,
             IMapper mapper)
         {
             _asignacionRepository = asignacionRepository;
             _eleccionRepository = eleccionRepository;
+            _usuarioRepository = usuarioRepository;
+            _partidoRepository = partidoRepository;
             _mapper = mapper;
         }
 
@@ -27,11 +33,22 @@ namespace eVote360Pro.Core.Application.Services
         {
             var elecciones = await _eleccionRepository.GetAllList();
             if (elecciones.Any(e => e.EstadoEleccion == EstadoEleccion.Activa))
-                throw new Exception("No se pueden gestionar asignaciones de dirigentes mientras una elección esté activa.");
+                throw new Exception("No se permiten acciones durante elección activa.");
 
             var asignaciones = await _asignacionRepository.GetAllList();
             if (asignaciones.Any(a => a.UsuarioId == dto.UsuarioId))
-                throw new Exception("Este usuario ya se encuentra asignado como dirigente activo de un partido político.");
+                throw new Exception("Este usuario ya se encuentra asignado como dirigente.");
+
+            if (asignaciones.Any(a => a.PartidoPoliticoId == dto.PartidoPoliticoId))
+                throw new Exception("Este partido ya tiene un dirigente asignado.");
+
+            var usuario = await _usuarioRepository.GetById(dto.UsuarioId);
+            if (usuario == null || !usuario.Estado || usuario.RolUsuario != RolUsuario.Dirigente)
+                throw new Exception("Usuario seleccionado no es un dirigente político activo.");
+
+            var partido = await _partidoRepository.GetById(dto.PartidoPoliticoId);
+            if (partido == null || !partido.EsActivo)
+                throw new Exception("Partido seleccionado no se encuentra activo.");
 
             var entity = _mapper.Map<AsignacionDirigente>(dto);
             await _asignacionRepository.AddAsync(entity);
@@ -41,7 +58,7 @@ namespace eVote360Pro.Core.Application.Services
         {
             var elecciones = await _eleccionRepository.GetAllList();
             if (elecciones.Any(e => e.EstadoEleccion == EstadoEleccion.Activa))
-                throw new Exception("No se pueden alterar las asignaciones si existe una elección activa.");
+                throw new Exception("No se permiten acciones durante elección activa.");
 
             var entity = await _asignacionRepository.GetById(id);
             if (entity == null) throw new Exception("Asignación no encontrada.");
@@ -54,12 +71,12 @@ namespace eVote360Pro.Core.Application.Services
         {
             var elecciones = await _eleccionRepository.GetAllList();
             if (elecciones.Any(e => e.EstadoEleccion == EstadoEleccion.Activa))
-                throw new Exception("No se pueden desvincular dirigentes durante una elección activa.");
+                throw new Exception("No se permiten acciones durante elección activa.");
 
             var entity = await _asignacionRepository.GetById(id);
             if (entity == null) throw new Exception("Asignación no encontrada.");
 
-            await _asignacionRepository.UpdateAsync(id, entity);
+            await _asignacionRepository.DeleteAsync(id);
         }
 
         public async Task<List<AsignacionDirigenteDto>> GetAllAsync()

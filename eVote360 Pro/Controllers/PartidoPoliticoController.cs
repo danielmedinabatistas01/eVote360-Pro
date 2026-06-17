@@ -10,11 +10,16 @@ namespace eVote360_Pro.Controllers
     {
         private readonly IPartidoPoliticoService _service;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public PartidoPoliticoController(IPartidoPoliticoService service, IMapper mapper)
+        public PartidoPoliticoController(
+            IPartidoPoliticoService service,
+            IMapper mapper,
+            IWebHostEnvironment webHostEnvironment)
         {
             _service = service;
             _mapper = mapper;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public async Task<IActionResult> Index()
@@ -25,23 +30,28 @@ namespace eVote360_Pro.Controllers
 
         public IActionResult Create()
         {
-            return View("Save", new PartidoPoliticoViewModel()
+            return View("Save", new SavePartidoPoliticoViewModel()
             {
                 Nombre = string.Empty,
                 Siglas = string.Empty,
-                LogoUrl = string.Empty,
                 EsActivo = true
             });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(PartidoPoliticoViewModel vm)
+        public async Task<IActionResult> Create(SavePartidoPoliticoViewModel vm)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) return View("Save", vm);
+
+            if (vm.LogoFile == null)
+            {
+                ModelState.AddModelError("LogoFile", "El logo del partido es requerido.");
                 return View("Save", vm);
+            }
 
             try
             {
+                vm.LogoUrl = await UploadFile(vm.LogoFile);
                 var dto = _mapper.Map<PartidoPoliticoDto>(vm);
                 await _service.AddAsync(dto);
                 return RedirectToAction(nameof(Index));
@@ -58,18 +68,21 @@ namespace eVote360_Pro.Controllers
             var dto = await _service.GetByIdAsync(id);
             if (dto == null) return RedirectToAction(nameof(Index));
 
-            var vm = _mapper.Map<PartidoPoliticoViewModel>(dto);
+            var vm = _mapper.Map<SavePartidoPoliticoViewModel>(dto);
             return View("Save", vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(PartidoPoliticoViewModel vm)
+        public async Task<IActionResult> Edit(SavePartidoPoliticoViewModel vm)
         {
-            if (!ModelState.IsValid)
-                return View("Save", vm);
+            if (!ModelState.IsValid) return View("Save", vm);
 
             try
             {
+                if (vm.LogoFile != null)
+                {
+                    vm.LogoUrl = await UploadFile(vm.LogoFile);
+                }
                 var dto = _mapper.Map<PartidoPoliticoDto>(vm);
                 await _service.UpdateAsync(vm.Id, dto);
                 return RedirectToAction(nameof(Index));
@@ -91,10 +104,25 @@ namespace eVote360_Pro.Controllers
             }
             catch (Exception ex)
             {
-                // Guarda el mensaje de validación de negocio para mostrarlo en el Index
                 TempData["ErrorMessage"] = ex.Message;
                 return RedirectToAction(nameof(Index));
             }
+        }
+
+        private async Task<string> UploadFile(IFormFile file)
+        {
+            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "logos");
+            if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+            string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+
+            return "/images/logos/" + uniqueFileName;
         }
     }
 }

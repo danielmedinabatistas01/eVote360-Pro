@@ -12,65 +12,88 @@ namespace eVote360Pro.Core.Application.Services
         private readonly IPartidoPoliticoRepository _partidoRepository;
         private readonly ICandidatoRepository _candidatoRepository;
         private readonly IEleccionRepository _eleccionRepository;
+        private readonly IAsignacionDirigenteRepository _dirigenteRepository;
         private readonly IMapper _mapper;
 
         public PartidoPoliticoService(
             IPartidoPoliticoRepository partidoRepository,
             ICandidatoRepository candidatoRepository,
             IEleccionRepository eleccionRepository,
+            IAsignacionDirigenteRepository dirigenteRepository,
             IMapper mapper)
         {
             _partidoRepository = partidoRepository;
             _candidatoRepository = candidatoRepository;
             _eleccionRepository = eleccionRepository;
+            _dirigenteRepository = dirigenteRepository;
             _mapper = mapper;
         }
 
         public async Task AddAsync(PartidoPoliticoDto dto)
         {
-            
             var elecciones = await _eleccionRepository.GetAllList();
             if (elecciones.Any(e => e.EstadoEleccion == EstadoEleccion.Activa))
-                throw new Exception("No se pueden agregar partidos políticos si existe una elección activa.");
+                throw new Exception("No se permiten acciones durante elección activa.");
+
+            var partidos = await _partidoRepository.GetAllList();
+            
+            if (partidos.Any(p => p.Nombre.ToLower() == dto.Nombre.ToLower()))
+                throw new Exception("Ya existe partido registrado con este nombre.");
+
+            if (partidos.Any(p => p.Siglas.ToUpper() == dto.Siglas.ToUpper()))
+                throw new Exception("Ya existe partido registrado con estas siglas.");        
 
             var entity = _mapper.Map<PartidoPolitico>(dto);
-            entity.EsActivo = true; 
-            await _partidoRepository.AddAsync(entity);
+                entity.EsActivo = true;
+                entity.Descripcion = dto.Descripcion;
+
+                await _partidoRepository.AddAsync(entity);
         }
 
         public async Task UpdateAsync(int id, PartidoPoliticoDto dto)
         {
             var elecciones = await _eleccionRepository.GetAllList();
             if (elecciones.Any(e => e.EstadoEleccion == EstadoEleccion.Activa))
-                throw new Exception("No se pueden modificar partidos políticos si existe una elección activa.");
+                throw new Exception("No se permiten acciones durante elección activa.");
 
-          
             var entity = await _partidoRepository.GetById(id);
             if (entity == null) throw new Exception("Partido político no encontrado.");
 
-            _mapper.Map(dto, entity);
-            
-            await _partidoRepository.UpdateAsync(id, entity);
+            bool participo = elecciones.Any(e => e.EstadoEleccion == EstadoEleccion.Finalizada) || elecciones.Any(e => e.EstadoEleccion == EstadoEleccion.Activa);
+            string nombreClean = dto.Nombre.Trim();
+            string siglasClean = dto.Siglas.Trim().ToUpper();
+
+            if (participo)
+            {
+                if (!entity.Nombre.Equals(nombreClean, StringComparison.OrdinalIgnoreCase) ||
+                    entity.Siglas != siglasClean ||
+                    entity.LogoUrl != dto.LogoUrl)
+                {
+                    throw new Exception("No se permiten modificar siglas, nombre o logo si participó en elecciones.");
+                }
+            }
         }
 
-        public async Task DeleteAsync(int id)
-        {
+            public async Task DeleteAsync(int id)
+            {
             var elecciones = await _eleccionRepository.GetAllList();
             if (elecciones.Any(e => e.EstadoEleccion == EstadoEleccion.Activa))
-                throw new Exception("No se pueden realizar eliminaciones si existe una elección activa.");
+                throw new Exception("No se permiten acciones durante elección activa.");
 
-            
             var candidatos = await _candidatoRepository.GetAllList();
-            bool tieneCandidatos = candidatos.Any(c => c.PartidoPoliticoId == id && c.Estado);
-            if (tieneCandidatos)
-                throw new Exception("No se puede desactivar el partido político porque contiene candidatos activos asociados.");
+            if (candidatos.Any(c => c.PartidoPoliticoId == id && c.Estado))
+                throw new Exception("No se puede desactivar partido político porque tiene candidatos activos.");
+
+            var dirigentes = await _dirigenteRepository.GetAllList();
+            if (dirigentes.Any(d => d.PartidoPoliticoId == id))
+                throw new Exception("No se puede desactivar partido político porque tiene un dirigente asignado.");
 
             var entity = await _partidoRepository.GetById(id);
             if (entity == null) throw new Exception("Partido político no encontrado.");
 
-            entity.EsActivo = false; 
+            entity.EsActivo = false;
             await _partidoRepository.UpdateAsync(id, entity);
-        }
+            }
 
         public async Task<List<PartidoPoliticoDto>> GetAllAsync()
         {

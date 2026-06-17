@@ -24,7 +24,8 @@
                 <thead class="table-dark">
                     <tr>
                         <th>Cédula / Documento</th>
-                        <th>Nombre Completo</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
                         <th>Estado</th>
                         <th class="text-end">Acciones</th>
                     </tr>
@@ -41,8 +42,9 @@
                         @foreach (var ciudadano in Model)
                         {
                             <tr>
-                                <td><strong>@ciudadano.NumeroIdentidad</strong></td>
-                                <td>@ciudadano.NombreCompleto</td>
+                                <td><strong>@ciudadano.NumeroIdentificacion</strong></td>
+                                <td>@ciudadano.Nombre</td>
+                                <td>@ciudadano.Apellido</td>
                                 <td>
                                     @if (ciudadano.EsActivo)
                                     {
