@@ -1,92 +1,168 @@
 ﻿using AutoMapper;
-using eVote360Pro.Core.Application.Dtos;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.ViewModels.AlianzaPolitica;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eVote360_Pro.Controllers
 {
-    public class AlianzaPoliticaController : Controller
+    public class AlianzaPoliticaController
+        : Controller
     {
-        private readonly IAlianzaPoliticaService _service;
-        private readonly IMapper _mapper;
+        private readonly IAlianzaPoliticaService
+            _alianzaService;
+
+        private readonly IMapper
+            _mapper;
 
         public AlianzaPoliticaController(
-            IAlianzaPoliticaService service,
+            IAlianzaPoliticaService alianzaService,
             IMapper mapper)
         {
-            _service = service;
-            _mapper = mapper;
+            _alianzaService =
+                alianzaService;
+
+            _mapper =
+                mapper;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult>
+            Index()
         {
-            var alianzas =
-                await _service.GetAllAsync();
+            var dtoList =
+                await _alianzaService
+                    .GetActivosAsync();
 
-            return View(
+            var vm =
                 _mapper.Map<
                     List<AlianzaPoliticaViewModel>>
-                    (alianzas));
+                    (dtoList);
+
+            return View(vm);
         }
 
-        public IActionResult Create()
+        public IActionResult
+            CrearSolicitud()
         {
-            return View("Save",
+            return View(
                 new SaveAlianzaPoliticaViewModel());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(
-            SaveAlianzaPoliticaViewModel vm)
+        public async Task<IActionResult>
+            CrearSolicitud(
+                SaveAlianzaPoliticaViewModel vm)
         {
-            if (!ModelState.IsValid)
-                return View("Save", vm);
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(vm);
+                }
 
-            await _service.AddAsync(
-                _mapper.Map<AlianzaPoliticaDto>(vm));
+                await _alianzaService
+                    .CrearSolicitudAsync(
+                        vm.PartidoOrigenId,
+                        vm.PartidoDestinoId);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(
+                    nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(
+                    string.Empty,
+                    ex.Message);
+
+                return View(vm);
+            }
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult>
+            Aceptar(
+                int id)
         {
-            var dto =
-                await _service.GetByIdAsync(id);
+            try
+            {
+                await _alianzaService
+                    .AceptarSolicitudAsync(id);
 
-            if (dto == null)
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(
+                    nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] =
+                    ex.Message;
 
-            return View("Save",
-                _mapper.Map<
-                    SaveAlianzaPoliticaViewModel>
-                    (dto));
+                return RedirectToAction(
+                    nameof(Index));
+            }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Edit(
-            SaveAlianzaPoliticaViewModel vm)
+        public async Task<IActionResult>
+            Rechazar(
+                int id)
         {
-            await _service.UpdateAsync(
-                vm.Id,
-                _mapper.Map<
-                    AlianzaPoliticaDto>(vm));
+            try
+            {
+                await _alianzaService
+                    .RechazarSolicitudAsync(id);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(
+                    nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] =
+                    ex.Message;
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
         }
 
-        public async Task<IActionResult> Activar(int id)
+        public async Task<IActionResult>
+            EliminarSolicitud(
+                int id)
         {
-            await _service.ActivarAsync(id);
+            try
+            {
+                await _alianzaService
+                    .EliminarSolicitudAsync(id);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(
+                    nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] =
+                    ex.Message;
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
         }
 
-        public async Task<IActionResult> Desactivar(int id)
+        public async Task<IActionResult>
+            EliminarAlianza(
+                int id)
         {
-            await _service.DesactivarAsync(id);
+            try
+            {
+                await _alianzaService
+                    .EliminarAlianzaAsync(id);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(
+                    nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] =
+                    ex.Message;
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
         }
     }
 }

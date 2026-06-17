@@ -36,6 +36,8 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
                 .WithMany()
                 .HasForeignKey(x => x.EleccionId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasIndex(x => x.Codigo);
         }
     }
 }

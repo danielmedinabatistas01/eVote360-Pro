@@ -1,12 +1,15 @@
-﻿
-namespace eVote360Pro.Core.Application.ViewModels.AlianzaPolitica
+﻿namespace eVote360Pro.Core.Application.ViewModels.AlianzaPolitica
 {
-    public class SaveAlianzaPoliticaViewModel : BasicViewModel<int>
+    public class SolicitudAlianzaViewModel
     {
-        public string Nombre { get; set; } = null!;
+        public int Id { get; set; }
 
-        public string Descripcion { get; set; } = null!;
+        public string PartidoOrigen { get; set; } = null!;
 
-        public bool Estado { get; set; }
+        public string PartidoDestino { get; set; } = null!;
+
+        public string Estado { get; set; } = null!;
+
+        public DateTime FechaSolicitud { get; set; }
     }
 }

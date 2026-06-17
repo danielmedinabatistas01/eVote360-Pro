@@ -20,10 +20,75 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
             _context = context;
         }
 
-        public async Task<List<AlianzaPolitica>>GetActivosAsync()
+        public async Task<bool>
+            ExisteAlianzaAsync(
+            int partidoOrigenId,
+            int partidoDestinoId)
         {
-            return await _context.Set<AlianzaPolitica>()
-                .Where(x => x.Estado)
+            return await _context
+                .AlianzasPoliticas
+                .AnyAsync(x =>
+                    x.Vigente &&
+                    (
+                        (x.PartidoOrigenId ==
+                         partidoOrigenId &&
+                         x.PartidoDestinoId ==
+                         partidoDestinoId)
+
+                        ||
+
+                        (x.PartidoOrigenId ==
+                         partidoDestinoId &&
+                         x.PartidoDestinoId ==
+                         partidoOrigenId)
+                    ));
+        }
+
+        public async Task<bool>
+    ExisteSolicitudPendienteAsync(
+    int partidoOrigenId,
+    int partidoDestinoId)
+        {
+            return await _context
+                .AlianzasPoliticas
+                .AnyAsync(x =>
+                    x.PartidoOrigenId ==
+                    partidoOrigenId
+
+                    &&
+
+                    x.PartidoDestinoId ==
+                    partidoDestinoId
+
+                    &&
+
+                    x.Estado ==
+                    "Pendiente");
+        }
+
+        public async Task<List<AlianzaPolitica>>
+    ObtenerPendientesAsync(
+    int partidoDestinoId)
+        {
+            return await _context
+                .AlianzasPoliticas
+                .Where(x =>
+                    x.PartidoDestinoId ==
+                    partidoDestinoId
+
+                    &&
+
+                    x.Estado ==
+                    "Pendiente")
+                .ToListAsync();
+        }
+
+        public async Task<List<AlianzaPolitica>>
+    GetActivosAsync()
+        {
+            return await _context
+                .AlianzasPoliticas
+                .Where(x => x.Vigente)
                 .ToListAsync();
         }
     }

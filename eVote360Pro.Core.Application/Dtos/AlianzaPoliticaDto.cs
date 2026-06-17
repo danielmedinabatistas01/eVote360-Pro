@@ -10,10 +10,16 @@ namespace eVote360Pro.Core.Application.Dtos
     {
         public int Id { get; set; }
 
-        public string Nombre { get; set; } = null!;
+        public int PartidoOrigenId { get; set; }
 
-        public string Descripcion { get; set; } = null!;
+        public int PartidoDestinoId { get; set; }
 
-        public bool Estado { get; set; }
+        public string Estado { get; set; } = "Pendiente";
+
+        public DateTime FechaSolicitud { get; set; }
+
+        public DateTime? FechaRespuesta { get; set; }
+
+        public bool Vigente { get; set; }
     }
 }

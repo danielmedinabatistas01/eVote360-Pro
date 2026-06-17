@@ -7,5 +7,7 @@
         public int PuestoElectivoId { get; set; }
 
         public int EleccionId { get; set; }
+
+
     }
 }

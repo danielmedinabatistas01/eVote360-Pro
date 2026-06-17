@@ -23,21 +23,64 @@ namespace eVote360Pro.Core.Application.Services
         public async Task<bool> ValidarCedulaAsync(
             string numeroDocumento)
         {
-            var ciudadano =
-          await _ciudadanoRepository
-         .ObtenerPorDocumentoAsync(numeroDocumento);
+            if (string.IsNullOrWhiteSpace(
+                numeroDocumento))
+            {
+                throw new Exception(
+                    "Debe ingresar un número de cédula.");
+            }
 
-            return ciudadano != null;
+            var ciudadano =
+                await _ciudadanoRepository
+                    .GetByCedulaAsync(
+                        numeroDocumento);
+
+            if (ciudadano == null)
+            {
+                throw new Exception(
+                    "La cédula ingresada no existe.");
+            }
+
+            if (!ciudadano.EsActivo)
+            {
+                throw new Exception(
+                    "Este ciudadano se encuentra inactivo.");
+            }
+
+            return true;
         }
 
-        public async Task<bool> ValidarIdentidadOcrAsync(
-            string numeroDocumento, 
-            string rutaImagen)
+        public async Task<bool>
+     ValidarIdentidadOcrAsync(
+     string numeroDocumento,
+     string rutaImagen)
         {
-            string? cedulaExtraida =
-                await _ocrService.ExtraerCedulaAsync(rutaImagen);
+            if (string.IsNullOrWhiteSpace(
+                rutaImagen))
+            {
+                throw new Exception(
+                    "Debe cargar una imagen.");
+            }
 
-            return cedulaExtraida == numeroDocumento;
+            string? cedulaExtraida =
+                await _ocrService
+                    .ExtraerCedulaAsync(
+                        rutaImagen);
+
+            if (cedulaExtraida == null)
+            {
+                throw new Exception(
+                    "No fue posible identificar una cédula en la imagen.");
+            }
+
+            if (cedulaExtraida !=
+                numeroDocumento)
+            {
+                throw new Exception(
+                    "La cédula detectada no coincide con la ingresada.");
+            }
+
+            return true;
         }
 
         public async Task<string> GenerarCodigoAsync(
@@ -48,6 +91,21 @@ namespace eVote360Pro.Core.Application.Services
                 Random.Shared
                     .Next(100000, 999999)
                     .ToString();
+
+            var ciudadano = await _ciudadanoRepository
+        .GetById(ciudadanoId);
+
+            if (ciudadano == null)
+            {
+                throw new Exception(
+                    "Ciudadano no encontrado.");
+            }
+
+            if (!ciudadano.EsActivo)
+            {
+                throw new Exception(
+                    "El ciudadano se encuentra inactivo.");
+            }
 
             await _codigoRepository.AddAsync(
                 new CodigoVerificacion
@@ -69,6 +127,13 @@ namespace eVote360Pro.Core.Application.Services
             int eleccionId,
             string codigo)
         {
+            if (string.IsNullOrWhiteSpace(
+                codigo))
+            {
+                throw new Exception(
+                    "Debe ingresar el código de verificación.");
+            }
+
             var entity =
                 await _codigoRepository
                     .GetCodigoAsync(
@@ -77,13 +142,23 @@ namespace eVote360Pro.Core.Application.Services
                         codigo);
 
             if (entity == null)
-                return false;
+            {
+                throw new Exception(
+                    "Código inválido.");
+            }
 
             if (entity.Utilizado)
-                return false;
+            {
+                throw new Exception(
+                    "Este código ya fue utilizado.");
+            }
 
-            if (entity.FechaExpiracion < DateTime.Now)
-                return false;
+            if (entity.FechaExpiracion <
+                DateTime.Now)
+            {
+                throw new Exception(
+                    "El código ha expirado.");
+            }
 
             return true;
         }

@@ -1,17 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace eVote360Pro.Core.Application.ViewModels.AlianzaPolitica
 {
-    public class AlianzaPoliticaViewModel : BasicViewModel<int> 
+    public class AlianzaPoliticaViewModel: BasicViewModel<int>
     {
-        public string Nombre { get; set; } = null!;
+        public int PartidoOrigenId { get; set; }
 
-        public string Descripcion { get; set; } = null!;
+        public string PartidoOrigen { get; set; } = null!;
 
-        public bool Estado { get; set; }
+        public int PartidoDestinoId { get; set; }
+
+        public string PartidoDestino { get; set; } = null!;
+
+        public string Estado { get; set; } = "Pendiente";
+
+        public DateTime FechaSolicitud { get; set; }
+
+        public DateTime? FechaRespuesta { get; set; }
+
+        public bool Vigente { get; set; }
     }
 }

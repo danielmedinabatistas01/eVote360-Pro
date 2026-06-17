@@ -7,27 +7,16 @@ using System.Threading.Tasks;
 
 namespace eVote360Pro.Core.Domain.Entities
 {
-    public class AlianzaPolitica
-        : BaseEntity<int>
+    public class SolicitudAlianza: BaseEntity<int>
     {
         public int PartidoOrigenId { get; set; }
 
-        public PartidoPolitico PartidoOrigen { get; set; }
-
         public int PartidoDestinoId { get; set; }
 
-        public PartidoPolitico PartidoDestino { get; set; }
-
         public string Estado { get; set; } = "Pendiente";
-
-        // Pendiente
-        // Aceptada
-        // Rechazada
 
         public DateTime FechaSolicitud { get; set; }
 
         public DateTime? FechaRespuesta { get; set; }
-
-        public bool Vigente { get; set; }
     }
 }

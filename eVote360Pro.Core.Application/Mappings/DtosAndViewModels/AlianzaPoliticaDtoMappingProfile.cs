@@ -10,6 +10,7 @@ namespace eVote360Pro.Core.Application.Mappings.EntitesAndDtos
         {
             CreateMap<AlianzaPoliticaViewModel, AlianzaPoliticaDto>().ReverseMap();
             CreateMap<SaveAlianzaPoliticaViewModel, AlianzaPoliticaDto>().ReverseMap();
+            CreateMap<AlianzaPoliticaDto,DeleteAlianzaPoliticaViewModel>().ReverseMap();
         }
     }
 }
