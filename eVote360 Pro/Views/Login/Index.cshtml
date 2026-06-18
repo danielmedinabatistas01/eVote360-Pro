@@ -212,38 +212,37 @@
                 </p>
             </div>
 
-            <form asp-action="Login" method="post">
-                @Html.AntiForgeryToken()
+            <form asp-controller="Login" asp-action="Index" method="post">
+    @Html.AntiForgeryToken()
 
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                <div class="mb-3">
-                    <label asp-for="NombreUsuario" class="form-label">Nombre de Usuario</label>
+    <div class="mb-3">
+        <label asp-for="NombreUsuario" class="form-label">Nombre de Usuario</label>
 
-                    <input asp-for="NombreUsuario"
-                           class="form-control"
-                           placeholder="Ingrese su usuario" />
+        <input asp-for="NombreUsuario"
+               class="form-control"
+               placeholder="Ingrese su usuario" />
 
-                    <span asp-validation-for="NombreUsuario" class="text-danger small"></span>
-                </div>
+        <span asp-validation-for="NombreUsuario" class="text-danger small"></span>
+    </div>
 
-                <div class="mb-4">
-                    <label asp-for="Contrasena" class="form-label">Contraseña</label>
+    <div class="mb-4">
+        <label asp-for="Contrasena" class="form-label">Contraseña</label>
 
-                    <input asp-for="Contrasena"
-                           type="password"
-                           class="form-control"
-                           placeholder="Ingrese su contraseña" />
+        <input asp-for="Contrasena"
+               type="password"
+               class="form-control"
+               placeholder="Ingrese su contraseña" />
 
-                    <span asp-validation-for="Contrasena" class="text-danger small"></span>
-                </div>
+        <span asp-validation-for="Contrasena" class="text-danger small"></span>
+    </div>
 
-                <button type="submit" class="btn action-btn w-100">
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    Iniciar sesión
-                </button>
-
-            </form>
+    <button type="submit" class="btn action-btn w-100">
+        <i class="bi bi-box-arrow-in-right"></i>
+        Iniciar sesión
+    </button>
+</form>
 
             <div class="text-center footer-text mt-4">
                 <i class="bi bi-shield-lock"></i>
@@ -253,6 +252,11 @@
         </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
+
 </html>

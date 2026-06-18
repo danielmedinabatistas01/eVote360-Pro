@@ -62,8 +62,8 @@ namespace eVote360_Pro.Controllers
                 vm.Contrasena = "";
                 return View(vm);
             }
-
-            HttpContext.Session.Set<UsuarioDto>("Usuario", usuarioDto);
+            eVote360Pro.Core.Application.Helpers.SessionHelper
+                .Set<UsuarioDto>(HttpContext.Session, "Usuario", usuarioDto);
 
             return RedirigirPorRol(usuarioDto.RolUsuario);
         }

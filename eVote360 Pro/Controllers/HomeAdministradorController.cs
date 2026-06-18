@@ -1,4 +1,5 @@
 ﻿using eVote360Pro.Core.Application.Interfaces;
+using eVote360Pro.Core.Application.ViewModels.HomeAdministrador;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eVote360_Pro.Controllers
@@ -26,9 +27,25 @@ namespace eVote360_Pro.Controllers
 
             int anioConsulta = anio ?? DateTime.Now.Year;
 
-            var resumen = await _homeAdministradorService.GetResumenByAnioAsync(anioConsulta);
+            var dto = await _homeAdministradorService.GetResumenByAnioAsync(anioConsulta);
 
-            return View(resumen);
+            var vm = new HomeAdministradorViewModel
+            {
+                Anio = dto.AnioSeleccionado,
+                AniosDisponibles = dto.AniosDisponibles,
+                Resumenes = dto.Resumenes.Select(x => new ResumenEleccionViewModel
+                {
+                    EleccionId = x.EleccionId,
+                    NombreEleccion = x.NombreEleccion,
+                    FechaRealizacion = x.FechaRealizacion,
+                    Estado = x.Estado,
+                    TotalPartidos = x.CantidadPartidosParticipantes,
+                    TotalCandidatos = x.CantidadCandidatosParticipantes,
+                    TotalCiudadanosQueVotaron = x.CantidadCiudadanosVotaron
+                }).ToList()
+            };
+
+            return View(vm);
         }
     }
 }
