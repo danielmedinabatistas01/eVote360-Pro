@@ -36,4 +36,8 @@
     <ProjectReference Include="..\eVote360Pro.Infrastructure.Shared\eVote360Pro.Infrastructure.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Candidato\" />
+  </ItemGroup>
+
 </Project>

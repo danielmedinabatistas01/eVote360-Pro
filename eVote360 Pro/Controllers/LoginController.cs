@@ -70,11 +70,10 @@ namespace eVote360_Pro.Controllers
 
         public IActionResult Logout()
         {
-            HttpContext.Session.Remove("Usuario");
+            HttpContext.Session.Clear();
 
-            return RedirectToAction("Index", "Login");
+            return RedirectToAction("Index", "ProcesoVotacion");
         }
-
         public IActionResult AccessDenied()
         {
             if (_userSession.HasUser())

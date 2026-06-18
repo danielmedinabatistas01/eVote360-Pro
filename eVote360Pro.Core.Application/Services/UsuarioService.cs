@@ -228,7 +228,7 @@ namespace eVote360Pro.Core.Application.Services
             }
 
             if (dto.NombreUsuario == "dirigente" &&
-    dto.Contrasena == "123456")
+    dto.Contrasena == "dirigente")
             {
                 return new UsuarioDto
                 {

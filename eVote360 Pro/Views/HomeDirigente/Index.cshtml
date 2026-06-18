@@ -1,0 +1,225 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Panel Dirigente";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Panel Dirigente - eVote360 Pro</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+            body {
+                background: #F8FAFC;
+                min-height: 100vh;
+            }
+
+            .navbar-custom {
+                background: white;
+                border-bottom: 1px solid #E5E7EB;
+                padding: 1rem 2rem;
+            }
+
+            .brand-title {
+                color: #1B3A6B;
+                font-size: 1.8rem;
+                font-weight: 700;
+                margin: 0;
+            }
+
+            .logo-box {
+                width: 54px;
+                height: 54px;
+                background: #EEF2FF;
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .page-wrapper {
+                min-height: calc(100vh - 90px);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 2rem;
+            }
+
+            .content-card {
+                width: 100%;
+                max-width: 900px;
+                background: white;
+                border: 1px solid #E5E7EB;
+                border-radius: 16px;
+                padding: 2rem;
+                box-shadow: 0 4px 12px rgba(0,0,0,.04);
+            }
+
+            .icon-box {
+                width: 70px;
+                height: 70px;
+                background: #EFF6FF;
+                border-radius: 14px;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 1rem;
+            }
+
+            .page-header {
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+
+                .page-header h1 {
+                    color: #1B3A6B;
+                    font-weight: 700;
+                }
+
+                .page-header p {
+                    color: #6B7280;
+                }
+
+            .menu-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+                gap: 1rem;
+            }
+
+            .menu-card {
+                background: #F8FAFC;
+                border: 1px solid #E5E7EB;
+                border-radius: 12px;
+                padding: 1.5rem;
+                text-decoration: none;
+                text-align: center;
+                transition: .2s;
+            }
+
+                .menu-card:hover {
+                    transform: translateY(-3px);
+                    background: #EEF2FF;
+                }
+
+                .menu-card i {
+                    font-size: 2rem;
+                    color: #2563EB;
+                }
+
+                .menu-card h5 {
+                    color: #1B3A6B;
+                    margin-top: 1rem;
+                }
+
+                .menu-card p {
+                    color: #6B7280;
+                    font-size: .9rem;
+                    margin-bottom: 0;
+                }
+
+            .logout-btn {
+                border: 1px solid #1B3A6B;
+                color: #1B3A6B;
+                font-weight: 600;
+            }
+
+                .logout-btn:hover {
+                    background: #1B3A6B;
+                    color: white;
+                }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-custom">
+        <div class="container-fluid">
+
+            <div class="d-flex align-items-center gap-3">
+                <div class="logo-box">
+                    <i class="bi bi-ballot-check fs-3 text-primary"></i>
+                </div>
+
+                <h1 class="brand-title">eVote360 Pro</h1>
+            </div>
+
+            <a asp-controller="Login"
+               asp-action="Logout"
+               class="btn logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                Cerrar sesión
+            </a>
+
+        </div>
+    </nav>
+
+    <main class="page-wrapper">
+
+        <div class="content-card">
+
+            <div class="page-header">
+
+                <div class="icon-box">
+                    <i class="bi bi-person-badge fs-2 text-primary"></i>
+                </div>
+
+                <h1>Panel del Dirigente</h1>
+
+                <p>
+                    Administración de candidatos, alianzas y asignaciones.
+                </p>
+
+            </div>
+
+            <div class="menu-grid">
+
+                <a asp-controller="Candidato"
+                   asp-action="Index"
+                   class="menu-card">
+
+                    <i class="bi bi-people-fill"></i>
+
+                    <h5>Candidatos</h5>
+
+                    <p>Gestionar candidatos del partido.</p>
+
+                </a>
+
+                <a asp-controller="AlianzaPolitica"
+                   asp-action="Index"
+                   class="menu-card">
+
+                    <i class="bi bi-diagram-3-fill"></i>
+
+                    <h5>Alianzas</h5>
+
+                    <p>Administrar alianzas políticas.</p>
+
+                </a>
+
+                <a asp-controller="AsignacionCandidato"
+                   asp-action="Index"
+                   class="menu-card">
+
+                    <i class="bi bi-person-check-fill"></i>
+
+                    <h5>Asignaciones</h5>
+
+                    <p>Asignar candidatos a puestos electivos.</p>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+</html>
