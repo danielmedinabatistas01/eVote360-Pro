@@ -1,15 +1,15 @@
-﻿@model eVote360Pro.Core.Application.ViewModels.Usuario.LoginViewModel
+﻿@model eVote360Pro.Core.Application.ViewModels.ProcesoVotacion.ProcesoVotacionOcrViewModel
 
 @{
-    ViewData["Title"] = "Iniciar sesión";
     Layout = null;
+    ViewData["Title"] = "Validación de identidad";
 }
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
-    <title>Iniciar sesión - eVote360 Pro</title>
+    <title>eVote360 Pro</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -51,21 +51,20 @@
                 margin: 0;
             }
 
-            .back-btn {
+            .login-btn {
                 border: 1px solid #1B3A6B;
                 color: #1B3A6B;
                 font-weight: 600;
                 border-radius: 8px;
                 padding: .5rem 1rem;
-                text-decoration: none;
             }
 
-                .back-btn:hover {
+                .login-btn:hover {
                     background: #1B3A6B;
                     color: white;
                 }
 
-            .login-wrapper {
+            .page-wrapper {
                 min-height: calc(100vh - 90px);
                 display: flex;
                 justify-content: center;
@@ -75,12 +74,60 @@
 
             .content-card {
                 width: 100%;
-                max-width: 500px;
+                max-width: 540px;
                 background: white;
                 border: 1px solid #E5E7EB;
                 border-radius: 16px;
                 padding: 2rem;
                 box-shadow: 0 4px 12px rgba(0,0,0,.04);
+            }
+
+            .step-grid {
+                display: grid;
+                grid-template-columns: repeat(4,1fr);
+                gap: .75rem;
+                margin-bottom: 2rem;
+            }
+
+            .step-item {
+                text-align: center;
+            }
+
+            .step-number {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background: #E5E7EB;
+                color: #6B7280;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+            }
+
+            .step-item.active .step-number {
+                background: #2563EB;
+                color: white;
+            }
+
+            .step-item.completed .step-number {
+                background: #1B3A6B;
+                color: white;
+            }
+
+            .step-label {
+                margin-top: .35rem;
+                font-size: .8rem;
+                font-weight: 600;
+                color: #6B7280;
+            }
+
+            .step-item.active .step-label {
+                color: #2563EB;
+            }
+
+            .step-item.completed .step-label {
+                color: #1B3A6B;
             }
 
             .page-header {
@@ -98,7 +145,6 @@
                 .page-header p {
                     color: #6B7280;
                     margin-top: .5rem;
-                    margin-bottom: 0;
                 }
 
             .icon-box {
@@ -111,6 +157,13 @@
                 justify-content: center;
                 align-items: center;
                 margin-bottom: 1rem;
+            }
+
+            .upload-box {
+                border: 2px dashed #CBD5E1;
+                border-radius: 14px;
+                padding: 1.5rem;
+                background: #F8FAFC;
             }
 
             .form-label {
@@ -129,6 +182,10 @@
                     box-shadow: 0 0 0 .2rem rgba(37,99,235,.15);
                 }
 
+            .form-text {
+                color: #6B7280;
+            }
+
             .action-btn {
                 background: #2563EB;
                 color: white;
@@ -142,27 +199,6 @@
                 .action-btn:hover {
                     background: #1D4ED8;
                     color: white;
-                }
-
-            .btn-create {
-                display: inline-block;
-                width: 100%;
-                text-align: center;
-                margin-top: .75rem;
-                background: #F8FAFC;
-                color: #1B3A6B;
-                border: 1px solid #E5E7EB;
-                border-radius: 8px;
-                padding: .85rem;
-                font-weight: 600;
-                text-decoration: none;
-                transition: .2s;
-            }
-
-                .btn-create:hover {
-                    background: #EEF2FF;
-                    color: #1B3A6B;
-                    text-decoration: none;
                 }
 
             .footer-text {
@@ -187,76 +223,99 @@
                 </h1>
             </div>
 
-            <a asp-controller="ProcesoVotacion"
+            <a asp-controller="Login"
                asp-action="Index"
-               class="btn back-btn">
-                <i class="bi bi-arrow-left"></i>
-                Volver a votación
+               class="btn login-btn">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Acceder
             </a>
 
         </div>
     </nav>
 
-    <main class="login-wrapper">
+    <main class="page-wrapper">
         <div class="content-card">
+
+            <div class="step-grid">
+                <div class="step-item completed">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Documento</div>
+                </div>
+
+                <div class="step-item active">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Identidad</div>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Código</div>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Votación</div>
+                </div>
+            </div>
 
             <div class="page-header">
                 <div class="icon-box">
-                    <i class="bi bi-person-lock fs-3"></i>
+                    <i class="bi bi-person-vcard fs-3"></i>
                 </div>
 
-                <h1>Iniciar sesión</h1>
+                <h1>Validación de identidad</h1>
 
                 <p>
-                    Acceso para administradores y dirigentes políticos.
+                    Suba una imagen frontal de su cédula para validar su identidad antes de continuar.
                 </p>
             </div>
 
-            <form asp-controller="Login" asp-action="Index" method="post">
-    @Html.AntiForgeryToken()
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    @TempData["ErrorMessage"]
+                </div>
+            }
 
-    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <form asp-controller="ProcesoVotacion"
+                  asp-action="ValidacionOcr"
+                  method="post"
+                  enctype="multipart/form-data">
 
-    <div class="mb-3">
-        <label asp-for="NombreUsuario" class="form-label">Nombre de Usuario</label>
+                @Html.AntiForgeryToken()
 
-        <input asp-for="NombreUsuario"
-               class="form-control"
-               placeholder="Ingrese su usuario" />
+                <input asp-for="DocumentoIdentidad" type="hidden" />
 
-        <span asp-validation-for="NombreUsuario" class="text-danger small"></span>
-    </div>
+                <div class="upload-box mb-3">
+                    <label asp-for="ImagenCedula" class="form-label"></label>
 
-    <div class="mb-4">
-        <label asp-for="Contrasena" class="form-label">Contraseña</label>
+                    <input asp-for="ImagenCedula"
+                           type="file"
+                           class="form-control"
+                           accept=".jpg,.jpeg,.png" />
 
-        <input asp-for="Contrasena"
-               type="password"
-               class="form-control"
-               placeholder="Ingrese su contraseña" />
+                    <span asp-validation-for="ImagenCedula" class="text-danger small"></span>
 
-        <span asp-validation-for="Contrasena" class="text-danger small"></span>
-    </div>
+                    <div class="form-text">
+                        Formatos permitidos: JPG, JPEG, PNG.
+                    </div>
+                </div>
 
-    <button type="submit" class="btn action-btn w-100">
-        <i class="bi bi-box-arrow-in-right"></i>
-        Iniciar sesión
-    </button>
-</form>
+                <button type="submit" class="btn action-btn w-100">
+                    <i class="bi bi-shield-check"></i>
+                    Validar identidad
+                </button>
+            </form>
 
             <div class="text-center footer-text mt-4">
-                <i class="bi bi-shield-lock"></i>
-                Acceso seguro · eVote360 Pro
+                <i class="bi bi-lock"></i>
+                Proceso confidencial y seguro · © ITLA 2026
             </div>
 
         </div>
     </main>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
-
 </html>

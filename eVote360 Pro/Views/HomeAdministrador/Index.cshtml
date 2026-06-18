@@ -1,16 +1,121 @@
 ﻿@model eVote360Pro.Core.Application.ViewModels.HomeAdministrador.HomeAdministradorViewModel
 
 @{
+    Layout = null;
     ViewData["Title"] = "Panel Administrador";
+
+    var totalElecciones = Model.Resumenes?.Count ?? 0;
+    var totalPartidos = Model.Resumenes?.Sum(x => x.TotalPartidos) ?? 0;
+    var totalCandidatos = Model.Resumenes?.Sum(x => x.TotalCandidatos) ?? 0;
+    var totalVotaron = Model.Resumenes?.Sum(x => x.TotalCiudadanosQueVotaron) ?? 0;
 }
 
-<style>
-    .page-header {
-        margin-bottom: 2rem;
-    }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Panel Administrador - eVote360 Pro</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        body {
+            background: #F8FAFC;
+            min-height: 100vh;
+        }
+
+        .navbar-custom {
+            background: #FFFFFF;
+            border-bottom: 1px solid #E5E7EB;
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-box {
+            width: 54px;
+            height: 54px;
+            background: #EEF2FF;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand-title {
+            color: #1B3A6B;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .logout-btn {
+            border: 1px solid #1B3A6B;
+            color: #1B3A6B;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: .5rem 1rem;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            background: #1B3A6B;
+            color: white;
+        }
+
+        .page-wrapper {
+            min-height: calc(100vh - 90px);
+            padding: 2rem;
+        }
+
+        .page-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .header-card {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,.04);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            background: #EFF6FF;
+            color: #1B3A6B;
+            border-radius: 14px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
 
         .page-header h1 {
-            font-family: 'Syne', sans-serif;
             font-size: 1.8rem;
             font-weight: 700;
             color: #1B3A6B;
@@ -20,145 +125,404 @@
         .page-header p {
             color: #6B7280;
             margin-top: .4rem;
+            margin-bottom: 0;
         }
 
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
+        .year-select {
+            min-width: 180px;
+        }
 
-    .stat-card {
-        background: white;
-        border: 1px solid #E5E7EB;
-        border-radius: 12px;
-        padding: 1.5rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,.04);
-    }
+        .form-label {
+            color: #1B3A6B;
+            font-weight: 600;
+            font-size: .9rem;
+        }
 
-    .stat-title {
-        color: #6B7280;
-        font-size: .85rem;
-        margin-bottom: .5rem;
-    }
+        .form-select {
+            border-radius: 8px;
+            border: 1px solid #E5E7EB;
+            padding: .65rem;
+        }
 
-    .stat-value {
-        color: #1B3A6B;
-        font-size: 2rem;
-        font-weight: 700;
-    }
+        .form-select:focus {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 .2rem rgba(37,99,235,.15);
+        }
 
-    .content-card {
-        background: white;
-        border: 1px solid #E5E7EB;
-        border-radius: 12px;
-        padding: 1.5rem;
-    }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
 
-    .quick-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
+        .stat-card {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,.04);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
 
-    .action-btn {
-        background: #2563EB;
-        color: white;
-        padding: .75rem 1.25rem;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 600;
-        transition: .2s;
-    }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: #EFF6FF;
+            color: #2563EB;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .stat-title {
+            color: #6B7280;
+            font-size: .85rem;
+            margin-bottom: .25rem;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            color: #1B3A6B;
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .content-card {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,.04);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: #1B3A6B;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+            gap: 1rem;
+        }
+
+        .action-btn {
+            background: #2563EB;
+            color: white;
+            padding: .85rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: .2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
+            border: none;
+        }
 
         .action-btn:hover {
             background: #1D4ED8;
             color: white;
             text-decoration: none;
         }
-</style>
 
-<div class="page-header">
-    <h1>Panel de Administración</h1>
-    <p>Resumen general del sistema electoral.</p>
-</div>
+        .action-btn.secondary {
+            background: #F8FAFC;
+            color: #1B3A6B;
+            border: 1px solid #E5E7EB;
+        }
 
-<div class="stats-grid">
+        .action-btn.secondary:hover {
+            background: #EEF2FF;
+            color: #1B3A6B;
+        }
 
-   @*  <div class="stat-card">
-        <div class="stat-title">
-            Total Elecciones
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            color: #1B3A6B;
+            font-size: .85rem;
+            font-weight: 700;
+            border-bottom: 1px solid #E5E7EB;
+            background: #F8FAFC;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            color: #374151;
+            border-color: #E5E7EB;
+        }
+
+        .badge-status {
+            background: #EFF6FF;
+            color: #1B3A6B;
+            border: 1px solid #DBEAFE;
+            padding: .4rem .65rem;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: .8rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #6B7280;
+        }
+
+        .footer-text {
+            color: #6B7280;
+            font-size: .85rem;
+            text-align: center;
+        }
+
+        @@media (max-width: 768px) {
+            .header-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .year-select {
+                width: 100%;
+            }
+
+            .navbar-custom {
+                padding: 1rem;
+            }
+
+            .brand-title {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-custom">
+        <div class="container-fluid">
+
+            <div class="navbar-brand-wrapper">
+                <div class="logo-box">
+                    <i class="bi bi-ballot-check fs-3 text-primary"></i>
+                </div>
+
+                <h1 class="brand-title">eVote360 Pro</h1>
+            </div>
+
+            <a asp-controller="Login"
+               asp-action="Logout"
+               class="btn logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                Cerrar sesión
+            </a>
+
         </div>
+    </nav>
 
-        <div class="stat-value">
-            @Model.TotalElecciones
+    <main class="page-wrapper">
+        <div class="page-container">
+
+            <div class="page-header">
+                <div class="header-card">
+
+                    <div class="header-info">
+                        <div class="icon-box">
+                            <i class="bi bi-speedometer2 fs-3"></i>
+                        </div>
+
+                        <div>
+                            <h1>Panel de Administración</h1>
+                            <p>Resumen general del sistema electoral.</p>
+                        </div>
+                    </div>
+
+                    <form asp-controller="HomeAdministrador"
+                          asp-action="Index"
+                          method="get"
+                          class="year-select">
+
+                        <label class="form-label">Año</label>
+
+                        <select name="anio"
+                                class="form-select"
+                                onchange="this.form.submit()">
+
+                            @foreach (var anio in Model.AniosDisponibles)
+                            {
+                                if (Model.Anio == anio)
+                                {
+                                    <option value="@anio" selected>@anio</option>
+                                }
+                                else
+                                {
+                                    <option value="@anio">@anio</option>
+                                }
+                            }
+                        </select>
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="bi bi-calendar-event fs-4"></i>
+                    </div>
+
+                    <div>
+                        <div class="stat-title">Total elecciones</div>
+                        <div class="stat-value">@totalElecciones</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="bi bi-flag fs-4"></i>
+                    </div>
+
+                    <div>
+                        <div class="stat-title">Partidos participantes</div>
+                        <div class="stat-value">@totalPartidos</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="bi bi-person-badge fs-4"></i>
+                    </div>
+
+                    <div>
+                        <div class="stat-title">Candidatos participantes</div>
+                        <div class="stat-value">@totalCandidatos</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="bi bi-people fs-4"></i>
+                    </div>
+
+                    <div>
+                        <div class="stat-title">Ciudadanos que votaron</div>
+                        <div class="stat-value">@totalVotaron</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="content-card">
+                <h4 class="section-title">Acciones rápidas</h4>
+
+                <div class="quick-actions">
+
+                    <a asp-controller="Usuario"
+                       asp-action="Index"
+                       class="action-btn">
+                        <i class="bi bi-person-gear"></i>
+                        Usuarios
+                    </a>
+
+                    <a asp-controller="Eleccion"
+                       asp-action="Index"
+                       class="action-btn">
+                        <i class="bi bi-calendar-check"></i>
+                        Elecciones
+                    </a>
+
+                    <a asp-controller="ResultadoElectoral"
+                       asp-action="Index"
+                       asp-route-eleccionId="1"
+                       class="action-btn">
+                        <i class="bi bi-bar-chart"></i>
+                        Resultados
+                    </a>
+
+                    <a asp-controller="Login"
+                       asp-action="Logout"
+                       class="action-btn secondary">
+                        <i class="bi bi-box-arrow-right"></i>
+                        Cerrar sesión
+                    </a>
+
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h4 class="section-title">Elecciones del año seleccionado</h4>
+
+                @if (Model.Resumenes != null && Model.Resumenes.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Elección</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                    <th>Partidos</th>
+                                    <th>Candidatos</th>
+                                    <th>Votaron</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var item in Model.Resumenes)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">@item.NombreEleccion</td>
+                                        <td>@item.FechaRealizacion.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            <span class="badge-status">@item.Estado</span>
+                                        </td>
+                                        <td>@item.TotalPartidos</td>
+                                        <td>@item.TotalCandidatos</td>
+                                        <td>@item.TotalCiudadanosQueVotaron</td>
+                                        <td class="text-end">
+                                            <a asp-controller="ResultadoElectoral"
+                                               asp-action="Index"
+                                               asp-route-eleccionId="@item.EleccionId"
+                                               class="btn btn-sm btn-outline-primary">
+                                                Ver resultados
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                        No hay elecciones registradas para este año.
+                    </div>
+                }
+            </div>
+
+            <div class="footer-text">
+                <i class="bi bi-shield-lock"></i>
+                Panel administrativo seguro · © eVote 2026
+            </div>
+
         </div>
-    </div> *@
+    </main>
 
-   @*  <div class="stat-card">
-        <div class="stat-title">
-            Total Partidos
-        </div>
-
-        <div class="stat-value">
-            @Model.TotalPartidos
-        </div>
-    </div> *@
-
-    @* <div class="stat-card">
-        <div class="stat-title">
-            Total Candidatos
-        </div>
-
-        <div class="stat-value">
-            @Model.TotalCandidatos
-        </div>
-    </div> *@
-
-   @*  <div class="stat-card">
-        <div class="stat-title">
-            Ciudadanos que votaron
-        </div>
-
-        <div class="stat-value">
-            @Model.TotalCiudadanosQueVotaron
-        </div>
-    </div> *@
-
-</div>
-
-<div class="content-card">
-
-    <h4 class="mb-4">Acciones rápidas</h4>
-
-    <div class="quick-actions">
-
-        <a asp-controller="Usuario"
-           asp-action="Index"
-           class="action-btn">
-            Usuarios
-        </a>
-
-        <a asp-controller="Eleccion"
-           asp-action="Index"
-           class="action-btn">
-            Elecciones
-        </a>
-
-        <a asp-controller="ResultadoElectoral"
-           asp-action="Index"
-           asp-route-eleccionId="1"
-           class="action-btn">
-            Resultados
-        </a>
-
-        <a asp-controller="Usuario"
-           asp-action="Login"
-           class="action-btn">
-            Cerrar Sesión
-        </a>
-
-    </div>
-
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
