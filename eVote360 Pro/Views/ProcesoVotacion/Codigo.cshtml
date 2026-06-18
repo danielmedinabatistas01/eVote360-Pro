@@ -1,0 +1,22 @@
+﻿@model eVote360Pro.Core.Application.ViewModels.ProcesoVotacion.ProcesoVotacionCodigoViewModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Código de verificación";
+}
+
+<h2>Código de verificación</h2>
+
+<form asp-controller="ProcesoVotacion" asp-action="Codigo" method="post">
+    @Html.AntiForgeryToken()
+
+    <input asp-for="DocumentoIdentidad" type="hidden" />
+
+    <div class="mb-3">
+        <label asp-for="Codigo"></label>
+        <input asp-for="Codigo" class="form-control" placeholder="Ej. 123456" />
+        <span asp-validation-for="Codigo" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Validar código</button>
+</form>

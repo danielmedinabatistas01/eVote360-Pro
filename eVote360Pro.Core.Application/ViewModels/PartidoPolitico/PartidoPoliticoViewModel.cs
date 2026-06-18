@@ -8,6 +8,8 @@
 
         public string? Descripcion { get; set; }
 
+        public bool Activo { get; set; }
+
         public string? LogoUrl { get; set; }
 
         public bool EsActivo { get; set; }

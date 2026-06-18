@@ -68,6 +68,13 @@ namespace eVote360Pro.Core.Application.Services
             return !yaVoto;
         }
 
+        public async Task <List<VotoDto>> GetByEleccionIdAsync(int eleccionid)
+        {
+            var votos = await _votoRepository
+                    .GetByEleccionIdAsync(eleccionid);
+            return _mapper.Map<List<VotoDto>>(votos);
+        }
+
         public async Task RegistrarVotoAsync(VotoDto dto)
         {
             var ciudadano =
@@ -103,7 +110,7 @@ namespace eVote360Pro.Core.Application.Services
             var voto =
                 _mapper.Map<Voto>(dto);
 
-            voto.FechaVoto =
+            voto.FechaVotacion =
                 DateTime.Now;
 
             await _votoRepository
@@ -120,10 +127,5 @@ namespace eVote360Pro.Core.Application.Services
             return await _votoRepository.CountCiudadanosVotaronAsync(eleccionId);
         }
 
-        public async Task CrearVotoAsync(
-            VotoDto dto)
-        {
-            await RegistrarVotoAsync(dto);
-        }
     }
 }

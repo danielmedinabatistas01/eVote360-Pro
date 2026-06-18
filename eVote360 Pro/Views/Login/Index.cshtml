@@ -1,153 +1,258 @@
-﻿@using eVote360Pro.Core.Application.ViewModels.Usuario
-@model LoginViewModel
+﻿@model eVote360Pro.Core.Application.ViewModels.Usuario.LoginViewModel
+
 @{
-    ViewData["Title"] = "Iniciar Sesión";
+    ViewData["Title"] = "Iniciar sesión";
+    Layout = null;
 }
 
-<style>
-    .confirm-wrapper {
-        min-height: calc(100vh - 70px);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 2rem;
-        background: #F8FAFC;
-    }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Iniciar sesión - eVote360 Pro</title>
 
-    .content-card {
-        width: 100%;
-        max-width: 500px;
-        background: #fff;
-        border: 1px solid #E5E7EB;
-        border-radius: 16px;
-        padding: 2rem;
-        box-shadow: 0 8px 25px rgba(0,0,0,.05);
-    }
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    h1 {
-        font-family: 'Syne', sans-serif;
-        font-size: 1.6rem;
-        font-weight: 700;
-        color: #1B3A6B;
-        margin-bottom: .75rem;
-        text-align: center;
-    }
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    p {
-        color: #6B7280;
-        font-size: .95rem;
-        text-align: center;
-        margin-bottom: 1.5rem;
-    }
+    <style>
+            body {
+                background: #F8FAFC;
+                min-height: 100vh;
+            }
 
-    .form-group {
-        margin-bottom: 1rem;
-    }
+            .navbar-custom {
+                background: #FFFFFF;
+                border-bottom: 1px solid #E5E7EB;
+                padding: 1rem 2rem;
+            }
 
-    label {
-        display: block;
-        margin-bottom: .35rem;
-        font-weight: 600;
-        color: #374151;
-    }
+            .navbar-brand-wrapper {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
 
-    .form-control {
-        width: 100%;
-        border: 1px solid #D1D5DB;
-        border-radius: 8px;
-        padding: .75rem;
-        font-size: .95rem;
-    }
+            .logo-box {
+                width: 54px;
+                height: 54px;
+                background: #EEF2FF;
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
 
-    .text-danger {
-        font-size: .85rem;
-        color: #DC2626;
-    }
+            .brand-title {
+                color: #1B3A6B;
+                font-size: 1.8rem;
+                font-weight: 700;
+                margin: 0;
+            }
 
-    .buttons {
-        display: flex;
-        gap: .75rem;
-        margin-top: 1.5rem;
-    }
+            .back-btn {
+                border: 1px solid #1B3A6B;
+                color: #1B3A6B;
+                font-weight: 600;
+                border-radius: 8px;
+                padding: .5rem 1rem;
+                text-decoration: none;
+            }
 
-    .btn-main {
-        flex: 1;
-        background: #2563EB;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        padding: .7rem 1rem;
-        font-size: .9rem;
-        font-weight: 600;
-        text-decoration: none;
-        text-align: center;
-        cursor: pointer;
-    }
+                .back-btn:hover {
+                    background: #1B3A6B;
+                    color: white;
+                }
 
-    .btn-delete {
-        flex: 1;
-        background: #FEF2F2;
-        color: #B91C1C;
-        border-radius: 8px;
-        padding: .7rem 1rem;
-        font-size: .9rem;
-        font-weight: 600;
-        text-decoration: none;
-        text-align: center;
-        border: none;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+            .login-wrapper {
+                min-height: calc(100vh - 90px);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 2rem;
+            }
 
-        .btn-delete:hover {
-            background: #FEE2E2;
-            color: #991B1B;
-        }
-</style>
+            .content-card {
+                width: 100%;
+                max-width: 500px;
+                background: white;
+                border: 1px solid #E5E7EB;
+                border-radius: 16px;
+                padding: 2rem;
+                box-shadow: 0 4px 12px rgba(0,0,0,.04);
+            }
 
-<div class="confirm-wrapper">
-    <div class="content-card">
+            .page-header {
+                text-align: center;
+                margin-bottom: 2rem;
+            }
 
-        <h1>Iniciar Sesión</h1>
+                .page-header h1 {
+                    font-size: 1.8rem;
+                    font-weight: 700;
+                    color: #1B3A6B;
+                    margin: 0;
+                }
 
-        <p>
-            Ingrese sus credenciales para acceder al sistema.
-        </p>
+                .page-header p {
+                    color: #6B7280;
+                    margin-top: .5rem;
+                    margin-bottom: 0;
+                }
 
-        <form asp-action="Index" method="post">
+            .icon-box {
+                width: 60px;
+                height: 60px;
+                background: #EFF6FF;
+                color: #1B3A6B;
+                border-radius: 14px;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 1rem;
+            }
 
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            .form-label {
+                color: #1B3A6B;
+                font-weight: 600;
+            }
 
-            <div class="form-group">
-                <label asp-for="NombreUsuario"></label>
-                <input asp-for="NombreUsuario" class="form-control" />
-                <span asp-validation-for="NombreUsuario" class="text-danger"></span>
+            .form-control {
+                border-radius: 8px;
+                border: 1px solid #E5E7EB;
+                padding: .75rem;
+            }
+
+                .form-control:focus {
+                    border-color: #2563EB;
+                    box-shadow: 0 0 0 .2rem rgba(37,99,235,.15);
+                }
+
+            .action-btn {
+                background: #2563EB;
+                color: white;
+                border: none;
+                padding: .85rem;
+                border-radius: 8px;
+                font-weight: 600;
+                transition: .2s;
+            }
+
+                .action-btn:hover {
+                    background: #1D4ED8;
+                    color: white;
+                }
+
+            .btn-create {
+                display: inline-block;
+                width: 100%;
+                text-align: center;
+                margin-top: .75rem;
+                background: #F8FAFC;
+                color: #1B3A6B;
+                border: 1px solid #E5E7EB;
+                border-radius: 8px;
+                padding: .85rem;
+                font-weight: 600;
+                text-decoration: none;
+                transition: .2s;
+            }
+
+                .btn-create:hover {
+                    background: #EEF2FF;
+                    color: #1B3A6B;
+                    text-decoration: none;
+                }
+
+            .footer-text {
+                color: #6B7280;
+                font-size: .85rem;
+            }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-custom">
+        <div class="container-fluid">
+
+            <div class="navbar-brand-wrapper">
+                <div class="logo-box">
+                    <i class="bi bi-check-square-fill fs-3 text-primary"></i>
+                </div>
+
+                <h1 class="brand-title">
+                    eVote360 Pro
+                </h1>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Contrasena"></label>
-                <input asp-for="Contrasena" type="password" class="form-control" />
-                <span asp-validation-for="Contrasena" class="text-danger"></span>
+            <a asp-controller="ProcesoVotacion"
+               asp-action="Index"
+               class="btn back-btn">
+                <i class="bi bi-arrow-left"></i>
+                Volver a votación
+            </a>
+
+        </div>
+    </nav>
+
+    <main class="login-wrapper">
+        <div class="content-card">
+
+            <div class="page-header">
+                <div class="icon-box">
+                    <i class="bi bi-person-lock fs-3"></i>
+                </div>
+
+                <h1>Iniciar sesión</h1>
+
+                <p>
+                    Acceso para administradores y dirigentes políticos.
+                </p>
             </div>
 
-            <div class="buttons">
-                <button type="submit" class="btn-main">
-                    Iniciar Sesión
+            <form asp-action="Login" method="post">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="NombreUsuario" class="form-label">Nombre de Usuario</label>
+
+                    <input asp-for="NombreUsuario"
+                           class="form-control"
+                           placeholder="Ingrese su usuario" />
+
+                    <span asp-validation-for="NombreUsuario" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Contrasena" class="form-label">Contraseña</label>
+
+                    <input asp-for="Contrasena"
+                           type="password"
+                           class="form-control"
+                           placeholder="Ingrese su contraseña" />
+
+                    <span asp-validation-for="Contrasena" class="text-danger small"></span>
+                </div>
+
+                <button type="submit" class="btn action-btn w-100">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    Iniciar sesión
                 </button>
 
-                <a asp-controller="Usuario"
-                   asp-action="Create"
-                   class="btn-delete">
-                    Crear Usuario
-                </a>
+            </form>
+
+            <div class="text-center footer-text mt-4">
+                <i class="bi bi-shield-lock"></i>
+                Acceso seguro · eVote360 Pro
             </div>
 
-        </form>
+        </div>
+    </main>
 
-    </div>
-</div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
