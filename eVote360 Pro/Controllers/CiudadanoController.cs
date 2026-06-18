@@ -87,12 +87,12 @@ namespace eVote360_Pro.Controllers
             var dto = await _service.GetByIdAsync(id);
             if (dto == null) return RedirectToAction(nameof(Index));
 
-            var vm = _mapper.Map<CiudadanoViewModel>(dto);
+            var vm = _mapper.Map<SaveCiudadanoViewModel>(dto);
             return View("Save", vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(CiudadanoViewModel vm)
+        public async Task<IActionResult> Edit(SaveCiudadanoViewModel vm)
         {
             if (!_userSession.HasUser())
                 return RedirectToAction("Index", "Login");
