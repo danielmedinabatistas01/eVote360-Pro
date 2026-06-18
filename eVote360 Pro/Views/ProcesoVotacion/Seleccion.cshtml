@@ -1,20 +1,20 @@
 @model eVote360Pro.Core.Application.ViewModels.Voto.EmitirVotoViewModel
 
 @{
-    ViewData["Title"] = "Emitir voto";
+    ViewData["Title"] = "Selección de candidatos";
 }
 
 <div class="confirm-wrapper">
 
     <div class="content-card">
 
-        <h1>Emitir voto</h1>
+        <h1>Selección de candidatos</h1>
 
         <p>
             Seleccione los candidatos correspondientes para cada puesto electivo.
         </p>
 
-        <form asp-action="Votar"
+        <form asp-action="Seleccion"
               method="post">
 
             <div asp-validation-summary="ModelOnly"
@@ -56,7 +56,7 @@
 
             <div class="buttons">
 
-                <a asp-action="Codigo"
+                <a asp-action="Puestos"
                    class="btn-delete">
                     Volver
                 </a>

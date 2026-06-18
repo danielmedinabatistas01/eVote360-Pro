@@ -1,4 +1,4 @@
-﻿
+
 using eVote360Pro.Core.Domain.Common;
 
 namespace eVote360Pro.Core.Domain.Entities
@@ -13,6 +13,5 @@ namespace eVote360Pro.Core.Domain.Entities
 
         public ICollection<VotoDetalle>? VotoDetalles { get; set; }
                 = new List<VotoDetalle>();
-        public DateTime FechaVoto { get; set; }
     }
 }
