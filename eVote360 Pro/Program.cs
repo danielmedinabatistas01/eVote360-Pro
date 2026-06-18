@@ -76,7 +76,6 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-   pattern: "{controller=Login}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 await app.RunAsync();
