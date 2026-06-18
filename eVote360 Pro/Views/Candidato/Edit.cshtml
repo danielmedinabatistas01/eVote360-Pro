@@ -1,0 +1,52 @@
+﻿@using eVote360Pro.Core.Application.ViewModels.Candidato
+@model SaveCandidatoViewModel
+
+<form method="post"
+      enctype="multipart/form-data">
+
+    <div class="content-card">
+
+        <h2>Crear candidato</h2>
+
+        <div class="mb-3">
+
+            <label>Nombre</label>
+
+            <input asp-for="Nombre"
+                   class="form-control" />
+
+        </div>
+
+        <div class="mb-3">
+
+            <label>Apellido</label>
+
+            <input asp-for="Apellido"
+                   class="form-control" />
+
+        </div>
+
+        <div class="mb-3">
+
+            <label>Foto</label>
+
+            @if (!string.IsNullOrEmpty(Model.FotoUrl))
+            {
+                <img src="/@Model.FotoUrl"
+                     width="120" />
+            }
+
+            <input asp-for="Foto"
+                   type="file"
+                   class="form-control" />
+
+        </div>
+
+        <button type="submit"
+                class="btn-main">
+            Guardar
+        </button>
+
+    </div>
+
+</form>

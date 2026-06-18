@@ -1,4 +1,4 @@
-﻿@model eVote360Pro.Core.Application.ViewModels.Ciudadano.SaveCiudadanoViewModel
+@model eVote360Pro.Core.Application.ViewModels.Ciudadano.SaveCiudadanoViewModel
 
 @{
     bool isEdit = Model.Id != 0;
@@ -15,7 +15,17 @@
             <form asp-action="@(isEdit ? "Edit" : "Create")" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                 <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="EsActivo" />
+                @if (isEdit)
+                {
+                    <div class="mb-3 form-check">
+                        <input asp-for="EsActivo" type="checkbox" class="form-check-input" />
+                        <label asp-for="EsActivo" class="form-check-label">Habilitado / Activo</label>
+                    </div>
+                }
+                else
+                {
+                    <input type="hidden" asp-for="EsActivo" />
+                }
 
                 <div class="mb-3">
                     <label asp-for="NumeroIdentificacion" class="form-label">Cédula de Identidad</label>

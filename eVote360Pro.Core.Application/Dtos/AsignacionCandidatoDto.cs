@@ -1,4 +1,4 @@
-﻿namespace eVote360Pro.Core.Application.Dtos
+namespace eVote360Pro.Core.Application.Dtos
 {
     public class AsignacionCandidatoDto
     {
@@ -9,5 +9,7 @@
         public int PuestoElectivoId { get; set; }
 
         public int EleccionId { get; set; }
+
+        public int PartidoPoliticoId { get; set; }
     }
 }

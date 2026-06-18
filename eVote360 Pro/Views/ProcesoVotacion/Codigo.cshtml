@@ -1,22 +1,64 @@
-﻿@model eVote360Pro.Core.Application.ViewModels.ProcesoVotacion.ProcesoVotacionCodigoViewModel
+﻿@model eVote360Pro.Core.Application.ViewModels.CodigoVerificacion.CodigoVerificacionViewModel
 
 @{
-    Layout = null;
-    ViewData["Title"] = "Código de verificación";
+    ViewData["Title"] = "Código";
 }
 
-<h2>Código de verificación</h2>
+<div class="confirm-wrapper">
 
-<form asp-controller="ProcesoVotacion" asp-action="Codigo" method="post">
-    @Html.AntiForgeryToken()
+    <div class="content-card">
 
-    <input asp-for="DocumentoIdentidad" type="hidden" />
+        <h1>Código de verificación</h1>
 
-    <div class="mb-3">
-        <label asp-for="Codigo"></label>
-        <input asp-for="Codigo" class="form-control" placeholder="Ej. 123456" />
-        <span asp-validation-for="Codigo" class="text-danger"></span>
+        <p>
+            Ingrese el código enviado a su correo electrónico.
+        </p>
+
+        <form asp-action="Codigo"
+              method="post">
+
+            <input asp-for="CiudadanoId"
+                   type="hidden" />
+
+            <input asp-for="EleccionId"
+                   type="hidden" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3">
+            </div>
+
+            <div class="mb-3 text-start">
+
+                <label asp-for="Codigo"
+                       class="form-label">
+                    Código
+                </label>
+
+                <input asp-for="Codigo"
+                       class="form-control" />
+
+                <span asp-validation-for="Codigo"
+                      class="text-danger">
+                </span>
+
+            </div>
+
+            <div class="buttons">
+
+                <a asp-action="ValidacionOcr"
+                   class="btn-delete">
+                    Volver
+                </a>
+
+                <button type="submit"
+                        class="btn-main">
+                    Verificar
+                </button>
+
+            </div>
+
+        </form>
+
     </div>
 
-    <button type="submit" class="btn btn-primary">Validar código</button>
-</form>
+</div>

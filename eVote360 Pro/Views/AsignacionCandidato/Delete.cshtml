@@ -1,0 +1,35 @@
+﻿@using eVote360Pro.Core.Application.ViewModels.AsignacionCandidato
+@model AsignacionCandidatoViewModel
+
+<div class="confirm-wrapper">
+
+    <div class="content-card">
+
+        <h1>
+            ¿Está seguro?
+        </h1>
+
+        <p>
+            ¿Desea desvincular este candidato del puesto electivo?
+        </p>
+
+        <div class="buttons">
+
+            <a asp-action="Index"
+               class="btn-main">
+                Cancelar
+            </a>
+
+            <form method="post">
+
+                <button class="btn-delete">
+                    Eliminar
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

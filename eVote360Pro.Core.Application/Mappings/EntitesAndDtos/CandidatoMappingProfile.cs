@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace eVote360Pro.Core.Application.Mappings.EntitesAndDtos
 {
-    public class CandidatoDtoMappingProfile : Profile
+    public class CandidatoMappingProfile : Profile
     {
-        public CandidatoDtoMappingProfile()
+        public CandidatoMappingProfile()
         {
 
             CreateMap<Candidato, CandidatoDto>().ReverseMap();

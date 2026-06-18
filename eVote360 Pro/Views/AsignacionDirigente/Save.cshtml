@@ -1,0 +1,63 @@
+@model eVote360Pro.Core.Application.ViewModels.AsignacionDirigente.SaveAsignacionDirigenteViewModel
+@using eVote360Pro.Core.Domain.Enums
+@{
+    bool isEdit = Model.Id != 0;
+    ViewData["Title"] = isEdit ? "Editar Asignación de Dirigente" : "Nueva Asignación de Dirigente";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            <h4>@(isEdit ? "Modificar Asignación de Dirigente" : "Asignar Dirigente a Partido")</h4>
+        </div>
+        <div class="card-body">
+
+            <form asp-action="@(isEdit ? "Edit" : "Create")" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label asp-for="UsuarioId" class="form-label">Dirigente Político</label>
+                    <select asp-for="UsuarioId" class="form-select">
+                        <option value="">Seleccione un Dirigente</option>
+                        @foreach (var user in (List<eVote360Pro.Core.Application.DTOs.UsuarioDto>)ViewBag.UsuariosDirigentes)
+                        {
+                            if (user.RolUsuario == RolUsuario.Dirigente && user.Estado)
+                            {
+                                <option value="@user.Id">@user.Nombre @user.Apellido (@user.NombreUsuario)</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="UsuarioId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PartidoPoliticoId" class="form-label">Partido Político</label>
+                    <select asp-for="PartidoPoliticoId" class="form-select">
+                        <option value="">Seleccione un Partido</option>
+                        @foreach (var partido in (List<eVote360Pro.Core.Application.Dtos.PartidoPoliticoDto>)ViewBag.PartidosPoliticos)
+                        {
+                            if (partido.EsActivo)
+                            {
+                                <option value="@partido.Id">@partido.Nombre (@partido.Siglas)</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="PartidoPoliticoId" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a asp-action="Index" class="btn btn-secondary">Regresar</a>
+                    <button type="submit" class="btn btn-primary">Guardar Asignación</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

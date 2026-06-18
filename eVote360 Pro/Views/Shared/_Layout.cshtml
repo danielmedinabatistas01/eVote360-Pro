@@ -1,8 +1,8 @@
-﻿@{
+@{
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 
-    var isLoginPage = currentController == "Usuario" && currentAction == "Login";
+    var isLoginPage = currentController == "Login" && currentAction == "Index";
     var isCreateUserPage = currentController == "Usuario" && currentAction == "Create";
 
     var hideMenu = isLoginPage || isCreateUserPage;
@@ -160,48 +160,46 @@
                                 </a>
 
                                 <ul class="dropdown-menu">
-
                                     <li>
-                                        <a class="dropdown-item"
-                                           asp-controller="Usuario"
-                                           asp-action="Index">
-                                            Usuarios
-                                        </a>
+                                        <a class="dropdown-item" asp-controller="PuestoElectivo" asp-action="Index">Puestos Electivos</a>
                                     </li>
-
                                     <li>
-                                        <a class="dropdown-item"
-                                           asp-controller="Eleccion"
-                                           asp-action="Index">
-                                            Elecciones
-                                        </a>
+                                        <a class="dropdown-item" asp-controller="Ciudadano" asp-action="Index">Ciudadanos</a>
                                     </li>
-
                                     <li>
-                                        <a class="dropdown-item"
-                                           asp-controller="ResultadoElectoral"
-                                           asp-action="Index"
-                                           asp-route-eleccionId="1">
-                                            Resultados Electorales
-                                        </a>
+                                        <a class="dropdown-item" asp-controller="PartidoPolitico" asp-action="Index">Partidos Políticos</a>
                                     </li>
-
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Usuario" asp-action="Index">Usuarios</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="AsignacionDirigente" asp-action="Index">Asignación de Dirigentes</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Eleccion" asp-action="Index">Elecciones</a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="ResultadoElectoral" asp-action="Index">Resultados Electorales</a>
+                                    </li>
                                 </ul>
                             </li>
 
                         </ul>
 
                         <ul class="navbar-nav ms-auto">
-                            @if (currentController != "Login")
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link btn-logout"
-                                       asp-controller="Usuario"
-                                       asp-action="Login">
-                                        Cerrar sesión
-                                    </a>
-                                </li>
-                            }
+                             @if (currentController != "Login")
+                             {
+                                 <li class="nav-item">
+                                     <a class="nav-link btn-logout"
+                                        asp-controller="Login"
+                                        asp-action="Logout">
+                                         Cerrar sesión
+                                     </a>
+                                 </li>
+                             }
                         </ul>
 
                     </div>

@@ -1,0 +1,109 @@
+﻿@model eVote360Pro.Core.Application.ViewModels.Candidato.CandidatoViewModel
+
+@{
+    ViewData["Title"] = "Eliminar candidato";
+}
+
+<style>
+    .confirm-wrapper {
+        min-height: calc(100vh - 70px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        background: #F8FAFC;
+    }
+
+    .content-card {
+        width: 100%;
+        max-width: 500px;
+        background: #fff;
+        border: 1px solid #E5E7EB;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 8px 25px rgba(0,0,0,.05);
+        text-align: center;
+    }
+
+    h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #1B3A6B;
+        margin-bottom: .75rem;
+    }
+
+    p {
+        color: #6B7280;
+        font-size: .95rem;
+    }
+
+    .buttons {
+        display: flex;
+        gap: .75rem;
+        margin-top: 1.5rem;
+    }
+
+    .btn-main {
+        flex: 1;
+        background: #2563EB;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: .7rem 1rem;
+        font-size: .9rem;
+        font-weight: 600;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .btn-delete {
+        flex: 1;
+        background: #FEF2F2;
+        color: #B91C1C;
+        border: none;
+        border-radius: 8px;
+        padding: .7rem 1rem;
+        font-size: .9rem;
+        font-weight: 600;
+        text-decoration: none;
+        text-align: center;
+    }
+</style>
+
+<div class="confirm-wrapper">
+
+    <div class="content-card">
+
+        <h1>Eliminar candidato</h1>
+
+        <p>
+            ¿Está seguro que desea eliminar al candidato
+            <strong>@Model.Nombre @Model.Apellido</strong>?
+        </p>
+
+        <form asp-action="Delete"
+              method="post">
+
+            <input asp-for="Id"
+                   type="hidden" />
+
+            <div class="buttons">
+
+                <a asp-action="Index"
+                   class="btn-main">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        class="btn-delete">
+                    Eliminar
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

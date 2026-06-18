@@ -1,0 +1,75 @@
+﻿@model List<eVote360Pro.Core.Application.ViewModels.AlianzaPolitica.AlianzaPoliticaViewModel>
+
+@{
+    ViewData["Title"] = "Alianzas Políticas";
+}
+
+<style>
+    .page-container {
+        padding: 2rem;
+        background: #F8FAFC;
+    }
+
+    .content-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 8px 25px rgba(0,0,0,.05);
+    }
+
+    .btn-main {
+        background: #2563EB;
+        color: white;
+        padding: .75rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+    }
+</style>
+
+<div class="page-container">
+
+    <div class="content-card">
+
+        <div class="d-flex justify-content-between mb-3">
+
+            <h2>Alianzas Políticas</h2>
+
+            <a asp-action="CrearSolicitud"
+               class="btn-main">
+                Nueva Solicitud
+            </a>
+
+        </div>
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>Partido Origen</th>
+                    <th>Partido Destino</th>
+                    <th>Estado</th>
+                    <th>Vigente</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.PartidoOrigen</td>
+                        <td>@item.PartidoDestino</td>
+                        <td>@item.Estado</td>
+                        <td>
+                            @(item.Vigente ? "Sí" : "No")
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

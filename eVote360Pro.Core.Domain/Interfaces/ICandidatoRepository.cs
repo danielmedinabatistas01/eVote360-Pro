@@ -14,6 +14,9 @@ namespace eVote360Pro.Core.Domain.Interfaces
         Task<bool> TieneAsignacionVigenteAsync(
             int candidatoId);
 
+        Task<List<Candidato>>
+     GetByPartidoPoliticoAsync(
+         int partidoPoliticoId);
 
     }
 }

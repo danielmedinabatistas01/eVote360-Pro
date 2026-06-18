@@ -1,4 +1,4 @@
-﻿@model eVote360Pro.Core.Application.ViewModels.HomeAdministrador.HomeAdministradorViewModel
+@model HomeAdministradorDTO
 
 @{
     Layout = null;
@@ -313,215 +313,49 @@
     <nav class="navbar navbar-custom">
         <div class="container-fluid">
 
-            <div class="navbar-brand-wrapper">
-                <div class="logo-box">
-                    <i class="bi bi-ballot-check fs-3 text-primary"></i>
-                </div>
+        <a asp-controller="PuestoElectivo"
+           asp-action="Index"
+           class="action-btn">
+            Puestos Electivos
+        </a>
 
-                <h1 class="brand-title">eVote360 Pro</h1>
-            </div>
+        <a asp-controller="Ciudadano"
+           asp-action="Index"
+           class="action-btn">
+            Ciudadanos
+        </a>
 
-            <a asp-controller="Login"
-               asp-action="Logout"
-               class="btn logout-btn">
-                <i class="bi bi-box-arrow-right"></i>
-                Cerrar sesión
-            </a>
+        <a asp-controller="PartidoPolitico"
+           asp-action="Index"
+           class="action-btn">
+            Partidos Políticos
+        </a>
 
-        </div>
-    </nav>
+        <a asp-controller="Usuario"
+           asp-action="Index"
+           class="action-btn">
+            Usuarios
+        </a>
 
-    <main class="page-wrapper">
-        <div class="page-container">
+        <a asp-controller="AsignacionDirigente"
+           asp-action="Index"
+           class="action-btn">
+            Asignación Dirigentes
+        </a>
 
-            <div class="page-header">
-                <div class="header-card">
+        <a asp-controller="Eleccion"
+           asp-action="Index"
+           class="action-btn">
+            Elecciones
+        </a>
 
-                    <div class="header-info">
-                        <div class="icon-box">
-                            <i class="bi bi-speedometer2 fs-3"></i>
-                        </div>
+        <a asp-controller="ResultadoElectoral"
+           asp-action="Index"
+           class="action-btn">
+            Resultados
+        </a>
 
-                        <div>
-                            <h1>Panel de Administración</h1>
-                            <p>Resumen general del sistema electoral.</p>
-                        </div>
-                    </div>
-
-                    <form asp-controller="HomeAdministrador"
-                          asp-action="Index"
-                          method="get"
-                          class="year-select">
-
-                        <label class="form-label">Año</label>
-
-                        <select name="anio"
-                                class="form-select"
-                                onchange="this.form.submit()">
-
-                            @foreach (var anio in Model.AniosDisponibles)
-                            {
-                                if (Model.Anio == anio)
-                                {
-                                    <option value="@anio" selected>@anio</option>
-                                }
-                                else
-                                {
-                                    <option value="@anio">@anio</option>
-                                }
-                            }
-                        </select>
-                    </form>
-
-                </div>
-            </div>
-
-            <div class="stats-grid">
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-calendar-event fs-4"></i>
-                    </div>
-
-                    <div>
-                        <div class="stat-title">Total elecciones</div>
-                        <div class="stat-value">@totalElecciones</div>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-flag fs-4"></i>
-                    </div>
-
-                    <div>
-                        <div class="stat-title">Partidos participantes</div>
-                        <div class="stat-value">@totalPartidos</div>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-person-badge fs-4"></i>
-                    </div>
-
-                    <div>
-                        <div class="stat-title">Candidatos participantes</div>
-                        <div class="stat-value">@totalCandidatos</div>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-people fs-4"></i>
-                    </div>
-
-                    <div>
-                        <div class="stat-title">Ciudadanos que votaron</div>
-                        <div class="stat-value">@totalVotaron</div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="content-card">
-                <h4 class="section-title">Acciones rápidas</h4>
-
-                <div class="quick-actions">
-
-                    <a asp-controller="Usuario"
-                       asp-action="Index"
-                       class="action-btn">
-                        <i class="bi bi-person-gear"></i>
-                        Usuarios
-                    </a>
-
-                    <a asp-controller="Eleccion"
-                       asp-action="Index"
-                       class="action-btn">
-                        <i class="bi bi-calendar-check"></i>
-                        Elecciones
-                    </a>
-
-                    <a asp-controller="ResultadoElectoral"
-                       asp-action="Index"
-                       asp-route-eleccionId="1"
-                       class="action-btn">
-                        <i class="bi bi-bar-chart"></i>
-                        Resultados
-                    </a>
-
-                    <a asp-controller="Login"
-                       asp-action="Logout"
-                       class="action-btn secondary">
-                        <i class="bi bi-box-arrow-right"></i>
-                        Cerrar sesión
-                    </a>
-
-                </div>
-            </div>
-
-            <div class="content-card">
-                <h4 class="section-title">Elecciones del año seleccionado</h4>
-
-                @if (Model.Resumenes != null && Model.Resumenes.Any())
-                {
-                    <div class="table-responsive">
-                        <table class="table align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Elección</th>
-                                    <th>Fecha</th>
-                                    <th>Estado</th>
-                                    <th>Partidos</th>
-                                    <th>Candidatos</th>
-                                    <th>Votaron</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                @foreach (var item in Model.Resumenes)
-                                {
-                                    <tr>
-                                        <td class="fw-semibold">@item.NombreEleccion</td>
-                                        <td>@item.FechaRealizacion.ToString("dd/MM/yyyy")</td>
-                                        <td>
-                                            <span class="badge-status">@item.Estado</span>
-                                        </td>
-                                        <td>@item.TotalPartidos</td>
-                                        <td>@item.TotalCandidatos</td>
-                                        <td>@item.TotalCiudadanosQueVotaron</td>
-                                        <td class="text-end">
-                                            <a asp-controller="ResultadoElectoral"
-                                               asp-action="Index"
-                                               asp-route-eleccionId="@item.EleccionId"
-                                               class="btn btn-sm btn-outline-primary">
-                                                Ver resultados
-                                            </a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-                else
-                {
-                    <div class="empty-state">
-                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                        No hay elecciones registradas para este año.
-                    </div>
-                }
-            </div>
-
-            <div class="footer-text">
-                <i class="bi bi-shield-lock"></i>
-                Panel administrativo seguro · © eVote 2026
-            </div>
-
-        </div>
-    </main>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>

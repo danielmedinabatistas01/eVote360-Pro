@@ -1,4 +1,4 @@
-﻿using eVote360Pro.Core.Application.Interfaces;
+using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.Services;
 using eVote360Pro.Core.Domain.Interfaces;
 using eVote360Pro.Infrastructure.Persistence.Repositories;
@@ -25,6 +25,26 @@ namespace eVote360Pro.Infrastructure.Persistence
                 AsignacionCandidatoRepository>();
 
             services.AddTransient<
+                IAsignacionDirigenteRepository,
+                AsignacionDirigenteRepository>();
+
+            services.AddTransient<
+                IPartidoPoliticoRepository,
+                PartidoPoliticoRepository>();
+
+            services.AddTransient<
+                IPuestoElectivoRepository,
+                PuestoElectivoRepository>();
+
+            services.AddTransient<
+                ICiudadanoRepository,
+                CiudadanoRepository>();
+
+            services.AddTransient<
+                IEleccionRepository,
+                EleccionRepository>();
+
+            services.AddTransient<
                 IVotoRepository,
                 VotoRepository>();
 
@@ -33,29 +53,16 @@ namespace eVote360Pro.Infrastructure.Persistence
                 CodigoVerificacionRepository>();
 
             services.AddTransient<
-                ICiudadanoRepository,
-                CiudadanoRepository>();
-
-            //services.AddTransient<
-            //    IOcrService,
-            //    OcrService>();
+                    IUsuarioRepository,
+                    UsuarioRepository>();
 
             services.AddTransient<
-    IAsignacionDirigenteService,
-    AsignacionDirigenteService>();
+                IEleccionPuestoElectivoRepository,
+                EleccionPuestoElectivoRepository>();
 
             services.AddTransient<
-                IPartidoPoliticoService,
-                PartidoPoliticoService>();
-
-            services.AddTransient<
-                IPuestoElectivoService,
-                PuestoElectivoService>();
-
-            services.AddTransient<
-                ICiudadanoService,
-                CiudadanoService>();
-
+                IVotoDetalleRepository,
+                VotoDetalleRepository>();
         }
     }
 }

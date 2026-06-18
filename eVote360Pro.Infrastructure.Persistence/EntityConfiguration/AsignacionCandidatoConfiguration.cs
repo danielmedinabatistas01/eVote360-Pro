@@ -20,7 +20,7 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.PuestoElectivo)
-                .WithMany()
+                .WithMany(x => x.AsignacionesCandidatos)
                 .HasForeignKey(x => x.PuestoElectivoId)
                 .OnDelete(DeleteBehavior.Restrict);
 

@@ -1,7 +1,7 @@
-﻿
+
 namespace eVote360Pro.Core.Application.Dtos
 {
-    public class CiudadanoDto
+    public class CiudadanoDto : BasicDto<int>
     {
         public required string Nombre { get; set; }
 
@@ -10,5 +10,7 @@ namespace eVote360Pro.Core.Application.Dtos
         public required string NumeroIdentificacion { get; set; }
 
         public required string CorreoElectronico { get; set; }
+
+        public bool EsActivo { get; set; }
     }
 }

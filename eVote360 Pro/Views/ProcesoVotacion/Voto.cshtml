@@ -1,0 +1,75 @@
+@model eVote360Pro.Core.Application.ViewModels.Voto.EmitirVotoViewModel
+
+@{
+    ViewData["Title"] = "Emitir voto";
+}
+
+<div class="confirm-wrapper">
+
+    <div class="content-card">
+
+        <h1>Emitir voto</h1>
+
+        <p>
+            Seleccione los candidatos correspondientes para cada puesto electivo.
+        </p>
+
+        <form asp-action="Votar"
+              method="post">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3">
+            </div>
+
+            <input type="hidden" asp-for="CiudadanoId" />
+            <input type="hidden" asp-for="EleccionId" />
+
+            @for (int i = 0; i < Model.Selecciones.Count; i++)
+            {
+                <div class="mb-3 text-start">
+
+                    <label class="form-label">
+                        @Model.Selecciones[i].NombrePuesto
+                    </label>
+
+                    <input type="hidden" asp-for="Selecciones[i].PuestoElectivoId" />
+                    <input type="hidden" asp-for="Selecciones[i].NombrePuesto" />
+
+                    <select class="form-select"
+                            asp-for="Selecciones[i].CandidatoId">
+
+                        <option value="">
+                            Ninguno
+                        </option>
+
+                        @foreach (var candidato in Model.Selecciones[i].Candidatos)
+                        {
+                            <option value="@candidato.Value">
+                                @candidato.Text
+                            </option>
+                        }
+
+                    </select>
+
+                </div>
+            }
+
+            <div class="buttons">
+
+                <a asp-action="Codigo"
+                   class="btn-delete">
+                    Volver
+                </a>
+
+                <button type="submit"
+                        class="btn-main">
+                    Emitir voto
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
