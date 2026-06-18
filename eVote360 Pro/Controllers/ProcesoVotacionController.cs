@@ -16,7 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace eVote360_Pro.Controllers
+namespace eVote360Pro.Web.Controllers
 {
     public class ProcesoVotacionController : Controller
     {

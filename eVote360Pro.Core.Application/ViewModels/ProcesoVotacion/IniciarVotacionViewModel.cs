@@ -4,7 +4,8 @@ namespace eVote360Pro.Core.Application.ViewModels.ProcesoVotacion
 {
     public class IniciarVotacionViewModel
     {
-        [Required(ErrorMessage = "El número de documento es requerido.")]
-        public string NumeroDocumento { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Debe ingresar su número de documento.")]
+        [Display(Name = "Número de documento de identidad")]
+        public string DocumentoIdentidad { get; set; } = string.Empty;
     }
 }

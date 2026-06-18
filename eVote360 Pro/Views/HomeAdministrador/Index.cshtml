@@ -1,16 +1,121 @@
 @model HomeAdministradorDTO
 
 @{
+    Layout = null;
     ViewData["Title"] = "Panel Administrador";
+
+    var totalElecciones = Model.Resumenes?.Count ?? 0;
+    var totalPartidos = Model.Resumenes?.Sum(x => x.TotalPartidos) ?? 0;
+    var totalCandidatos = Model.Resumenes?.Sum(x => x.TotalCandidatos) ?? 0;
+    var totalVotaron = Model.Resumenes?.Sum(x => x.TotalCiudadanosQueVotaron) ?? 0;
 }
 
-<style>
-    .page-header {
-        margin-bottom: 2rem;
-    }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Panel Administrador - eVote360 Pro</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        body {
+            background: #F8FAFC;
+            min-height: 100vh;
+        }
+
+        .navbar-custom {
+            background: #FFFFFF;
+            border-bottom: 1px solid #E5E7EB;
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-box {
+            width: 54px;
+            height: 54px;
+            background: #EEF2FF;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand-title {
+            color: #1B3A6B;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .logout-btn {
+            border: 1px solid #1B3A6B;
+            color: #1B3A6B;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: .5rem 1rem;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            background: #1B3A6B;
+            color: white;
+        }
+
+        .page-wrapper {
+            min-height: calc(100vh - 90px);
+            padding: 2rem;
+        }
+
+        .page-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .header-card {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,.04);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            background: #EFF6FF;
+            color: #1B3A6B;
+            border-radius: 14px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
 
         .page-header h1 {
-            font-family: 'Syne', sans-serif;
             font-size: 1.8rem;
             font-weight: 700;
             color: #1B3A6B;
@@ -20,119 +125,193 @@
         .page-header p {
             color: #6B7280;
             margin-top: .4rem;
+            margin-bottom: 0;
         }
 
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
+        .year-select {
+            min-width: 180px;
+        }
 
-    .stat-card {
-        background: white;
-        border: 1px solid #E5E7EB;
-        border-radius: 12px;
-        padding: 1.5rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,.04);
-    }
+        .form-label {
+            color: #1B3A6B;
+            font-weight: 600;
+            font-size: .9rem;
+        }
 
-    .stat-title {
-        color: #6B7280;
-        font-size: .85rem;
-        margin-bottom: .5rem;
-    }
+        .form-select {
+            border-radius: 8px;
+            border: 1px solid #E5E7EB;
+            padding: .65rem;
+        }
 
-    .stat-value {
-        color: #1B3A6B;
-        font-size: 2rem;
-        font-weight: 700;
-    }
+        .form-select:focus {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 .2rem rgba(37,99,235,.15);
+        }
 
-    .content-card {
-        background: white;
-        border: 1px solid #E5E7EB;
-        border-radius: 12px;
-        padding: 1.5rem;
-    }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
 
-    .quick-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
+        .stat-card {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,.04);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
 
-    .action-btn {
-        background: #2563EB;
-        color: white;
-        padding: .75rem 1.25rem;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 600;
-        transition: .2s;
-    }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: #EFF6FF;
+            color: #2563EB;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .stat-title {
+            color: #6B7280;
+            font-size: .85rem;
+            margin-bottom: .25rem;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            color: #1B3A6B;
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .content-card {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,.04);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: #1B3A6B;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+            gap: 1rem;
+        }
+
+        .action-btn {
+            background: #2563EB;
+            color: white;
+            padding: .85rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: .2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
+            border: none;
+        }
 
         .action-btn:hover {
             background: #1D4ED8;
             color: white;
             text-decoration: none;
         }
-</style>
 
-<div class="page-header">
-    <h1>Panel de Administración</h1>
-    <p>Resumen general del sistema electoral.</p>
-</div>
+        .action-btn.secondary {
+            background: #F8FAFC;
+            color: #1B3A6B;
+            border: 1px solid #E5E7EB;
+        }
 
-<div class="stats-grid">
+        .action-btn.secondary:hover {
+            background: #EEF2FF;
+            color: #1B3A6B;
+        }
 
-   @*  <div class="stat-card">
-        <div class="stat-title">
-            Total Elecciones
-        </div>
+        .table {
+            margin-bottom: 0;
+        }
 
-        <div class="stat-value">
-            @Model.TotalElecciones
-        </div>
-    </div> *@
+        .table thead th {
+            color: #1B3A6B;
+            font-size: .85rem;
+            font-weight: 700;
+            border-bottom: 1px solid #E5E7EB;
+            background: #F8FAFC;
+        }
 
-   @*  <div class="stat-card">
-        <div class="stat-title">
-            Total Partidos
-        </div>
+        .table tbody td {
+            vertical-align: middle;
+            color: #374151;
+            border-color: #E5E7EB;
+        }
 
-        <div class="stat-value">
-            @Model.TotalPartidos
-        </div>
-    </div> *@
+        .badge-status {
+            background: #EFF6FF;
+            color: #1B3A6B;
+            border: 1px solid #DBEAFE;
+            padding: .4rem .65rem;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: .8rem;
+        }
 
-    @* <div class="stat-card">
-        <div class="stat-title">
-            Total Candidatos
-        </div>
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #6B7280;
+        }
 
-        <div class="stat-value">
-            @Model.TotalCandidatos
-        </div>
-    </div> *@
+        .footer-text {
+            color: #6B7280;
+            font-size: .85rem;
+            text-align: center;
+        }
 
-   @*  <div class="stat-card">
-        <div class="stat-title">
-            Ciudadanos que votaron
-        </div>
+        @@media (max-width: 768px) {
+            .header-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
 
-        <div class="stat-value">
-            @Model.TotalCiudadanosQueVotaron
-        </div>
-    </div> *@
+            .year-select {
+                width: 100%;
+            }
 
-</div>
+            .navbar-custom {
+                padding: 1rem;
+            }
 
-<div class="content-card">
+            .brand-title {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
 
-    <h4 class="mb-4">Acciones rápidas</h4>
+<body>
 
-    <div class="quick-actions">
+    <nav class="navbar navbar-custom">
+        <div class="container-fluid">
 
         <a asp-controller="PuestoElectivo"
            asp-action="Index"
@@ -178,4 +357,6 @@
 
     </div>
 
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

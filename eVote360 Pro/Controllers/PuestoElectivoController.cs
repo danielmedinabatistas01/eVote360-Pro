@@ -47,6 +47,7 @@ namespace eVote360_Pro.Controllers
                 Nombre = string.Empty,
                 Descripcion = string.Empty,
                 EsActivo = true
+                
             });
         }
 

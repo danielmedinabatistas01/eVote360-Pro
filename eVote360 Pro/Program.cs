@@ -28,7 +28,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddScoped<IUserSession, UserSession>();
+builder.Services.AddScoped<IUserSession, eVote360Pro.Core.Application.Services.UserSession>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
