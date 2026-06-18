@@ -1,0 +1,60 @@
+@model eVote360Pro.Core.Application.ViewModels.Voto.EmitirVotoViewModel
+
+@{
+    ViewData["Title"] = "Puestos disponibles";
+}
+
+<div class="confirm-wrapper">
+
+    <div class="content-card">
+
+        <h1>Puestos electivos</h1>
+
+        <p>
+            A continuación se muestran los puestos electivos disponibles en esta elección.
+        </p>
+
+        @if (Model.Selecciones == null || !Model.Selecciones.Any())
+        {
+            <div class="alert alert-warning">
+                No hay puestos electivos disponibles para esta elección.
+            </div>
+        }
+        else
+        {
+            <ul class="list-group mb-3">
+                @foreach (var seleccion in Model.Selecciones)
+                {
+                    <li class="list-group-item">
+                        <i class="bi bi-briefcase"></i>
+                        @seleccion.NombrePuesto
+                    </li>
+                }
+            </ul>
+        }
+
+        <form asp-action="Puestos"
+              method="post">
+
+            <input type="hidden" asp-for="CiudadanoId" />
+            <input type="hidden" asp-for="EleccionId" />
+
+            <div class="buttons">
+
+                <a asp-action="Codigo"
+                   class="btn-delete">
+                    Volver
+                </a>
+
+                <button type="submit"
+                        class="btn-main">
+                    Continuar a selección
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

@@ -2,11 +2,12 @@ using AutoMapper;
 using eVote360Pro.Core.Application.Dtos;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.ViewModels.AsignacionDirigente;
+//using eVote360Pro.Core.Application.ViewModels.Dirigente;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eVote360Pro.Controllers
 {
-    public class AsignacionDirigenteController : Controller
+    public class DirigenteController : Controller
     {
         private readonly IAsignacionDirigenteService _service;
         private readonly IUsuarioService _usuarioService;
@@ -14,7 +15,7 @@ namespace eVote360Pro.Controllers
         private readonly IMapper _mapper;
         private readonly IUserSession _userSession;
 
-        public AsignacionDirigenteController(
+        public DirigenteController(
             IAsignacionDirigenteService service,
             IUsuarioService usuarioService,
             IPartidoPoliticoService partidoService,
@@ -50,7 +51,6 @@ namespace eVote360Pro.Controllers
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
 
-            // Se deben cargar los listados de usuarios y partidos para el dropdown en la vista
             ViewBag.UsuariosDirigentes = await _usuarioService.GetAllAsync();
             ViewBag.PartidosPoliticos = await _partidoService.GetAllAsync();
 
@@ -69,7 +69,6 @@ namespace eVote360Pro.Controllers
 
             if (!ModelState.IsValid)
             {
-                // si el modelo no es válido, recargar los listados para el dropdown y retornar la vista con el modelo actual
                 ViewBag.UsuariosDirigentes = await _usuarioService.GetAllAsync();
                 ViewBag.PartidosPoliticos = await _partidoService.GetAllAsync();
                 return View("Save", vm);

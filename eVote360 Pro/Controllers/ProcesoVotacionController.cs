@@ -91,7 +91,7 @@ namespace eVote360Pro.Web.Controllers
                     return View(vm);
                 }
 
-                var ciudadano = await _ciudadanoRepository.GetByCedulaAsync(vm.NumeroDocumento);
+                var ciudadano = await _ciudadanoRepository.GetByCedulaAsync(vm.DocumentoIdentidad);
                 if (ciudadano == null)
                 {
                     ModelState.AddModelError("", "La cédula ingresada no se encuentra registrada.");
@@ -115,7 +115,7 @@ namespace eVote360Pro.Web.Controllers
                 HttpContext.Session.SetInt32("CiudadanoId", ciudadano.Id);
                 HttpContext.Session.SetString("CiudadanoEmail", ciudadano.CorreoElectronico);
                 HttpContext.Session.SetString("CiudadanoNombre", $"{ciudadano.Nombre} {ciudadano.Apellido}");
-                HttpContext.Session.SetString("Cedula", vm.NumeroDocumento);
+                HttpContext.Session.SetString("Cedula", vm.DocumentoIdentidad);
                 HttpContext.Session.SetInt32("EleccionId", activeElection.Id);
                 HttpContext.Session.SetString("CodigoVerificado", "false");
 
@@ -251,7 +251,7 @@ namespace eVote360Pro.Web.Controllers
 
                 HttpContext.Session.SetString("CodigoVerificado", "true");
 
-                return RedirectToAction(nameof(Votar));
+                return RedirectToAction(nameof(Puestos));
             }
             catch (Exception ex)
             {
@@ -262,7 +262,7 @@ namespace eVote360Pro.Web.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Votar()
+        public async Task<IActionResult> Puestos()
         {
             if (HttpContext.Session.GetString("CodigoVerificado") != "true")
             {
@@ -281,6 +281,61 @@ namespace eVote360Pro.Web.Controllers
             if (yaVoto)
             {
                 TempData["ErrorMessage"] = "El ciudadano ya votó en esta elección.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var eleccionPuestos = await _eleccionPuestoElectivoService.GetByEleccionIdAsync(eleccionId.Value);
+            var puestosDisponibles = new List<SeleccionVotoViewModel>();
+
+            foreach (var ep in eleccionPuestos)
+            {
+                var puesto = await _puestoElectivoService.GetByIdAsync(ep.PuestoElectivoId);
+                if (puesto == null || !puesto.EsActivo) continue;
+
+                puestosDisponibles.Add(new SeleccionVotoViewModel
+                {
+                    PuestoElectivoId = puesto.Id,
+                    NombrePuesto = puesto.Nombre,
+                    Candidatos = new List<SelectListItem>()
+                });
+            }
+
+            var vm = new EmitirVotoViewModel
+            {
+                CiudadanoId = ciudadanoId.Value,
+                EleccionId = eleccionId.Value,
+                Selecciones = puestosDisponibles
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Puestos(EmitirVotoViewModel vm)
+        {
+            if (HttpContext.Session.GetString("CodigoVerificado") != "true")
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return RedirectToAction(nameof(Seleccion));
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Seleccion()
+        {
+            if (HttpContext.Session.GetString("CodigoVerificado") != "true")
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            int? ciudadanoId = HttpContext.Session.GetInt32("CiudadanoId");
+            int? eleccionId = HttpContext.Session.GetInt32("EleccionId");
+
+            if (ciudadanoId == null || eleccionId == null)
+            {
                 return RedirectToAction(nameof(Index));
             }
 
@@ -305,7 +360,6 @@ namespace eVote360Pro.Web.Controllers
                     NombrePuesto = puesto.Nombre,
                     Candidatos = new List<SelectListItem>()
                 };
-
 
                 var postAssignments = assignments.Where(a => a.PuestoElectivoId == puesto.Id).ToList();
                 foreach (var assign in postAssignments)
@@ -332,7 +386,7 @@ namespace eVote360Pro.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Votar(EmitirVotoViewModel vm)
+        public async Task<IActionResult> Seleccion(EmitirVotoViewModel vm)
         {
             int? sessionCiudadanoId = HttpContext.Session.GetInt32("CiudadanoId");
             int? sessionEleccionId = HttpContext.Session.GetInt32("EleccionId");
@@ -422,7 +476,7 @@ namespace eVote360Pro.Web.Controllers
 
                 HttpContext.Session.Clear();
 
-                return RedirectToAction(nameof(Confirmacion));
+                return RedirectToAction(nameof(Finalizar));
             }
             catch (Exception ex)
             {
@@ -433,7 +487,7 @@ namespace eVote360Pro.Web.Controllers
 
 
         [HttpGet]
-        public IActionResult Confirmacion()
+        public IActionResult Finalizar()
         {
             return View();
         }
