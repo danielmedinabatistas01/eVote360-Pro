@@ -2,29 +2,22 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
+public class EleccionPuestoElectivoConfiguration
 {
-    public class EleccionPuestoElectivoConfiguration: IEntityTypeConfiguration<EleccionPuestoElectivo>
+    public void Configure(EntityTypeBuilder<EleccionPuestoElectivo> builder)
     {
-        //Revisar
-        public void Configure(EntityTypeBuilder<EleccionPuestoElectivo> builder)
-        {
-            builder.ToTable("EleccionPuestoElectivo");
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.EleccionId)
-                .IsRequired();
-            builder.Property(x => x.PuestoElectivoId)
-                .IsRequired();
-            builder.HasOne(x => x.Eleccion)
-                .WithMany()
-                .HasForeignKey(epe => epe.EleccionId)
-                .OnDelete(DeleteBehavior.Restrict);
+        builder.ToTable("EleccionPuestoElectivo");
 
-            builder.HasOne(epe => epe.PuestoElectivo)
-                .WithMany()
-                .HasForeignKey(epe => epe.PuestoElectivoId)
-                .OnDelete(DeleteBehavior.Cascade);
+        builder.HasKey(x => x.Id);
 
-        }
+        builder.HasOne(x => x.Eleccion)
+            .WithMany()
+            .HasForeignKey(x => x.EleccionId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(x => x.PuestoElectivo)
+            .WithMany(x => x.Elecciones)
+            .HasForeignKey(x => x.PuestoElectivoId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

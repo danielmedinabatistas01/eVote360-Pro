@@ -1,15 +1,11 @@
 ﻿using eVote360Pro.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
 {
-    public class CandidatoConfiguration : IEntityTypeConfiguration<Candidato>
+    public class CandidatoConfiguration
+        : IEntityTypeConfiguration<Candidato>
     {
         public void Configure(EntityTypeBuilder<Candidato> builder)
         {
@@ -32,7 +28,7 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
                 .IsRequired();
 
             builder.HasOne(x => x.PartidoPolitico)
-                .WithMany()
+                .WithMany(x => x.Candidatos)
                 .HasForeignKey(x => x.PartidoPoliticoId)
                 .OnDelete(DeleteBehavior.Restrict);
 

@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
 {
-    public class VotoConfiguration: IEntityTypeConfiguration<Voto>
+    public class VotoConfiguration
+        : IEntityTypeConfiguration<Voto>
     {
         public void Configure(EntityTypeBuilder<Voto> builder)
         {
@@ -18,7 +19,7 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
             builder.Property(x => x.CiudadanoId)
                 .IsRequired();
 
-            builder.Property(x => x.FechaVotacion)
+            builder.Property(x => x.FechaVoto)
                 .IsRequired();
 
             builder.HasOne(x => x.Eleccion)
@@ -34,7 +35,7 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
             builder.HasMany(x => x.VotoDetalles)
                 .WithOne(x => x.Voto)
                 .HasForeignKey(x => x.VotoId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

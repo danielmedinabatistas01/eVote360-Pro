@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
 {
-    public class PuestoElectivoConfiguration : IEntityTypeConfiguration<PuestoElectivo>
+    public class PuestoElectivoConfiguration
+        : IEntityTypeConfiguration<PuestoElectivo>
     {
         public void Configure(EntityTypeBuilder<PuestoElectivo> builder)
         {
@@ -13,11 +14,17 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Nombre)
-                   .IsRequired()
-                   .HasMaxLength(100);
+                .IsRequired()
+                .HasMaxLength(100);
+
+            builder.Property(x => x.Descripcion)
+                .IsRequired();
+
+            builder.Property(x => x.EsActivo)
+                .IsRequired();
 
             builder.HasIndex(x => x.Nombre)
-                   .IsUnique();
+                .IsUnique();
         }
     }
 }

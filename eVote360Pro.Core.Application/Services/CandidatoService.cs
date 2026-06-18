@@ -141,11 +141,33 @@ namespace eVote360Pro.Core.Application.Services
                     "No tiene un partido político asignado.");
             }
 
-            /*if (!partido.EsActivo)
+            if (dto.PartidoPoliticoId <= 0)
+            {
+                throw new Exception(
+                    "No puede crear candidatos porque no tiene un partido político asignado.");
+            }
+
+            var partido = await _partidoRepository
+                .GetById(dto.PartidoPoliticoId);
+
+            if (partido == null)
+            {
+                throw new Exception(
+                    "No puede crear candidatos porque el partido político asignado no existe.");
+            }
+
+            if (!partido.EsActivo)
             {
                 throw new Exception(
                     "No puede crear candidatos porque el partido político asignado se encuentra inactivo.");
-            }*/
+            }
+
+            if (await _eleccionRepository.ExisteEleccionActivaAsync())
+            {
+                throw new Exception(
+                    "No se puede crear un candidato mientras exista una elección activa.");
+            }
+
 
 
             if (string.IsNullOrWhiteSpace(

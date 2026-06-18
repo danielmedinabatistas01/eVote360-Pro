@@ -27,9 +27,8 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
                 int partidoPoliticoId)
         {
             return await _context.Candidatos
-                .Where(x =>
-                    x.PartidoPoliticoId ==
-                    partidoPoliticoId)
+                .Where(x => x.PartidoPoliticoId == partidoPoliticoId)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
