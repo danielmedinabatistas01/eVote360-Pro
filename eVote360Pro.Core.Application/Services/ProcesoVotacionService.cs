@@ -1,4 +1,4 @@
-﻿using eVote360Pro.Core.Application.Interfaces;
+using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Domain.Entities;
 using eVote360Pro.Core.Domain.Interfaces;
 
@@ -159,6 +159,9 @@ namespace eVote360Pro.Core.Application.Services
                 throw new Exception(
                     "El código ha expirado.");
             }
+
+            entity.Utilizado = true;
+            await _codigoRepository.UpdateAsync(entity.Id, entity);
 
             return true;
         }

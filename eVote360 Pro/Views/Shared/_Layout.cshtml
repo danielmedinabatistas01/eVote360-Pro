@@ -160,32 +160,30 @@
                                 </a>
 
                                 <ul class="dropdown-menu">
-
                                     <li>
-                                        <a class="dropdown-item"
-                                           asp-controller="Usuario"
-                                           asp-action="Index">
-                                            Usuarios
-                                        </a>
+                                        <a class="dropdown-item" asp-controller="PuestoElectivo" asp-action="Index">Puestos Electivos</a>
                                     </li>
-
                                     <li>
-                                        <a class="dropdown-item"
-                                           asp-controller="Eleccion"
-                                           asp-action="Index">
-                                            Elecciones
-                                        </a>
+                                        <a class="dropdown-item" asp-controller="Ciudadano" asp-action="Index">Ciudadanos</a>
                                     </li>
-
                                     <li>
-                                        <a class="dropdown-item"
-                                           asp-controller="ResultadoElectoral"
-                                           asp-action="Index"
-                                           asp-route-eleccionId="1">
-                                            Resultados Electorales
-                                        </a>
+                                        <a class="dropdown-item" asp-controller="PartidoPolitico" asp-action="Index">Partidos Políticos</a>
                                     </li>
-
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Usuario" asp-action="Index">Usuarios</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="AsignacionDirigente" asp-action="Index">Asignación de Dirigentes</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Eleccion" asp-action="Index">Elecciones</a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="ResultadoElectoral" asp-action="Index">Resultados Electorales</a>
+                                    </li>
                                 </ul>
                             </li>
 

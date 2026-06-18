@@ -1,4 +1,4 @@
-﻿@model eVote360Pro.Core.Application.ViewModels.Voto.EmitirVotoViewModel
+@model eVote360Pro.Core.Application.ViewModels.Voto.EmitirVotoViewModel
 
 @{
     ViewData["Title"] = "Emitir voto";
@@ -21,22 +21,28 @@
                  class="text-danger mb-3">
             </div>
 
-            @foreach (var puesto in Model.Selecciones)
+            <input type="hidden" asp-for="CiudadanoId" />
+            <input type="hidden" asp-for="EleccionId" />
+
+            @for (int i = 0; i < Model.Selecciones.Count; i++)
             {
                 <div class="mb-3 text-start">
 
                     <label class="form-label">
-                        @puesto.NombrePuesto
+                        @Model.Selecciones[i].NombrePuesto
                     </label>
 
+                    <input type="hidden" asp-for="Selecciones[i].PuestoElectivoId" />
+                    <input type="hidden" asp-for="Selecciones[i].NombrePuesto" />
+
                     <select class="form-select"
-                            name="selecciones">
+                            asp-for="Selecciones[i].CandidatoId">
 
                         <option value="">
-                            Seleccione
+                            Ninguno
                         </option>
 
-                        @foreach (var candidato in puesto.Candidatos)
+                        @foreach (var candidato in Model.Selecciones[i].Candidatos)
                         {
                             <option value="@candidato.Value">
                                 @candidato.Text
