@@ -1,0 +1,28 @@
+﻿@model List<eVote360Pro.Core.Application.ViewModels.AsignacionCandidato.AsignacionCandidatoViewModel>
+
+<h2>Asignación de Candidatos</h2>
+
+<a asp-action="Create" class="btn btn-primary mb-3">
+    Nueva Asignación
+</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Candidato Id</th>
+            <th>Puesto Electivo Id</th>
+            <th>Elección Id</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.CandidatoId</td>
+                <td>@item.PuestoElectivoId</td>
+                <td>@item.EleccionId</td>
+            </tr>
+        }
+    </tbody>
+</table>

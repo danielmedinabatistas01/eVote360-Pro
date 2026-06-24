@@ -1,0 +1,18 @@
+﻿@model eVote360Pro.Core.Application.ViewModels.Candidato.SaveCandidatoViewModel
+
+<h3>¿Eliminar candidato?</h3>
+
+<p>
+    @Model.Nombre @Model.Apellido
+</p>
+
+<form asp-action="DeletePost" method="post">
+
+    <input type="hidden"
+           asp-for="Id" />
+
+    <button class="btn btn-danger">
+        Eliminar
+    </button>
+
+</form>

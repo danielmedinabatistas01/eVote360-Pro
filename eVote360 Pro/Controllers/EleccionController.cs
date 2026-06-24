@@ -68,6 +68,8 @@ namespace eVote360_Pro.Controllers
 
             await _eleccionService.AddAsync(dto);
 
+            TempData["SuccessMessage"] = "La elección fue creada correctamente.";
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -82,7 +84,10 @@ namespace eVote360_Pro.Controllers
             var vm = await _eleccionService.GetEditViewModelByIdAsync(id);
 
             if (vm == null)
+            {
+                TempData["ErrorMessage"] = "La elección solicitada no existe.";
                 return RedirectToAction(nameof(Index));
+            }
 
             return View(vm);
         }
@@ -110,6 +115,8 @@ namespace eVote360_Pro.Controllers
 
             await _eleccionService.UpdateAsync(vm.Id, dto);
 
+            TempData["SuccessMessage"] = "La elección fue actualizada correctamente.";
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -124,7 +131,10 @@ namespace eVote360_Pro.Controllers
             var vm = await _eleccionService.GetActivarViewModelAsync(id);
 
             if (vm == null)
+            {
+                TempData["ErrorMessage"] = "La elección solicitada no existe.";
                 return RedirectToAction(nameof(Index));
+            }
 
             return View(vm);
         }
@@ -139,7 +149,15 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
 
-            await _eleccionService.ActivarAsync(id);
+            try
+            {
+                await _eleccionService.ActivarAsync(id);
+                TempData["SuccessMessage"] = "La elección fue activada correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
 
             return RedirectToAction(nameof(Index));
         }
@@ -155,7 +173,10 @@ namespace eVote360_Pro.Controllers
             var vm = await _eleccionService.GetFinalizarViewModelAsync(id);
 
             if (vm == null)
+            {
+                TempData["ErrorMessage"] = "La elección solicitada no existe.";
                 return RedirectToAction(nameof(Index));
+            }
 
             return View(vm);
         }
@@ -170,7 +191,15 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
 
-            await _eleccionService.FinalizarAsync(id);
+            try
+            {
+                await _eleccionService.FinalizarAsync(id);
+                TempData["SuccessMessage"] = "La elección fue finalizada correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
 
             return RedirectToAction(nameof(Index));
         }

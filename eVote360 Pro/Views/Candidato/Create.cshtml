@@ -1,0 +1,183 @@
+﻿@model eVote360Pro.Core.Application.ViewModels.Candidato.SaveCandidatoViewModel
+
+@{
+    ViewData["Title"] = "Nuevo Candidato";
+}
+
+<style>
+    .page-wrapper {
+        min-height: calc(100vh - 70px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        background: #F8FAFC;
+    }
+
+    .content-card {
+        width: 100%;
+        max-width: 650px;
+        background: white;
+        border: 1px solid #E5E7EB;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,.04);
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .icon-box {
+        width: 70px;
+        height: 70px;
+        background: #EFF6FF;
+        border-radius: 14px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .page-header h1 {
+        color: #1B3A6B;
+        font-weight: 700;
+    }
+
+    .page-header p {
+        color: #6B7280;
+    }
+
+    label {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: .35rem;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 10px;
+        border: 1px solid #D1D5DB;
+        padding: .75rem;
+    }
+
+    .btn-main {
+        background: #2563EB;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: .75rem 1rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-main:hover {
+            background: #1D4ED8;
+            color: white;
+        }
+
+    .btn-secondary-custom {
+        background: #F3F4F6;
+        color: #374151;
+        border-radius: 8px;
+        padding: .75rem 1rem;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .actions {
+        display: flex;
+        gap: .75rem;
+        margin-top: 1.5rem;
+    }
+
+    .validation-summary-errors {
+        color: #DC2626;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="page-wrapper">
+
+    ```
+    <div class="content-card">
+
+        <div class="page-header">
+
+            <div class="icon-box">
+                <i class="bi bi-person-plus-fill fs-2 text-primary"></i>
+            </div>
+
+            <h1>Nuevo Candidato</h1>
+
+            <p>
+                Registre un nuevo candidato para participar en el proceso electoral.
+            </p>
+
+        </div>
+
+        <form asp-action="Create"
+              method="post"
+              enctype="multipart/form-data">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger">
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Nombre"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Apellido"></label>
+                <input asp-for="Apellido" class="form-control" />
+                <span asp-validation-for="Apellido" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Foto"></label>
+                <input asp-for="Foto"
+                       type="file"
+                       class="form-control" />
+                <span asp-validation-for="Foto" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PartidoPoliticoId"></label>
+                <select asp-for="PartidoPoliticoId"
+                        class="form-select">
+                    <option value="">Seleccione un partido</option>
+                </select>
+
+                <span asp-validation-for="PartidoPoliticoId"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <div class="actions">
+
+                <button type="submit"
+                        class="btn-main">
+                    Guardar
+                </button>
+
+                <a asp-action="Index"
+                   class="btn-secondary-custom">
+                    Cancelar
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+    ```
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,30 @@
+﻿@model eVote360Pro.Core.Application.ViewModels.Candidato.SaveCandidatoViewModel
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+
+    <div class="mb-3">
+        <label>Nombre</label>
+        <input asp-for="Nombre" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Apellido</label>
+        <input asp-for="Apellido" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Foto</label>
+        <input asp-for="Foto" type="file" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Partido</label>
+        <select asp-for="PartidoPoliticoId"
+                class="form-select">
+        </select>
+    </div>
+
+    <button class="btn btn-primary">
+        Guardar
+    </button>
+</form>

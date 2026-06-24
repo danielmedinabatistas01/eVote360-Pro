@@ -46,6 +46,15 @@ builder.Services.AddScoped<IEleccionPuestoElectivoRepository, EleccionPuestoElec
 builder.Services.AddScoped<IVotoDetalleRepository, VotoDetalleRepository>();
 builder.Services.AddScoped<IAsignacionCandidatoRepository, AsignacionCandidatoRepository>();
 builder.Services.AddScoped<ICiudadanoRepository, CiudadanoRepository>();
+builder.Services.AddScoped<ICandidatoRepository, CandidatoRepository>();
+builder.Services.AddScoped<IAlianzaPoliticaRepository, AlianzaPoliticaRepository>();
+builder.Services.AddScoped<IPartidoPoliticoRepository, PartidoPoliticoRepository>();
+builder.Services.AddScoped<IPuestoElectivoRepository, PuestoElectivoRepository>();
+builder.Services.AddScoped<IPuestoElectivoService, PuestoElectivoService>();
+builder.Services.AddScoped<ICiudadanoRepository, CiudadanoRepository>();
+builder.Services.AddScoped<IPartidoPoliticoRepository, PartidoPoliticoRepository>();
+builder.Services.AddScoped<IPuestoElectivoRepository, PuestoElectivoRepository>();
+builder.Services.AddScoped<IAsignacionDirigenteRepository, AsignacionDirigenteRepository>();
 
 // Servicios
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
@@ -56,6 +65,13 @@ builder.Services.AddScoped<IVotoDetalleService, VotoDetalleService>();
 builder.Services.AddScoped<IResultadoElectoralService, ResultadoElectoralService>();
 builder.Services.AddScoped<IHomeAdministradorService, HomeAdministradorService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ICandidatoService, CandidatoService>();
+builder.Services.AddScoped<IAlianzaPoliticaService, AlianzaPoliticaService>();
+builder.Services.AddScoped<IAsignacionCandidatoService, AsignacionCandidatoService>();
+builder.Services.AddScoped<ICiudadanoService, CiudadanoService>();
+builder.Services.AddScoped<IPartidoPoliticoService, PartidoPoliticoService>();
+builder.Services.AddScoped<IPuestoElectivoService, PuestoElectivoService>();
+builder.Services.AddScoped<IAsignacionDirigenteService, AsignacionDirigenteService>();
 
 var app = builder.Build();
 

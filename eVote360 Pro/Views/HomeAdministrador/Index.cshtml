@@ -429,36 +429,48 @@
 
                 <div class="quick-actions">
 
-                    <a asp-controller="Usuario"
-                       asp-action="Index"
-                       class="action-btn">
+                    <a asp-controller="Usuario" asp-action="Index" class="action-btn">
                         <i class="bi bi-person-gear"></i>
                         Usuarios
                     </a>
 
-                    <a asp-controller="Eleccion"
-                       asp-action="Index"
-                       class="action-btn">
+                    <a asp-controller="Ciudadano" asp-action="Index" class="action-btn">
+                        <i class="bi bi-person-vcard"></i>
+                        Ciudadanos
+                    </a>
+
+                    <a asp-controller="PartidoPolitico" asp-action="Index" class="action-btn">
+                        <i class="bi bi-flag"></i>
+                        Partidos
+                    </a>
+
+                    <a asp-controller="PuestoElectivo" asp-action="Index" class="action-btn">
+                        <i class="bi bi-award"></i>
+                        Puestos
+                    </a>
+
+                    <a asp-controller="AsignacionDirigente" asp-action="Index" class="action-btn">
+                        <i class="bi bi-person-check"></i>
+                        Dirigentes
+                    </a>
+
+                    <a asp-controller="Eleccion" asp-action="Index" class="action-btn">
                         <i class="bi bi-calendar-check"></i>
                         Elecciones
                     </a>
 
-                    <a asp-controller="ResultadoElectoral"
-                       asp-action="Index"
-                       asp-route-eleccionId="1"
-                       class="action-btn">
+                    <a asp-controller="ResultadoElectoral" asp-action="Index" asp-route-eleccionId="1" class="action-btn">
                         <i class="bi bi-bar-chart"></i>
                         Resultados
                     </a>
 
-                    <a asp-controller="Login"
-                       asp-action="Logout"
-                       class="action-btn secondary">
+                    <a asp-controller="Login" asp-action="Logout" class="action-btn secondary">
                         <i class="bi bi-box-arrow-right"></i>
                         Cerrar sesión
                     </a>
 
                 </div>
+                
             </div>
 
             <div class="content-card">

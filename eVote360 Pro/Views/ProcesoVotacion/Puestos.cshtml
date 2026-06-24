@@ -1,0 +1,156 @@
+﻿@model List<eVote360Pro.Core.Application.ViewModels.ProcesoVotacion.PuestoDisponibleViewModel>
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Puestos Electivos";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>eVote360 Pro</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+            body {
+                background: #F8FAFC;
+                min-height: 100vh;
+            }
+
+            .page-wrapper {
+                padding: 2rem;
+            }
+
+            .content-card {
+                max-width: 900px;
+                margin: auto;
+                background: white;
+                border-radius: 16px;
+                padding: 2rem;
+                border: 1px solid #E5E7EB;
+                box-shadow: 0 4px 12px rgba(0,0,0,.04);
+            }
+
+            .step-grid {
+                display: grid;
+                grid-template-columns: repeat(4,1fr);
+                gap: .75rem;
+                margin-bottom: 2rem;
+            }
+
+            .step-item {
+                text-align: center;
+            }
+
+            .step-number {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background: #1B3A6B;
+                color: white;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+            }
+
+            .step-label {
+                margin-top: .35rem;
+                font-size: .8rem;
+                font-weight: 600;
+                color: #1B3A6B;
+            }
+
+            .page-title {
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+
+            .puesto-card {
+                border: 1px solid #E5E7EB;
+                border-radius: 12px;
+                padding: 1.25rem;
+                margin-bottom: 1rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .btn-votar {
+                background: #2563EB;
+                color: white;
+                border: none;
+            }
+
+                .btn-votar:hover {
+                    background: #1D4ED8;
+                    color: white;
+                }
+    </style>
+</head>
+<body>
+
+    <div class="page-wrapper">
+        <div class="content-card">
+
+            <div class="step-grid">
+                <div class="step-item">
+                    <div class="step-number">✓</div>
+                    <div class="step-label">Documento</div>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">✓</div>
+                    <div class="step-label">Identidad</div>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">✓</div>
+                    <div class="step-label">Código</div>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Votación</div>
+                </div>
+            </div>
+
+            <div class="page-title">
+                <h2>Puestos Electivos Disponibles</h2>
+                <p class="text-muted">
+                    Seleccione un puesto para visualizar los candidatos.
+                </p>
+            </div>
+
+            @foreach (var puesto in Model)
+            {
+                <div class="puesto-card">
+
+                    <div>
+                        <h5 class="mb-1">@puesto.NombrePuesto</h5>
+                        <small class="text-muted">
+                            Partidos participantes: @puesto.CantidadPartidosParticipantes |
+                            Candidatos: @puesto.CantidadCandidatosReales |
+                            Estado: @puesto.EstadoSeleccion
+                        </small>
+                    </div>
+                    <a asp-controller="ProcesoVotacion"
+                       asp-action="SeleccionCandidato"
+                       asp-route-puestoId="@puesto.PuestoElectivoId"
+                       class="btn btn-votar">
+                        <i class="bi bi-check2-square"></i>
+                        Votar
+                    </a>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+</body>
+</html>

@@ -2,16 +2,14 @@
 {
     public class CandidatoSeleccionViewModel
     {
-        public int? CandidatoId { get; set; }
+        public int PuestoElectivoId { get; set; }
+
+        public int CandidatoId { get; set; }
 
         public string NombreCandidato { get; set; } = string.Empty;
 
-        public string NombrePartido { get; set; } = string.Empty;
+        public string PartidoPolitico { get; set; } = string.Empty;
 
-        public string? FotoCandidatoUrl { get; set; }
-
-        public string? LogoPartidoUrl { get; set; }
-
-        public bool EsNinguno { get; set; }
+        public string FotoUrl { get; set; } = string.Empty;
     }
 }

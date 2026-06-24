@@ -1,0 +1,25 @@
+﻿@model eVote360Pro.Core.Application.ViewModels.AlianzaPolitica.SaveAlianzaPoliticaViewModel
+
+<form asp-action="Create" method="post">
+
+    <div class="mb-3">
+        <label>Partido Origen</label>
+
+        <select asp-for="PartidoOrigenId"
+                class="form-select">
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Partido Destino</label>
+
+        <select asp-for="PartidoDestinoId"
+                class="form-select">
+        </select>
+    </div>
+
+    <button class="btn btn-primary">
+        Solicitar Alianza
+    </button>
+
+</form>

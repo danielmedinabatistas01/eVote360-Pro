@@ -1,0 +1,147 @@
+﻿@model eVote360Pro.Core.Application.ViewModels.PuestoElectivo.PuestoElectivoViewModel
+
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Crear Puesto Electivo" : "Editar Puesto Electivo";
+}
+
+<style>
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+        .page-header h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1B3A6B;
+            margin: 0 0 .35rem;
+        }
+
+        .page-header p {
+            font-size: .9rem;
+            color: #6B7280;
+            margin: 0;
+        }
+
+    .content-card {
+        background: #fff;
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 1.5rem;
+        max-width: 700px;
+        margin: 0 auto;
+        box-shadow: 0 4px 12px rgba(0,0,0,.04);
+    }
+
+    .form-label {
+        color: #1B3A6B;
+        font-weight: 600;
+        font-size: .9rem;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #E5E7EB;
+        padding: .75rem;
+    }
+
+        .form-control:focus {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 .2rem rgba(37,99,235,.15);
+        }
+
+    .form-check-input:checked {
+        background-color: #2563EB;
+        border-color: #2563EB;
+    }
+
+    .btn-main {
+        background: #2563EB;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: .65rem 1rem;
+        font-size: .9rem;
+        font-weight: 600;
+    }
+
+        .btn-main:hover {
+            background: #1D4ED8;
+            color: white;
+        }
+
+    .btn-back {
+        background: #F8FAFC;
+        color: #1B3A6B;
+        border: 1px solid #E5E7EB;
+        border-radius: 8px;
+        padding: .65rem 1rem;
+        font-size: .9rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-back:hover {
+            background: #EEF2FF;
+            color: #1B3A6B;
+        }
+
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: .75rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+    }
+</style>
+
+<div class="page-header">
+    <h1>@(Model.Id == 0 ? "Crear Puesto Electivo" : "Editar Puesto Electivo")</h1>
+    <p>Complete los datos del cargo electoral.</p>
+</div>
+
+<div class="content-card">
+
+    <form asp-action="@(Model.Id == 0 ? "Create" : "Edit")" method="post">
+        @Html.AntiForgeryToken()
+
+        <input asp-for="Id" type="hidden" />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="Nombre" class="form-label">Nombre del puesto</label>
+            <input asp-for="Nombre" class="form-control" placeholder="Ej. Presidente, Senador, Diputado" />
+            <span asp-validation-for="Nombre" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Descripcion" class="form-label">Descripción</label>
+            <textarea asp-for="Descripcion"
+                      class="form-control"
+                      rows="4"
+                      placeholder="Describa brevemente el puesto electivo"></textarea>
+            <span asp-validation-for="Descripcion" class="text-danger small"></span>
+        </div>
+
+        <div class="form-check mb-3">
+            <input asp-for="EsActivo" class="form-check-input" />
+            <label asp-for="EsActivo" class="form-check-label">
+                Puesto activo
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn-back">
+                <i class="bi bi-arrow-left"></i>
+                Volver
+            </a>
+
+            <button type="submit" class="btn-main">
+                <i class="bi bi-check-circle"></i>
+                @(Model.Id == 0 ? "Crear Puesto" : "Guardar Cambios")
+            </button>
+        </div>
+    </form>
+
+</div>

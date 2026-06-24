@@ -101,12 +101,6 @@
         text-decoration: none;
     }
 
-        .btn-edit:hover {
-            background: #FEF3C7;
-            color: #92400E;
-            text-decoration: none;
-        }
-
     .btn-delete {
         background: #FEF2F2;
         color: #B91C1C;
@@ -116,12 +110,6 @@
         font-weight: 600;
         text-decoration: none;
     }
-
-        .btn-delete:hover {
-            background: #FEE2E2;
-            color: #991B1B;
-            text-decoration: none;
-        }
 
     .btn-success-custom {
         background: #ECFDF5;
@@ -150,6 +138,23 @@
 </div>
 
 <div class="content-card">
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle-fill"></i>
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
     <div class="top-actions">
         <a asp-action="Create" class="btn-main">Nueva elección</a>
         <a asp-controller="HomeAdministrador" asp-action="Index" class="btn-edit">Volver al Home</a>
@@ -174,15 +179,29 @@
                     <td>@item.EstadoEleccion</td>
                     <td>
                         <div class="actions">
-                            @if (item.EstadoEleccion == EstadoEleccion.Configurada || item.EstadoEleccion == EstadoEleccion.Pendiente)
+
+                            @if (item.EstadoEleccion == EstadoEleccion.Pendiente)
                             {
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn-edit">Editar</a>
-                                <a asp-action="Activar" asp-route-id="@item.Id" class="btn-success-custom">Activar</a>
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.Id"
+                                   class="btn-edit">
+                                    Editar
+                                </a>
+
+                                <a asp-action="Activar"
+                                   asp-route-id="@item.Id"
+                                   class="btn-success-custom">
+                                    Activar
+                                </a>
                             }
 
                             @if (item.EstadoEleccion == EstadoEleccion.Activa)
                             {
-                                <a asp-action="Finalizar" asp-route-id="@item.Id" class="btn-delete">Finalizar</a>
+                                <a asp-action="Finalizar"
+                                   asp-route-id="@item.Id"
+                                   class="btn-delete">
+                                    Finalizar
+                                </a>
                             }
 
                             @if (item.EstadoEleccion == EstadoEleccion.Finalizada)
@@ -194,6 +213,7 @@
                                     Resultados
                                 </a>
                             }
+
                         </div>
                     </td>
                 </tr>

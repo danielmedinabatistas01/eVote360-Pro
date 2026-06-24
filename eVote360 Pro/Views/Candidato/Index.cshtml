@@ -1,0 +1,271 @@
+﻿@model List<eVote360Pro.Core.Application.ViewModels.Candidato.CandidatoViewModel>
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Candidatos";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Candidatos - eVote360 Pro</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+            body {
+                background: #F8FAFC;
+                min-height: 100vh;
+            }
+
+            .navbar-custom {
+                background: white;
+                border-bottom: 1px solid #E5E7EB;
+                padding: 1rem 2rem;
+            }
+
+            .brand-title {
+                color: #1B3A6B;
+                font-size: 1.8rem;
+                font-weight: 700;
+                margin: 0;
+            }
+
+            .logo-box {
+                width: 54px;
+                height: 54px;
+                background: #EEF2FF;
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .page-wrapper {
+                min-height: calc(100vh - 90px);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 2rem;
+            }
+
+            .content-card {
+                width: 100%;
+                max-width: 1100px;
+                background: white;
+                border: 1px solid #E5E7EB;
+                border-radius: 16px;
+                padding: 2rem;
+                box-shadow: 0 4px 12px rgba(0,0,0,.04);
+            }
+
+            .page-header {
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+
+            .icon-box {
+                width: 70px;
+                height: 70px;
+                background: #EFF6FF;
+                border-radius: 14px;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 1rem;
+            }
+
+            .page-header h1 {
+                color: #1B3A6B;
+                font-weight: 700;
+            }
+
+            .page-header p {
+                color: #6B7280;
+            }
+
+            .btn-main {
+                background: #2563EB;
+                color: white;
+                border-radius: 8px;
+                padding: .65rem 1rem;
+                font-weight: 600;
+                text-decoration: none;
+                border: none;
+            }
+
+                .btn-main:hover {
+                    background: #1D4ED8;
+                    color: white;
+                }
+
+            .btn-warning-custom {
+                background: #FEF3C7;
+                color: #92400E;
+                border-radius: 8px;
+                padding: .45rem .8rem;
+                font-weight: 600;
+                text-decoration: none;
+            }
+
+            .btn-danger-custom {
+                background: #FEE2E2;
+                color: #B91C1C;
+                border-radius: 8px;
+                padding: .45rem .8rem;
+                font-weight: 600;
+                text-decoration: none;
+            }
+
+            .table {
+                border-color: #E5E7EB;
+            }
+
+                .table thead th {
+                    color: #1B3A6B;
+                    background: #F8FAFC;
+                }
+
+            .candidate-photo {
+                width: 60px;
+                height: 60px;
+                border-radius: 12px;
+                object-fit: cover;
+                border: 1px solid #E5E7EB;
+            }
+
+            .badge-active {
+                background: #DCFCE7;
+                color: #166534;
+                padding: .35rem .65rem;
+                border-radius: 999px;
+                font-weight: 600;
+            }
+
+            .badge-inactive {
+                background: #FEE2E2;
+                color: #991B1B;
+                padding: .35rem .65rem;
+                border-radius: 999px;
+                font-weight: 600;
+            }
+
+            .logout-btn {
+                border: 1px solid #1B3A6B;
+                color: #1B3A6B;
+                font-weight: 600;
+            }
+
+                .logout-btn:hover {
+                    background: #1B3A6B;
+                    color: white;
+                }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-custom">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center gap-3">
+                <div class="logo-box">
+                    <i class="bi bi-ballot-check fs-3 text-primary"></i>
+                </div>
+
+                <h1 class="brand-title">eVote360 Pro</h1>
+            </div>
+
+            <a asp-controller="Login"
+               asp-action="Logout"
+               class="btn logout-btn">
+                <i class="bi bi-box-arrow-right"></i>
+                Cerrar sesión
+            </a>
+        </div>
+    </nav>
+
+    <main class="page-wrapper">
+        <div class="content-card">
+
+            <div class="page-header">
+                <div class="icon-box">
+                    <i class="bi bi-people-fill fs-2 text-primary"></i>
+                </div>
+
+                <h1>Candidatos</h1>
+                <p>Gestionar candidatos del partido político.</p>
+            </div>
+
+            <div class="d-flex justify-content-end mb-3">
+                <a asp-action="Create" class="btn-main">
+                    <i class="bi bi-plus-circle"></i>
+                    Nuevo Candidato
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead>
+                        <tr>
+                            <th>Foto</th>
+                            <th>Nombre</th>
+                            <th>Partido</th>
+                            <th>Estado</th>
+                            <th width="220">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <img src="@item.FotoUrl"
+                                         class="candidate-photo" />
+                                </td>
+
+                                <td>@item.Nombre @item.Apellido</td>
+                                <td>@item.PartidoPoliticoId</td>
+
+                                <td>
+                                    @if (item.Estado)
+                                    {
+                                        <span class="badge-active">Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-inactive">Inactivo</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn-warning-custom">
+                                            <i class="bi bi-pencil-square"></i>
+                                            Editar
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                           asp-route-id="@item.Id"
+                                           class="btn-danger-custom">
+                                            <i class="bi bi-trash"></i>
+                                            Eliminar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

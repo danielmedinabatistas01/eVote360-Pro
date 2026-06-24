@@ -85,6 +85,7 @@ namespace eVote360Pro.Infrastructure.Shared.Services
             {
                 Console.WriteLine(ex.ToString());
                 _logger.LogError(ex, "Ocurrió un error enviando el correo.");
+                throw;
             }
         }
     }

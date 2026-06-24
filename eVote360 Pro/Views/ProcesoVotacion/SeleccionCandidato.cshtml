@@ -1,0 +1,153 @@
+﻿@model List<eVote360Pro.Core.Application.ViewModels.ProcesoVotacion.CandidatoSeleccionViewModel>
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Seleccionar Candidato";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>eVote360 Pro</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+            body {
+                background: #F8FAFC;
+                min-height: 100vh;
+            }
+
+            .page-wrapper {
+                padding: 2rem;
+            }
+
+            .content-card {
+                max-width: 1000px;
+                margin: auto;
+                background: white;
+                border-radius: 16px;
+                padding: 2rem;
+                border: 1px solid #E5E7EB;
+                box-shadow: 0 4px 12px rgba(0,0,0,.04);
+            }
+
+            .page-title {
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+
+            .candidate-card {
+                border: 1px solid #E5E7EB;
+                border-radius: 14px;
+                padding: 1.5rem;
+                text-align: center;
+                background: #FFFFFF;
+                height: 100%;
+            }
+
+            .candidate-icon {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                background: #EFF6FF;
+                color: #1B3A6B;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 1rem;
+            }
+
+            .btn-votar {
+                background: #2563EB;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-weight: 600;
+                padding: .7rem 1rem;
+            }
+
+                .btn-votar:hover {
+                    background: #1D4ED8;
+                    color: white;
+                }
+
+            .btn-volver {
+                border: 1px solid #1B3A6B;
+                color: #1B3A6B;
+                border-radius: 8px;
+                font-weight: 600;
+            }
+
+                .btn-volver:hover {
+                    background: #1B3A6B;
+                    color: white;
+                }
+    </style>
+</head>
+
+<body>
+
+    <div class="page-wrapper">
+        <div class="content-card">
+
+            <div class="page-title">
+                <h2>Seleccionar Candidato</h2>
+                <p class="text-muted">
+                    Elija el candidato por el cual desea votar para este puesto.
+                </p>
+            </div>
+
+            <div class="row g-4">
+                @foreach (var candidato in Model)
+                {
+                    <div class="col-md-4">
+                        <div class="candidate-card">
+
+                            <div class="candidate-icon">
+                                <i class="bi bi-person-fill fs-1"></i>
+                            </div>
+
+                            <h5>@candidato.NombreCandidato</h5>
+
+                            <p class="text-muted">
+                                @candidato.PartidoPolitico
+                            </p>
+
+                            <form asp-controller="ProcesoVotacion"
+                                  asp-action="SeleccionCandidato"
+                                  method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden" name="puestoId" value="@candidato.PuestoElectivoId" />
+                                <input type="hidden" name="candidatoId" value="@candidato.CandidatoId" />
+
+                                <button type="submit" class="btn btn-votar w-100">
+                                    <i class="bi bi-check2-circle"></i>
+                                    Seleccionar
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="text-center mt-4">
+                <a asp-controller="ProcesoVotacion"
+                   asp-action="Puestos"
+                   class="btn btn-volver">
+                    <i class="bi bi-arrow-left"></i>
+                    Volver a puestos
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
