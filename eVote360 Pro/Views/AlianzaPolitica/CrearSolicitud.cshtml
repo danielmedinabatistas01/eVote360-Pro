@@ -1,0 +1,33 @@
+@using eVote360Pro.Core.Application.ViewModels.AlianzaPolitica
+@model AlianzaPoliticaViewModel
+
+<div class="confirm-wrapper">
+
+    <form method="post">
+
+        <div class="content-card">
+
+            <h1>Crear Solicitud</h1>
+
+            <div class="mb-3">
+
+                <label>Partido Destino</label>
+
+                <select asp-for="PartidoDestinoId"
+                        asp-items="@(new SelectList(ViewBag.PartidosDestino, "Id", "Nombre"))"
+                        class="form-select">
+                    <option value="">Seleccione un partido...</option>
+                </select>
+
+            </div>
+
+            <button type="submit"
+                    class="btn-main">
+                Enviar Solicitud
+            </button>
+
+        </div>
+
+    </form>
+
+</div>

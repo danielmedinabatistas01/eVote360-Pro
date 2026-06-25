@@ -13,22 +13,36 @@ namespace eVote360Pro.Core.Application.Services
         private readonly ICandidatoRepository _candidatoRepository;
         private readonly IEleccionRepository _eleccionRepository;
         private readonly IAsignacionCandidatoRepository _asignacionRepository;
+        private readonly IUserSession _userSession;
+        private readonly IPartidoPoliticoRepository _partidoRepository;
 
         public CandidatoService(
             ICandidatoRepository candidatoRepository,
             IEleccionRepository eleccionRepository,
             IAsignacionCandidatoRepository asignacionRepository,
-            IMapper mapper)
+            IUserSession userSession,
+            IMapper mapper,
+            IPartidoPoliticoRepository partido)
             : base(candidatoRepository, mapper)
         {
-            _candidatoRepository =
-                candidatoRepository;
+            _candidatoRepository = candidatoRepository;
+            _eleccionRepository = eleccionRepository;
+            _asignacionRepository = asignacionRepository;
+            _userSession = userSession;
+            _partidoRepository = partido;
+        }
 
-            _eleccionRepository =
-                eleccionRepository;
+        public async Task<List<CandidatoDto>>
+    GetByPartidoPoliticoAsync(
+        int partidoPoliticoId)
+        {
+            var candidatos =
+                await _candidatoRepository
+                    .GetByPartidoPoliticoAsync(
+                        partidoPoliticoId);
 
-            _asignacionRepository =
-                asignacionRepository;
+            return _mapper.Map<List<CandidatoDto>>(
+                candidatos);
         }
         public async Task<List<CandidatoDto>> GetActivosAsync()
         {
@@ -109,6 +123,53 @@ namespace eVote360Pro.Core.Application.Services
         public override async Task AddAsync(
     CandidatoDto dto)
         {
+            var usuario = _userSession.GetUserSession();
+
+            if (!_userSession.IsDirigente())
+            {
+                throw new Exception(
+
+                    "Solo los dirigentes pueden crear candidatos.");
+
+
+            }
+
+            if (!usuario.PartidoPoliticoId.HasValue)
+            {
+                throw new Exception(
+
+                    "No tiene un partido político asignado.");
+            }
+
+            if (dto.PartidoPoliticoId <= 0)
+            {
+                throw new Exception(
+                    "No puede crear candidatos porque no tiene un partido político asignado.");
+            }
+
+            var partido = await _partidoRepository
+                .GetById(dto.PartidoPoliticoId);
+
+            if (partido == null)
+            {
+                throw new Exception(
+                    "No puede crear candidatos porque el partido político asignado no existe.");
+            }
+
+            if (!partido.EsActivo)
+            {
+                throw new Exception(
+                    "No puede crear candidatos porque el partido político asignado se encuentra inactivo.");
+            }
+
+            if (await _eleccionRepository.ExisteEleccionActivaAsync())
+            {
+                throw new Exception(
+                    "No se puede crear un candidato mientras exista una elección activa.");
+            }
+
+
+
             if (string.IsNullOrWhiteSpace(
                 dto.Nombre))
             {
@@ -147,6 +208,14 @@ namespace eVote360Pro.Core.Application.Services
     int id,
     CandidatoDto dto)
         {
+
+            var usuario = _userSession.GetUserSession();
+
+            if (usuario == null)
+            {
+                throw new Exception("Debe iniciar sesión.");
+            }
+
             var candidato =
                 await _candidatoRepository
                     .GetById(id);
@@ -165,6 +234,13 @@ namespace eVote360Pro.Core.Application.Services
             {
                 throw new Exception(
                     "No se puede editar un candidato mientras exista una elección activa.");
+            }
+
+            if (candidato.PartidoPoliticoId !=
+                usuario.PartidoPoliticoId)
+            {
+                throw new Exception(
+                    "No puede modificar candidatos de otros partidos.");
             }
 
             bool participo =

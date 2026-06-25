@@ -87,13 +87,13 @@
         gap: .75rem;
         margin-top: 1.5rem;
         flex-wrap: wrap;
-    }
+}
 </style>
 
 <div class="page-header">
     <h1>@(Model.Id == 0 ? "Nueva Asignación" : "Editar Asignación")</h1>
     <p>Seleccione el usuario dirigente y el partido político correspondiente.</p>
-</div>
+        </div>
 
 <div class="content-card">
 
@@ -102,37 +102,39 @@
 
         <input asp-for="Id" type="hidden" />
 
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <form asp-action="@(isEdit ? "Edit" : "Create")" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="Id" />
 
-        <div class="mb-3">
+                <div class="mb-3">
             <label asp-for="UsuarioId" class="form-label">Dirigente político</label>
-            <select asp-for="UsuarioId" class="form-select">
+                    <select asp-for="UsuarioId" class="form-select">
                 <option value="">Seleccione un dirigente</option>
 
                 @foreach (var usuario in ViewBag.UsuariosDirigentes)
-                {
+                            {
                     <option value="@usuario.Id">
                         @usuario.Nombre @usuario.Apellido - @usuario.NombreUsuario
                     </option>
-                }
-            </select>
-            <span asp-validation-for="UsuarioId" class="text-danger small"></span>
-        </div>
+                        }
+                    </select>
+                    <span asp-validation-for="UsuarioId" class="text-danger small"></span>
+                </div>
 
-        <div class="mb-3">
+                <div class="mb-3">
             <label asp-for="PartidoPoliticoId" class="form-label">Partido político</label>
-            <select asp-for="PartidoPoliticoId" class="form-select">
+                    <select asp-for="PartidoPoliticoId" class="form-select">
                 <option value="">Seleccione un partido</option>
 
                 @foreach (var partido in ViewBag.PartidosPoliticos)
-                {
+                            {
                     <option value="@partido.Id">
                         @partido.Nombre
                     </option>
-                }
-            </select>
-            <span asp-validation-for="PartidoPoliticoId" class="text-danger small"></span>
-        </div>
+                        }
+                    </select>
+                    <span asp-validation-for="PartidoPoliticoId" class="text-danger small"></span>
+                </div>
 
         <div class="form-actions">
             <a asp-action="Index" class="btn-back">
@@ -144,7 +146,15 @@
                 <i class="bi bi-check-circle"></i>
                 Guardar Asignación
             </button>
-        </div>
-    </form>
+                </div>
+            </form>
 
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

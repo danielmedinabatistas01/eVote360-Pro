@@ -1,14 +1,18 @@
 using eVote360_Pro.Middlewares;
+using eVote360Pro.Core.Application;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.Mappings;
 using eVote360Pro.Core.Application.Services;
 using eVote360Pro.Core.Domain.Interfaces;
-using eVote360Pro.Infrastructure.Persistence;
 using eVote360Pro.Core.Domain.Settings;
+using eVote360Pro.Infrastructure.Persistence;
 using eVote360Pro.Infrastructure.Persistence.Contexts;
 using eVote360Pro.Infrastructure.Persistence.Repositories;
 using eVote360Pro.Infrastructure.Shared.Services;
+using InvestmentApp.Infrastructure.Shared;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using eVote360Pro.Core.Application.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,9 +37,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.Configure<MailSettings>(
     builder.Configuration.GetSection("MailSettings"));
 
-builder.Services.AddAutoMapper(typeof(GeneralProfile).Assembly);
+builder.Services.AddPersistenceLayerIoc();
+builder.Services.AddApplicationLayerIoc();
+builder.Services.AddSharedLayerIoc(builder.Configuration);
 
-// Repositorios
+
+/* Repositorios
 //builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 //builder.Services.AddScoped<IEleccionRepository, EleccionRepository>();
 builder.Services.AddScoped<IEleccionPuestoElectivoRepository, EleccionPuestoElectivoRepository>();
@@ -45,6 +52,10 @@ builder.Services.AddScoped<IVotoRepository, VotoRepository>();
 builder.Services.AddScoped<IEleccionPuestoElectivoRepository, EleccionPuestoElectivoRepository>();
 builder.Services.AddScoped<IVotoDetalleRepository, VotoDetalleRepository>();
 builder.Services.AddScoped<IAsignacionCandidatoRepository, AsignacionCandidatoRepository>();
+builder.Services.AddScoped<ICandidatoRepository,CandidatoRepository>();
+builder.Services.AddScoped<ICodigoVerificacionRepository,CodigoVerificacionRepository>();
+builder.Services.AddScoped<IPuestoElectivoRepository,PuestoElectivoRepository>();
+builder.Services.AddScoped<IAlianzaPoliticaRepository,AlianzaPoliticaRepository>();
 builder.Services.AddScoped<ICiudadanoRepository, CiudadanoRepository>();
 builder.Services.AddScoped<ICandidatoRepository, CandidatoRepository>();
 builder.Services.AddScoped<IAlianzaPoliticaRepository, AlianzaPoliticaRepository>();
@@ -56,7 +67,7 @@ builder.Services.AddScoped<IPartidoPoliticoRepository, PartidoPoliticoRepository
 builder.Services.AddScoped<IPuestoElectivoRepository, PuestoElectivoRepository>();
 builder.Services.AddScoped<IAsignacionDirigenteRepository, AsignacionDirigenteRepository>();
 
-// Servicios
+/* Servicios
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IEleccionService, EleccionService>();
 builder.Services.AddScoped<IVotoService, VotoService>();
@@ -93,6 +104,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-  pattern: "{controller=ProcesoVotacion}/{action=Index}/{id?}");
+   pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
 
 await app.RunAsync();

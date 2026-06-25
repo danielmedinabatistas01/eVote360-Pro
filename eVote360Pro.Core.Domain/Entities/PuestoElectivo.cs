@@ -8,6 +8,9 @@ namespace eVote360Pro.Core.Domain.Entities
         public required string Descripcion { get; set; }
         public required bool EsActivo { get; set; }
         public ICollection<AsignacionCandidato> AsignacionesCandidatos { get; set; }
+            = new List<AsignacionCandidato>();
+
         public ICollection<EleccionPuestoElectivo> Elecciones { get; set; }
+            = new List<EleccionPuestoElectivo>();
     }
 }

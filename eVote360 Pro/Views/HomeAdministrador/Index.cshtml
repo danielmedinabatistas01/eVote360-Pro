@@ -1,4 +1,5 @@
-﻿@model eVote360Pro.Core.Application.ViewModels.HomeAdministrador.HomeAdministradorViewModel
+@using eVote360Pro.Core.Application.ViewModels.HomeAdministrador
+@model HomeAdministradorViewModel
 
 @{
     Layout = null;
@@ -313,92 +314,23 @@
     <nav class="navbar navbar-custom">
         <div class="container-fluid">
 
-            <div class="navbar-brand-wrapper">
-                <div class="logo-box">
-                    <i class="bi bi-ballot-check fs-3 text-primary"></i>
-                </div>
+        <a asp-controller="PuestoElectivo"
+           asp-action="Index"
+           class="action-btn">
+            Puestos Electivos
+        </a>
 
-                <h1 class="brand-title">eVote360 Pro</h1>
-            </div>
+        <a asp-controller="Ciudadano"
+           asp-action="Index"
+           class="action-btn">
+            Ciudadanos
+        </a>
 
-            <a asp-controller="Login"
-               asp-action="Logout"
-               class="btn logout-btn">
-                <i class="bi bi-box-arrow-right"></i>
-                Cerrar sesión
-            </a>
-
-        </div>
-    </nav>
-
-    <main class="page-wrapper">
-        <div class="page-container">
-
-            <div class="page-header">
-                <div class="header-card">
-
-                    <div class="header-info">
-                        <div class="icon-box">
-                            <i class="bi bi-speedometer2 fs-3"></i>
-                        </div>
-
-                        <div>
-                            <h1>Panel de Administración</h1>
-                            <p>Resumen general del sistema electoral.</p>
-                        </div>
-                    </div>
-
-                    <form asp-controller="HomeAdministrador"
-                          asp-action="Index"
-                          method="get"
-                          class="year-select">
-
-                        <label class="form-label">Año</label>
-
-                        <select name="anio"
-                                class="form-select"
-                                onchange="this.form.submit()">
-
-                            @foreach (var anio in Model.AniosDisponibles)
-                            {
-                                if (Model.Anio == anio)
-                                {
-                                    <option value="@anio" selected>@anio</option>
-                                }
-                                else
-                                {
-                                    <option value="@anio">@anio</option>
-                                }
-                            }
-                        </select>
-                    </form>
-
-                </div>
-            </div>
-
-            <div class="stats-grid">
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-calendar-event fs-4"></i>
-                    </div>
-
-                    <div>
-                        <div class="stat-title">Total elecciones</div>
-                        <div class="stat-value">@totalElecciones</div>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-flag fs-4"></i>
-                    </div>
-
-                    <div>
-                        <div class="stat-title">Partidos participantes</div>
-                        <div class="stat-value">@totalPartidos</div>
-                    </div>
-                </div>
+        <a asp-controller="PartidoPolitico"
+           asp-action="Index"
+           class="action-btn">
+            Partidos Políticos
+        </a>
 
                 <div class="stat-card">
                     <div class="stat-icon">

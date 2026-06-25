@@ -1,32 +1,42 @@
-﻿using AutoMapper;
+using AutoMapper;
 using eVote360Pro.Core.Application.Dtos;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.ViewModels.AsignacionDirigente;
+//using eVote360Pro.Core.Application.ViewModels.Dirigente;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eVote360Pro.Controllers
 {
-    public class AsignacionDirigenteController : Controller
+    public class DirigenteController : Controller
     {
         private readonly IAsignacionDirigenteService _service;
         private readonly IUsuarioService _usuarioService;
         private readonly IPartidoPoliticoService _partidoService;
         private readonly IMapper _mapper;
+        private readonly IUserSession _userSession;
 
-        public AsignacionDirigenteController(
+        public DirigenteController(
             IAsignacionDirigenteService service,
             IUsuarioService usuarioService,
             IPartidoPoliticoService partidoService,
-            IMapper mapper)
+            IMapper mapper,
+            IUserSession userSession)
         {
             _service = service;
             _usuarioService = usuarioService;
             _partidoService = partidoService;
             _mapper = mapper;
+            _userSession = userSession;
         }
 
         public async Task<IActionResult> Index()
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             var asignaciones = await _service.GetAllAsync();
 
             return View(
@@ -35,7 +45,12 @@ namespace eVote360Pro.Controllers
 
         public async Task<IActionResult> Create()
         {
-            // Se deben cargar los listados de usuarios y partidos para el dropdown en la vista
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             ViewBag.UsuariosDirigentes = await _usuarioService.GetAllAsync();
             ViewBag.PartidosPoliticos = await _partidoService.GetAllAsync();
 
@@ -46,9 +61,14 @@ namespace eVote360Pro.Controllers
         public async Task<IActionResult> Create(
             SaveAsignacionDirigenteViewModel vm)
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             if (!ModelState.IsValid)
             {
-                // si el modelo no es válido, recargar los listados para el dropdown y retornar la vista con el modelo actual
                 ViewBag.UsuariosDirigentes = await _usuarioService.GetAllAsync();
                 ViewBag.PartidosPoliticos = await _partidoService.GetAllAsync();
                 return View("Save", vm);
@@ -63,6 +83,12 @@ namespace eVote360Pro.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             var dto = await _service.GetByIdAsync(id);
 
             if (dto == null)
@@ -80,6 +106,12 @@ namespace eVote360Pro.Controllers
         public async Task<IActionResult> Edit(
             SaveAsignacionDirigenteViewModel vm)
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             if (!ModelState.IsValid)
             {
                 ViewBag.UsuariosDirigentes = await _usuarioService.GetAllAsync();
@@ -96,6 +128,12 @@ namespace eVote360Pro.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
             await _service.DeleteAsync(id);
 
             return RedirectToAction(nameof(Index));

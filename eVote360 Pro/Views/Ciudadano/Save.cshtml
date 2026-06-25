@@ -1,4 +1,4 @@
-﻿@model eVote360Pro.Core.Application.ViewModels.Ciudadano.CiudadanoViewModel
+@model eVote360Pro.Core.Application.ViewModels.Ciudadano.CiudadanoViewModel
 
 @{
     ViewData["Title"] = Model.Id == 0 ? "Registrar Ciudadano" : "Editar Ciudadano";
@@ -20,6 +20,18 @@
                 <input asp-for="Id" type="hidden" />
 
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="Id" />
+                @if (isEdit)
+                {
+                    <div class="mb-3 form-check">
+                        <input asp-for="EsActivo" type="checkbox" class="form-check-input" />
+                        <label asp-for="EsActivo" class="form-check-label">Habilitado / Activo</label>
+                    </div>
+                }
+                else
+                {
+                    <input type="hidden" asp-for="EsActivo" />
+                }
 
                 <div class="mb-3">
                     <label asp-for="NumeroIdentificacion" class="form-label">Cédula / Documento</label>

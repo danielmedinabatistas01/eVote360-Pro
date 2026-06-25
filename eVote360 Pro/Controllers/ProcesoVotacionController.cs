@@ -1,160 +1,495 @@
-﻿using eVote360Pro.Core.Application.DTOs.Email;
+using eVote360_Pro.Helpers;
+using eVote360Pro.Core.Application.Dtos;
+using eVote360Pro.Core.Application.DTOs;
+using eVote360Pro.Core.Application.DTOs.Email;
 using eVote360Pro.Core.Application.Interfaces;
+using eVote360Pro.Core.Application.ViewModels.Ocr;
+using eVote360Pro.Core.Application.ViewModels.Voto;
 using eVote360Pro.Core.Application.ViewModels.ProcesoVotacion;
+using eVote360Pro.Core.Application.ViewModels.CodigoVerificacion;
+using eVote360Pro.Core.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace eVote360Pro.Web.Controllers
 {
     public class ProcesoVotacionController : Controller
     {
+        private readonly IProcesoVotacionService _procesoService;
+        private readonly IVotoService _votoService;
+        private readonly IVotoDetalleService _votoDetalleService;
+        private readonly IEleccionService _eleccionService;
+        private readonly ICiudadanoRepository _ciudadanoRepository;
         private readonly IEmailService _emailService;
+        private readonly IAsignacionCandidatoService _asignacionCandidatoService;
         private readonly IPuestoElectivoService _puestoElectivoService;
+        private readonly ICandidatoService _candidatoService;
+        private readonly IPartidoPoliticoService _partidoPoliticoService;
+        private readonly IEleccionPuestoElectivoService _eleccionPuestoElectivoService;
 
         public ProcesoVotacionController(
+            IProcesoVotacionService procesoService,
+            IVotoService votoService,
+            IVotoDetalleService votoDetalleService,
+            IEleccionService eleccionService,
+            ICiudadanoRepository ciudadanoRepository,
             IEmailService emailService,
-            IPuestoElectivoService puestoElectivoService)
+            IAsignacionCandidatoService asignacionCandidatoService,
+            IPuestoElectivoService puestoElectivoService,
+            ICandidatoService candidatoService,
+            IPartidoPoliticoService partidoPoliticoService,
+            IEleccionPuestoElectivoService eleccionPuestoElectivoService)
         {
+            _procesoService = procesoService;
+            _votoService = votoService;
+            _votoDetalleService = votoDetalleService;
+            _eleccionService = eleccionService;
+            _ciudadanoRepository = ciudadanoRepository;
             _emailService = emailService;
+            _asignacionCandidatoService = asignacionCandidatoService;
             _puestoElectivoService = puestoElectivoService;
+            _candidatoService = candidatoService;
+            _partidoPoliticoService = partidoPoliticoService;
+            _eleccionPuestoElectivoService = eleccionPuestoElectivoService;
         }
 
+
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(new IniciarVotacionViewModel());
+
+            bool activeElection = await _eleccionService.ExisteEleccionActivaAsync();
+            if (!activeElection)
+            {
+                TempData["ErrorMessage"] = "No hay una elección activa en este momento. Vuelva más tarde.";
+            }
+
+            return View(new eVote360Pro.Core.Application.ViewModels.ProcesoVotacion.IniciarVotacionViewModel());
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Index(IniciarVotacionViewModel vm)
+        public async Task<IActionResult> Index(eVote360Pro.Core.Application.ViewModels.ProcesoVotacion.IniciarVotacionViewModel vm)
         {
             if (!ModelState.IsValid)
+            {
                 return View(vm);
+            }
 
-            TempData["DocumentoIdentidad"] = vm.DocumentoIdentidad;
+            try
+            {
+                var activeElection = await _eleccionService.GetEleccionActivaAsync();
+                if (activeElection == null)
+                {
+                    ModelState.AddModelError("", "No hay una elección activa en este momento.");
+                    return View(vm);
+                }
 
-            return RedirectToAction(nameof(ValidacionOcr));
+                var ciudadano = await _ciudadanoRepository.GetByCedulaAsync(vm.DocumentoIdentidad);
+                if (ciudadano == null)
+                {
+                    ModelState.AddModelError("", "La cédula ingresada no se encuentra registrada.");
+                    return View(vm);
+                }
+
+                if (!ciudadano.EsActivo)
+                {
+                    ModelState.AddModelError("", "Este ciudadano se encuentra inactivo.");
+                    return View(vm);
+                }
+
+                bool yaVoto = await _votoService.CiudadanoYaVotoAsync(ciudadano.Id, activeElection.Id);
+                if (yaVoto)
+                {
+                    ModelState.AddModelError("", "El ciudadano ya votó en esta elección.");
+                    return View(vm);
+                }
+
+
+                HttpContext.Session.SetInt32("CiudadanoId", ciudadano.Id);
+                HttpContext.Session.SetString("CiudadanoEmail", ciudadano.CorreoElectronico);
+                HttpContext.Session.SetString("CiudadanoNombre", $"{ciudadano.Nombre} {ciudadano.Apellido}");
+                HttpContext.Session.SetString("Cedula", vm.DocumentoIdentidad);
+                HttpContext.Session.SetInt32("EleccionId", activeElection.Id);
+                HttpContext.Session.SetString("CodigoVerificado", "false");
+
+                return RedirectToAction(nameof(ValidacionOcr));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(vm);
+            }
         }
+
 
         [HttpGet]
         public IActionResult ValidacionOcr()
         {
-            var documento = TempData["DocumentoIdentidad"]?.ToString();
-
-            if (string.IsNullOrWhiteSpace(documento))
-                return RedirectToAction(nameof(Index));
-
-            TempData.Keep("DocumentoIdentidad");
-
-            return View(new ProcesoVotacionOcrViewModel
+            string? cedula = HttpContext.Session.GetString("Cedula");
+            if (string.IsNullOrEmpty(cedula))
             {
-                DocumentoIdentidad = documento
-            });
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(new OcrViewModel { Cedula = cedula });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ValidacionOcr(ProcesoVotacionOcrViewModel vm)
+        public async Task<IActionResult> ValidacionOcr(OcrViewModel vm)
         {
             if (!ModelState.IsValid)
-                return View(vm);
-
-            var codigo = new Random().Next(100000, 999999).ToString();
-
-            TempData["DocumentoIdentidad"] = vm.DocumentoIdentidad;
-            TempData["CodigoVerificacion"] = codigo;
-
-            await _emailService.SendAsync(new EmailRequestDTO
             {
-                To = "franklinjosebaex@gmail.com",
-                Subject = "Código de verificación - eVote360 Pro",
-                HtmlBody = $@"
-                    <h2>eVote360 Pro</h2>
-                    <p>Su código de verificación es:</p>
-                    <h1>{codigo}</h1>
-                    <p>Este código es personal y no debe compartirlo.</p>"
-            });
+                return View(vm);
+            }
 
-            return RedirectToAction(nameof(Codigo));
+            int? ciudadanoId = HttpContext.Session.GetInt32("CiudadanoId");
+            int? eleccionId = HttpContext.Session.GetInt32("EleccionId");
+            string? email = HttpContext.Session.GetString("CiudadanoEmail");
+            string? nombre = HttpContext.Session.GetString("CiudadanoNombre");
+
+            if (ciudadanoId == null || eleccionId == null || string.IsNullOrEmpty(email))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            string? ruta = null;
+            string? rutaFisica = null;
+            try
+            {
+                ruta = FileManager.Upload(vm.ImagenCedula, 0, "cedulas");
+                if (string.IsNullOrEmpty(ruta))
+                {
+                    ModelState.AddModelError("", "Debe cargar una imagen válida.");
+                    return View(vm);
+                }
+
+                rutaFisica = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", ruta);
+
+                bool coincide = await _procesoService.ValidarIdentidadOcrAsync(vm.Cedula, rutaFisica);
+                if (!coincide)
+                {
+                    ModelState.AddModelError("", "La cédula en la imagen no coincide con la ingresada.");
+                    if (System.IO.File.Exists(rutaFisica)) System.IO.File.Delete(rutaFisica);
+                    return View(vm);
+                }
+
+
+                string code = await _procesoService.GenerarCodigoAsync(ciudadanoId.Value, eleccionId.Value);
+
+                // Send email
+                await _emailService.SendAsync(new EmailRequestDTO
+                {
+                    To = email,
+                    Subject = "Código de verificación para votar",
+                    HtmlBody = $@"
+                        <h3>Hola {nombre},</h3>
+                        <p>Su código de verificación para continuar con el proceso de votación es:</p>
+                        <h2 style='color:#0d6efd; letter-spacing: 5px;'>{code}</h2>
+                        <p>Este código tendrá una vigencia de 5 minutos.</p>
+                        <p>Si usted no inició este proceso, ignore este mensaje.</p>"
+                });
+
+
+                if (System.IO.File.Exists(rutaFisica)) System.IO.File.Delete(rutaFisica);
+
+                return RedirectToAction(nameof(Codigo));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                if (rutaFisica != null && System.IO.File.Exists(rutaFisica)) System.IO.File.Delete(rutaFisica);
+                return View(vm);
+            }
         }
+
 
         [HttpGet]
         public IActionResult Codigo()
         {
-            var documento = TempData["DocumentoIdentidad"]?.ToString();
+            int? ciudadanoId = HttpContext.Session.GetInt32("CiudadanoId");
+            int? eleccionId = HttpContext.Session.GetInt32("EleccionId");
 
-            if (string.IsNullOrWhiteSpace(documento))
-                return RedirectToAction(nameof(Index));
-
-            TempData.Keep("DocumentoIdentidad");
-            TempData.Keep("CodigoVerificacion");
-
-            return View(new ProcesoVotacionCodigoViewModel
+            if (ciudadanoId == null || eleccionId == null)
             {
-                DocumentoIdentidad = documento
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(new CodigoVerificacionViewModel
+            {
+                CiudadanoId = ciudadanoId.Value,
+                EleccionId = eleccionId.Value
             });
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Codigo(CodigoVerificacionViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+
+            try
+            {
+                bool valido = await _procesoService.ValidarCodigoAsync(vm.CiudadanoId, vm.EleccionId, vm.Codigo);
+                if (!valido)
+                {
+                    ModelState.AddModelError("", "Código inválido o expirado.");
+                    return View(vm);
+                }
+
+
+                HttpContext.Session.SetString("CodigoVerificado", "true");
+
+                return RedirectToAction(nameof(Puestos));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(vm);
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Puestos()
+        {
+            if (HttpContext.Session.GetString("CodigoVerificado") != "true")
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            int? ciudadanoId = HttpContext.Session.GetInt32("CiudadanoId");
+            int? eleccionId = HttpContext.Session.GetInt32("EleccionId");
+
+            if (ciudadanoId == null || eleccionId == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            bool yaVoto = await _votoService.CiudadanoYaVotoAsync(ciudadanoId.Value, eleccionId.Value);
+            if (yaVoto)
+            {
+                TempData["ErrorMessage"] = "El ciudadano ya votó en esta elección.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var eleccionPuestos = await _eleccionPuestoElectivoService.GetByEleccionIdAsync(eleccionId.Value);
+            var puestosDisponibles = new List<SeleccionVotoViewModel>();
+
+            foreach (var ep in eleccionPuestos)
+            {
+                var puesto = await _puestoElectivoService.GetByIdAsync(ep.PuestoElectivoId);
+                if (puesto == null || !puesto.EsActivo) continue;
+
+                puestosDisponibles.Add(new SeleccionVotoViewModel
+                {
+                    PuestoElectivoId = puesto.Id,
+                    NombrePuesto = puesto.Nombre,
+                    Candidatos = new List<SelectListItem>()
+                });
+            }
+
+            var vm = new EmitirVotoViewModel
+            {
+                CiudadanoId = ciudadanoId.Value,
+                EleccionId = eleccionId.Value,
+                Selecciones = puestosDisponibles
+            };
+
+            return View(vm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Codigo(ProcesoVotacionCodigoViewModel vm)
+        public IActionResult Puestos(EmitirVotoViewModel vm)
         {
-            var codigoReal = TempData["CodigoVerificacion"]?.ToString();
-
-            TempData.Keep("DocumentoIdentidad");
-            TempData.Keep("CodigoVerificacion");
-
-            if (!ModelState.IsValid)
-                return View(vm);
-
-            if (string.IsNullOrWhiteSpace(codigoReal))
+            if (HttpContext.Session.GetString("CodigoVerificado") != "true")
             {
-                TempData["ErrorMessage"] = "El código expiró. Debe iniciar el proceso nuevamente.";
                 return RedirectToAction(nameof(Index));
             }
 
-            if (vm.Codigo != codigoReal)
-            {
-                TempData["ErrorMessage"] = "El código ingresado no es válido.";
-                return View(vm);
-            }
-
-            TempData["DocumentoIdentidad"] = vm.DocumentoIdentidad;
-
-            return RedirectToAction(nameof(Puestos));
+            return RedirectToAction(nameof(Seleccion));
         }
+
+
         [HttpGet]
-        public async Task<IActionResult> Puestos()
+        public async Task<IActionResult> Seleccion()
         {
-            var documento = TempData["DocumentoIdentidad"]?.ToString();
-
-            if (string.IsNullOrWhiteSpace(documento))
+            if (HttpContext.Session.GetString("CodigoVerificado") != "true")
+            {
                 return RedirectToAction(nameof(Index));
+            }
 
-            TempData.Keep("DocumentoIdentidad");
+            int? ciudadanoId = HttpContext.Session.GetInt32("CiudadanoId");
+            int? eleccionId = HttpContext.Session.GetInt32("EleccionId");
 
-            var puestosDto = await _puestoElectivoService.GetAllAsync();
+            if (ciudadanoId == null || eleccionId == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
 
-            var puestos = puestosDto
-                .Where(p => p.EsActivo)
-                .Select(p => new PuestoDisponibleViewModel
+            var eleccionPuestos = await _eleccionPuestoElectivoService.GetByEleccionIdAsync(eleccionId.Value);
+            var assignments = await _asignacionCandidatoService.ObtenerPorEleccionAsync(eleccionId.Value);
+
+            var vm = new EmitirVotoViewModel
+            {
+                CiudadanoId = ciudadanoId.Value,
+                EleccionId = eleccionId.Value,
+                Selecciones = new List<SeleccionVotoViewModel>()
+            };
+
+            foreach (var ep in eleccionPuestos)
+            {
+                var puesto = await _puestoElectivoService.GetByIdAsync(ep.PuestoElectivoId);
+                if (puesto == null || !puesto.EsActivo) continue;
+
+                var seleccion = new SeleccionVotoViewModel
                 {
-                    PuestoElectivoId = p.Id,
-                    NombrePuesto = p.Nombre,
-                    CantidadPartidosParticipantes = 0,
-                    CantidadCandidatosReales = 0,
-                    YaSeleccionado = TempData[$"Puesto_{p.Id}"] != null
-                })
-                .ToList();
+                    PuestoElectivoId = puesto.Id,
+                    NombrePuesto = puesto.Nombre,
+                    Candidatos = new List<SelectListItem>()
+                };
 
-            return View(puestos);
+                var postAssignments = assignments.Where(a => a.PuestoElectivoId == puesto.Id).ToList();
+                foreach (var assign in postAssignments)
+                {
+                    var candidato = await _candidatoService.GetByIdAsync(assign.CandidatoId);
+                    if (candidato == null || !candidato.Estado) continue;
+
+                    var partido = await _partidoPoliticoService.GetByIdAsync(candidato.PartidoPoliticoId);
+                    string partidoSiglas = partido != null ? partido.Siglas : "Independiente";
+
+                    seleccion.Candidatos.Add(new SelectListItem
+                    {
+                        Value = candidato.Id.ToString(),
+                        Text = $"{candidato.Nombre} {candidato.Apellido} ({partidoSiglas})"
+                    });
+                }
+
+                vm.Selecciones.Add(seleccion);
+            }
+
+            return View(vm);
         }
 
-        [HttpGet]
-        public IActionResult SeleccionCandidato(int puestoId)
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Seleccion(EmitirVotoViewModel vm)
         {
-            TempData["ErrorMessage"] = "El módulo de candidatos todavía no está conectado al proceso de votación.";
-            return RedirectToAction(nameof(Puestos));
+            int? sessionCiudadanoId = HttpContext.Session.GetInt32("CiudadanoId");
+            int? sessionEleccionId = HttpContext.Session.GetInt32("EleccionId");
+            string? email = HttpContext.Session.GetString("CiudadanoEmail");
+            string? nombre = HttpContext.Session.GetString("CiudadanoNombre");
+
+            if (sessionCiudadanoId == null || sessionEleccionId == null || HttpContext.Session.GetString("CodigoVerificado") != "true")
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+
+                vm.CiudadanoId = sessionCiudadanoId.Value;
+                vm.EleccionId = sessionEleccionId.Value;
+
+                bool puedeVotar = await _votoService.PuedeVotarAsync(vm.CiudadanoId, vm.EleccionId);
+                if (!puedeVotar)
+                {
+                    ModelState.AddModelError("", "El ciudadano ya votó en esta elección.");
+                    return View(vm);
+                }
+
+                // Register the main Voto
+                var votoId = await _votoService.RegistrarVotoAsync(new VotoDto
+                {
+                    CiudadanoId = vm.CiudadanoId,
+                    EleccionId = vm.EleccionId,
+                    FechaVotacion = DateTime.Now
+                });
+
+
+                var summaryLines = new List<string>();
+                foreach (var item in vm.Selecciones)
+                {
+
+                    await _votoDetalleService.CreateAsync(new VotoDetalleDTO
+                    {
+                        VotoId = votoId,
+                        PuestoElectivoId = item.PuestoElectivoId,
+                        CandidatoId = item.CandidatoId
+                    });
+
+                    var puesto = await _puestoElectivoService.GetByIdAsync(item.PuestoElectivoId);
+                    string puestoNombre = puesto != null ? puesto.Nombre : "Puesto Desconocido";
+
+                    if (item.CandidatoId == null)
+                    {
+                        summaryLines.Add($"<p><strong>Puesto:</strong> {puestoNombre}<br/><strong>Selección:</strong> Ninguno</p>");
+                    }
+                    else
+                    {
+                        var candidato = await _candidatoService.GetByIdAsync(item.CandidatoId.Value);
+                        if (candidato != null)
+                        {
+                            var partido = await _partidoPoliticoService.GetByIdAsync(candidato.PartidoPoliticoId);
+                            string partidoSiglas = partido != null ? partido.Siglas : "Independiente";
+                            summaryLines.Add($"<p><strong>Puesto:</strong> {puestoNombre}<br/><strong>Selección:</strong> {candidato.Nombre} {candidato.Apellido} ({partidoSiglas})</p>");
+                        }
+                        else
+                        {
+                            summaryLines.Add($"<p><strong>Puesto:</strong> {puestoNombre}<br/><strong>Selección:</strong> Ninguno</p>");
+                        }
+                    }
+                }
+
+
+                if (!string.IsNullOrEmpty(email))
+                {
+                    string htmlBody = $@"
+                        <h3>Hola {nombre},</h3>
+                        <p>Su voto ha sido emitido exitosamente. A continuación se muestra el resumen de su boleta electoral:</p>
+                        <hr/>
+                        {string.Join("", summaryLines)}
+                        <hr/>
+                        <p>Gracias por participar en el proceso electoral.</p>";
+
+                    await _emailService.SendAsync(new EmailRequestDTO
+                    {
+                        To = email,
+                        Subject = "Resumen de su Voto - eVote360",
+                        HtmlBody = htmlBody
+                    });
+                }
+
+
+                HttpContext.Session.Clear();
+
+                return RedirectToAction(nameof(Finalizar));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(vm);
+            }
+        }
+
+
+        [HttpGet]
+        public IActionResult Finalizar()
+        {
+            return View();
         }
     }
 }

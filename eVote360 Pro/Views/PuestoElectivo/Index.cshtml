@@ -168,7 +168,7 @@
 <div class="page-header">
     <h1>Puestos Electivos</h1>
     <p>Administración de cargos disponibles para las elecciones.</p>
-</div>
+    </div>
 
 <div class="content-card">
 
@@ -177,6 +177,7 @@
         <div class="alert alert-danger">
             <i class="bi bi-exclamation-triangle-fill"></i>
             <strong>Error:</strong> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
@@ -215,21 +216,29 @@
                 </thead>
 
                 <tbody>
-                    @foreach (var puesto in Model)
+                    @if (Model == null || !Model.Any())
                     {
                         <tr>
+                            <td colspan="4" class="text-center text-muted">No hay puestos electivos registrados.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var puesto in Model)
+                        {
+                            <tr>
                             <td class="fw-semibold">@puesto.Nombre</td>
-                            <td>@puesto.Descripcion</td>
-                            <td>
-                                @if (puesto.EsActivo)
-                                {
+                                <td>@puesto.Descripcion</td>
+                                <td>
+                                    @if (puesto.EsActivo)
+                                    {
                                     <span class="badge-active">Activo</span>
-                                }
-                                else
-                                {
+                                    }
+                                    else
+                                    {
                                     <span class="badge-inactive">Inactivo</span>
-                                }
-                            </td>
+                                    }
+                                </td>
                             <td>
                                 <div class="actions">
                                     <a asp-action="Edit"
@@ -252,8 +261,9 @@
                                         </button>
                                     </form>
                                 </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>

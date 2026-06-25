@@ -1,28 +1,63 @@
-﻿@model List<eVote360Pro.Core.Application.ViewModels.AsignacionCandidato.AsignacionCandidatoViewModel>
+﻿@using eVote360Pro.Core.Application.ViewModels.AsignacionCandidato
+@model List<AsignacionCandidatoViewModel>
 
-<h2>Asignación de Candidatos</h2>
+<div class="page-container">
 
-<a asp-action="Create" class="btn btn-primary mb-3">
-    Nueva Asignación
-</a>
+    <div class="content-card">
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Candidato Id</th>
-            <th>Puesto Electivo Id</th>
-            <th>Elección Id</th>
-        </tr>
-    </thead>
+        <div class="d-flex justify-content-between">
 
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.CandidatoId</td>
-                <td>@item.PuestoElectivoId</td>
-                <td>@item.EleccionId</td>
-            </tr>
-        }
-    </tbody>
-</table>
+            <h2>Asignaciones</h2>
+
+            <a asp-action="Create"
+               class="btn-main">
+                Agregar Asignación
+            </a>
+
+        </div>
+
+        <table class="table">
+
+            <thead>
+
+                <tr>
+                    <th>Candidato</th>
+                    <th>Puesto</th>
+                    <th>Elección</th>
+                    <th></th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@item.CandidatoId</td>
+
+                        <td>@item.PuestoElectivoId</td>
+
+                        <td>@item.EleccionId</td>
+
+                        <td>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@item.Id"
+                               class="btn-delete">
+                                Eliminar
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

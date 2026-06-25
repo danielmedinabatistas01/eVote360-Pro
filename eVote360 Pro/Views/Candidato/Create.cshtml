@@ -107,7 +107,7 @@
 
             <div class="icon-box">
                 <i class="bi bi-person-plus-fill fs-2 text-primary"></i>
-            </div>
+        </div>
 
             <h1>Nuevo Candidato</h1>
 
@@ -123,9 +123,9 @@
 
             <div asp-validation-summary="ModelOnly"
                  class="text-danger">
-            </div>
+        </div>
 
-            <div class="mb-3">
+        <div class="mb-3">
                 <label asp-for="Nombre"></label>
                 <input asp-for="Nombre" class="form-control" />
                 <span asp-validation-for="Nombre" class="text-danger"></span>
@@ -139,9 +139,9 @@
 
             <div class="mb-3">
                 <label asp-for="Foto"></label>
-                <input asp-for="Foto"
-                       type="file"
-                       class="form-control" />
+            <input asp-for="Foto"
+                   type="file"
+                   class="form-control" />
                 <span asp-validation-for="Foto" class="text-danger"></span>
             </div>
 
@@ -155,23 +155,23 @@
                 <span asp-validation-for="PartidoPoliticoId"
                       class="text-danger">
                 </span>
-            </div>
+        </div>
 
             <div class="actions">
 
-                <button type="submit"
-                        class="btn-main">
-                    Guardar
-                </button>
+        <button type="submit"
+                class="btn-main">
+            Guardar
+        </button>
 
                 <a asp-action="Index"
                    class="btn-secondary-custom">
                     Cancelar
                 </a>
 
-            </div>
+    </div>
 
-        </form>
+</form>
 
     </div>
     ```

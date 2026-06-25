@@ -1,8 +1,8 @@
-﻿@{
+@{
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 
-    var isLoginPage = currentController == "Usuario" && currentAction == "Login";
+    var isLoginPage = currentController == "Login" && currentAction == "Index";
     var isCreateUserPage = currentController == "Usuario" && currentAction == "Create";
 
     var hideMenu = isLoginPage || isCreateUserPage;
