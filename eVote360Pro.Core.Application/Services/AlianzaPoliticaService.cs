@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using eVote360Pro.Core.Application.Dtos;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Domain.Entities;
@@ -20,10 +20,14 @@ namespace eVote360Pro.Core.Application.Services
         private readonly IPartidoPoliticoRepository
             _partidoRepository;
 
+        private readonly IAsignacionCandidatoRepository
+            _asignacionRepository;
+
         public AlianzaPoliticaService(
             IAlianzaPoliticaRepository alianzaRepository,
-                IEleccionRepository eleccionRepository,
-                IPartidoPoliticoRepository partidoRepository,
+                 IEleccionRepository eleccionRepository,
+                 IPartidoPoliticoRepository partidoRepository,
+                 IAsignacionCandidatoRepository asignacionRepository,
             IMapper mapper)
             : base(alianzaRepository, mapper)
         {
@@ -32,6 +36,8 @@ namespace eVote360Pro.Core.Application.Services
             _eleccionRepository = eleccionRepository;
 
             _partidoRepository = partidoRepository;
+
+            _asignacionRepository = asignacionRepository;
         }
 
         public async Task<List<AlianzaPoliticaDto>>
@@ -257,22 +263,22 @@ namespace eVote360Pro.Core.Application.Services
                 await _alianzaRepository
                     .GetById(alianzaId);
 
-            /*bool tieneCandidatosAliados =
-    await _asignacionRepository
-        .ExisteAsignacionAliadaAsync(
-            alianza.PartidoOrigenId,
-            alianza.PartidoDestinoId);
+            if (alianza == null)
+            {
+                throw new Exception(
+                    "Alianza no encontrada.");
+            }
+
+            bool tieneCandidatosAliados =
+                await _asignacionRepository
+                    .ExisteAsignacionAliadaAsync(
+                        alianza.PartidoOrigenId,
+                        alianza.PartidoDestinoId);
 
             if (tieneCandidatosAliados)
             {
                 throw new Exception(
                     "No se puede eliminar la alianza porque existen candidatos aliados asignados.");
-            }*/
-
-            if (alianza == null)
-            {
-                throw new Exception(
-                    "Alianza no encontrada.");
             }
 
             if (!alianza.Vigente)

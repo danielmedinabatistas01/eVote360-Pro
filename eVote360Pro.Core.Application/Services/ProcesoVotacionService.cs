@@ -51,12 +51,11 @@ namespace eVote360Pro.Core.Application.Services
         }
 
         public async Task<bool>
-     ValidarIdentidadOcrAsync(
-     string numeroDocumento,
-     string rutaImagen)
+      ValidarIdentidadOcrAsync(
+      string numeroDocumento,
+      byte[] imageBytes)
         {
-            if (string.IsNullOrWhiteSpace(
-                rutaImagen))
+            if (imageBytes == null || imageBytes.Length == 0)
             {
                 throw new Exception(
                     "Debe cargar una imagen.");
@@ -65,7 +64,7 @@ namespace eVote360Pro.Core.Application.Services
             string? cedulaExtraida =
                 await _ocrService
                     .ExtraerCedulaAsync(
-                        rutaImagen);
+                        imageBytes);
 
             if (cedulaExtraida == null)
             {

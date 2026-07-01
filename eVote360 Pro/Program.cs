@@ -9,7 +9,7 @@ using eVote360Pro.Infrastructure.Persistence;
 using eVote360Pro.Infrastructure.Persistence.Contexts;
 using eVote360Pro.Infrastructure.Persistence.Repositories;
 using eVote360Pro.Infrastructure.Shared.Services;
-using InvestmentApp.Infrastructure.Shared;
+using eVote360Pro.Infrastructure.Shared;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,43 +41,8 @@ builder.Services.AddSharedLayerIoc(builder.Configuration);
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-#region Repositorios
 
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddScoped<IEleccionRepository, EleccionRepository>();
-builder.Services.AddScoped<IVotoRepository, VotoRepository>();
-builder.Services.AddScoped<IEleccionPuestoElectivoRepository, EleccionPuestoElectivoRepository>();
-builder.Services.AddScoped<IVotoDetalleRepository, VotoDetalleRepository>();
-builder.Services.AddScoped<IAsignacionCandidatoRepository, AsignacionCandidatoRepository>();
-builder.Services.AddScoped<ICandidatoRepository, CandidatoRepository>();
-builder.Services.AddScoped<ICodigoVerificacionRepository, CodigoVerificacionRepository>();
-builder.Services.AddScoped<IPuestoElectivoRepository, PuestoElectivoRepository>();
-builder.Services.AddScoped<IAlianzaPoliticaRepository, AlianzaPoliticaRepository>();
-builder.Services.AddScoped<ICiudadanoRepository, CiudadanoRepository>();
-builder.Services.AddScoped<IPartidoPoliticoRepository, PartidoPoliticoRepository>();
-builder.Services.AddScoped<IAsignacionDirigenteRepository, AsignacionDirigenteRepository>();
 
-#endregion
-
-#region Servicios
-
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<IEleccionService, EleccionService>();
-builder.Services.AddScoped<IVotoService, VotoService>();
-builder.Services.AddScoped<IEleccionPuestoElectivoService, EleccionPuestoElectivoService>();
-builder.Services.AddScoped<IVotoDetalleService, VotoDetalleService>();
-builder.Services.AddScoped<IResultadoElectoralService, ResultadoElectoralService>();
-builder.Services.AddScoped<IHomeAdministradorService, HomeAdministradorService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<ICandidatoService, CandidatoService>();
-builder.Services.AddScoped<IAlianzaPoliticaService, AlianzaPoliticaService>();
-builder.Services.AddScoped<IAsignacionCandidatoService, AsignacionCandidatoService>();
-builder.Services.AddScoped<ICiudadanoService, CiudadanoService>();
-builder.Services.AddScoped<IPartidoPoliticoService, PartidoPoliticoService>();
-builder.Services.AddScoped<IPuestoElectivoService, PuestoElectivoService>();
-builder.Services.AddScoped<IAsignacionDirigenteService, AsignacionDirigenteService>();
-
-#endregion
 
 var app = builder.Build();
 

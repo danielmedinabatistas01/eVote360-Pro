@@ -13,13 +13,17 @@ namespace eVote360_Pro.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IUserSession _userSession;
 
+        private readonly IEleccionService _eleccionService;
+
         public PartidoPoliticoController(
             IPartidoPoliticoService service,
+            IEleccionService eleccionService,
             IMapper mapper,
             IWebHostEnvironment webHostEnvironment,
             IUserSession userSession)
         {
             _service = service;
+            _eleccionService = eleccionService;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
             _userSession = userSession;
@@ -33,6 +37,7 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
 
+            ViewBag.HasActiveElection = await _eleccionService.ExisteEleccionActivaAsync();
             var partidos = await _service.GetAllAsync();
             return View(_mapper.Map<List<PartidoPoliticoViewModel>>(partidos));
         }

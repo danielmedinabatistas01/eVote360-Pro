@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using eVote360Pro.Core.Application.Dtos;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Domain.Entities;
@@ -10,18 +10,18 @@ namespace eVote360Pro.Core.Application.Services
     public class CiudadanoService : ICiudadanoService
     {
         private readonly ICiudadanoRepository _ciudadanoRepository;
-        private readonly IVotoRepository _votoRepository;
+        private readonly IParticipacionCiudadanoRepository _participacionRepository;
         private readonly IEleccionRepository _eleccionRepository;
         private readonly IMapper _mapper;
 
         public CiudadanoService(
             ICiudadanoRepository ciudadanoRepository,
-            IVotoRepository votoRepository,
+            IParticipacionCiudadanoRepository participacionRepository,
             IEleccionRepository eleccionRepository,
             IMapper mapper)
         {
             _ciudadanoRepository = ciudadanoRepository;
-            _votoRepository = votoRepository;
+            _participacionRepository = participacionRepository;
             _eleccionRepository = eleccionRepository;
             _mapper = mapper;
         }
@@ -52,8 +52,7 @@ namespace eVote360Pro.Core.Application.Services
             var entity = await _ciudadanoRepository.GetById(id);
             if (entity == null) throw new Exception("Ciudadano no encontrado.");
 
-            var votos = await _votoRepository.GetAllList();
-            bool yaVoto = votos.Any(v => v.CiudadanoId == id);
+            bool yaVoto = await _participacionRepository.CiudadanoYaVotoEnCualquierEleccionAsync(id);
             string docClean = dto.NumeroIdentificacion.Trim();
 
             if (yaVoto && entity.NumeroIdentificacion != docClean)

@@ -1,4 +1,4 @@
-﻿namespace eVote360Pro.Core.Application.ViewModels.ResultadoElectoral
+namespace eVote360Pro.Core.Application.ViewModels.ResultadoElectoral
 {
     public class ResultadoPorPuestoViewModel
     {
@@ -15,5 +15,6 @@
         public decimal Porcentaje { get; set; }
 
         public bool EsEmpate { get; set; }
+        public bool EsGanador { get; set; }
     }
 }

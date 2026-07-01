@@ -1,4 +1,4 @@
-﻿
+
 using eVote360Pro.Core.Domain.Common;
 using eVote360Pro.Core.Domain.Enums;
 
@@ -19,6 +19,9 @@ namespace eVote360Pro.Core.Domain.Entities
 
         public ICollection<Voto> Votos { get; set; }
             = new List<Voto>();
+
+        public ICollection<ParticipacionCiudadano> Participaciones { get; set; }
+            = new List<ParticipacionCiudadano>();
 
 
 

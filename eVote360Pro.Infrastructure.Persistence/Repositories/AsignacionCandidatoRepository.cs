@@ -1,4 +1,4 @@
-﻿using eVote360Pro.Core.Domain.Entities;
+using eVote360Pro.Core.Domain.Entities;
 using eVote360Pro.Core.Domain.Interfaces;
 using eVote360Pro.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -164,6 +164,15 @@ GetAllByEleccionAsync(int eleccionId)
                 .ToListAsync();
         }
 
-
+        public async Task<bool> ExisteAsignacionAliadaAsync(int partidoOrigenId, int partidoDestinoId)
+        {
+            return await _context.AsignacionesCandidatos
+                .Include(x => x.Candidato)
+                .AnyAsync(x => 
+                    x.Candidato != null && 
+                    ((x.Candidato.PartidoPoliticoId == partidoOrigenId && x.PartidoPoliticoId == partidoDestinoId) ||
+                     (x.Candidato.PartidoPoliticoId == partidoDestinoId && x.PartidoPoliticoId == partidoOrigenId))
+                );
+        }
     }
 }

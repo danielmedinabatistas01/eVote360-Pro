@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +8,8 @@ namespace eVote360Pro.Core.Application.Interfaces
 {
     public interface IOcrService
     {
-        Task<string> ExtraerTextoAsync(
-            string rutaImagen);
+        Task<string> ExtraerTextoAsync(byte[] imageBytes);
 
-        Task<string?> ExtraerCedulaAsync(
-            string rutaImagen);
+        Task<string?> ExtraerCedulaAsync(byte[] imageBytes, string? fileName = null);
     }
 }

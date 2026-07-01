@@ -1,4 +1,4 @@
-﻿namespace eVote360Pro.Core.Application.DTOs
+namespace eVote360Pro.Core.Application.DTOs
 {
     public class ResultadoElectoralDTO
     {
@@ -17,5 +17,6 @@
         public decimal Porcentaje { get; set; }
 
         public bool EsEmpate { get; set; }
+        public bool EsGanador { get; set; }
     }
 }

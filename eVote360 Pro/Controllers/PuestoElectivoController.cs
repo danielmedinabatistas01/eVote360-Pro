@@ -10,15 +10,18 @@ namespace eVote360_Pro.Controllers
     public class PuestoElectivoController : Controller
     {
         private readonly IPuestoElectivoService _service;
+        private readonly IEleccionService _eleccionService;
         private readonly IMapper _mapper;
         private readonly IUserSession _userSession;
 
         public PuestoElectivoController(
             IPuestoElectivoService service,
+            IEleccionService eleccionService,
             IMapper mapper,
             IUserSession userSession)
         {
             _service = service;
+            _eleccionService = eleccionService;
             _mapper = mapper;
             _userSession = userSession;
         }
@@ -31,6 +34,7 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
 
+            ViewBag.HasActiveElection = await _eleccionService.ExisteEleccionActivaAsync();
             var puestos = await _service.GetAllAsync();
             return View(_mapper.Map<List<PuestoElectivoViewModel>>(puestos));
         }

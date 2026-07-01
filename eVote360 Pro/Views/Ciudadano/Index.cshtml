@@ -1,4 +1,4 @@
-﻿@using eVote360Pro.Core.Application.ViewModels.Ciudadano
+@using eVote360Pro.Core.Application.ViewModels.Ciudadano
 @model List<CiudadanoViewModel>
 
 @{
@@ -81,11 +81,29 @@
         </div>
     }
 
+    @if (ViewBag.HasActiveElection == true)
+    {
+        <div class="alert alert-warning mb-3">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            No se pueden modificar ciudadanos mientras exista una elección activa.
+        </div>
+    }
+
     <div class="top-actions">
-        <a asp-action="Create" class="btn-main">
-            <i class="bi bi-person-plus"></i>
-            Registrar Ciudadano
-        </a>
+        @if (ViewBag.HasActiveElection == true)
+        {
+            <a href="#" class="btn-main disabled" style="pointer-events: none; opacity: 0.6;">
+                <i class="bi bi-person-plus"></i>
+                Registrar Ciudadano
+            </a>
+        }
+        else
+        {
+            <a asp-action="Create" class="btn-main">
+                <i class="bi bi-person-plus"></i>
+                Registrar Ciudadano
+            </a>
+        }
 
         <a asp-controller="HomeAdministrador" asp-action="Index" class="btn-back">
             <i class="bi bi-arrow-left"></i>
@@ -134,24 +152,54 @@
 
                             <td class="text-end">
                                 <div class="actions justify-content-end">
-                                    <a asp-action="Edit" asp-route-id="@ciudadano.Id" class="btn btn-warning btn-sm">
-                                        <i class="bi bi-pencil"></i>
-                                        Editar
-                                    </a>
-
-                                    @if (ciudadano.EsActivo)
+                                    @if (ViewBag.HasActiveElection == true)
                                     {
-                                        <a asp-action="Delete" asp-route-id="@ciudadano.Id" class="btn btn-danger btn-sm">
-                                            <i class="bi bi-trash"></i>
-                                            Desactivar
+                                        <a href="#" class="btn btn-warning btn-sm disabled" style="pointer-events: none; opacity: 0.6;">
+                                            <i class="bi bi-pencil"></i>
+                                            Editar
                                         </a>
                                     }
                                     else
                                     {
-                                        <a asp-action="Delete" asp-route-id="@ciudadano.Id" class="btn btn-success btn-sm">
-                                            <i class="bi bi-arrow-clockwise"></i>
-                                            Activar
+                                        <a asp-action="Edit" asp-route-id="@ciudadano.Id" class="btn btn-warning btn-sm">
+                                            <i class="bi bi-pencil"></i>
+                                            Editar
                                         </a>
+                                    }
+
+                                    @if (ViewBag.HasActiveElection == true)
+                                    {
+                                        @if (ciudadano.EsActivo)
+                                        {
+                                            <a href="#" class="btn btn-danger btn-sm disabled" style="pointer-events: none; opacity: 0.6;">
+                                                <i class="bi bi-trash"></i>
+                                                Desactivar
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a href="#" class="btn btn-success btn-sm disabled" style="pointer-events: none; opacity: 0.6;">
+                                                <i class="bi bi-arrow-clockwise"></i>
+                                                Activar
+                                            </a>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @if (ciudadano.EsActivo)
+                                        {
+                                            <a asp-action="Delete" asp-route-id="@ciudadano.Id" class="btn btn-danger btn-sm">
+                                                <i class="bi bi-trash"></i>
+                                                Desactivar
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-action="Delete" asp-route-id="@ciudadano.Id" class="btn btn-success btn-sm">
+                                                <i class="bi bi-arrow-clockwise"></i>
+                                                Activar
+                                            </a>
+                                        }
                                     }
                                 </div>
                             </td>

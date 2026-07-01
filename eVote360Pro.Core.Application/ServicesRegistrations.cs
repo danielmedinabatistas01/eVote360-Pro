@@ -2,7 +2,7 @@
     using eVote360Pro.Core.Application.Services;
     using Microsoft.Extensions.DependencyInjection;
     using System.Reflection;
-    using eVote360Pro.Infrastructure.Persistence.Shared;
+
 
 namespace eVote360Pro.Core.Application
     {
@@ -53,10 +53,6 @@ namespace eVote360Pro.Core.Application
                     CiudadanoService>();
 
             services.AddTransient<
-                    IOcrService,
-                    OcrService>();
-
-            services.AddTransient<
                     IUsuarioService,
                     UsuarioService>();
 
@@ -79,6 +75,25 @@ namespace eVote360Pro.Core.Application
             services.AddTransient<
                     IHomeAdministradorService,
                     HomeAdministradorService>();
-        }
+
+
+            //frank
+            services.AddTransient<IUsuarioService, UsuarioService>();
+            services.AddTransient<IEleccionService, EleccionService>();
+            services.AddTransient<IVotoService, VotoService>();
+            services.AddTransient<IEleccionPuestoElectivoService, EleccionPuestoElectivoService>();
+            services.AddTransient<IVotoDetalleService, VotoDetalleService>();
+            services.AddTransient<IResultadoElectoralService, ResultadoElectoralService>();
+            services.AddTransient<IHomeAdministradorService, HomeAdministradorService>();
+
+            services.AddTransient<ICandidatoService, CandidatoService>();
+            services.AddTransient<IAlianzaPoliticaService, AlianzaPoliticaService>();
+            services.AddTransient<IAsignacionCandidatoService, AsignacionCandidatoService>();
+            services.AddTransient<ICiudadanoService, CiudadanoService>();
+            services.AddTransient<IPartidoPoliticoService, PartidoPoliticoService>();
+            services.AddTransient<IPuestoElectivoService, PuestoElectivoService>();
+            services.AddTransient<IAsignacionDirigenteService, AsignacionDirigenteService>();
+
         }
     }
+}
