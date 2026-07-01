@@ -106,6 +106,8 @@
     <p>Seleccione el usuario dirigente y el partido político correspondiente.</p>
 </div>
 
+<div asp-validation-summary="All" class="alert alert-danger"></div>
+
 <div class="content-card">
     <form asp-action="@(isEdit ? "Edit" : "Create")" method="post">
         @Html.AntiForgeryToken()
