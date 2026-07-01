@@ -359,5 +359,44 @@ namespace eVote360Pro.Core.Application.Services
 
             await base.DeleteAsync(id);
         }
+
+        public async Task<List<AlianzaPoliticaDto>>
+    ObtenerSolicitudesPendientesAsync(
+        int partidoId)
+        {
+            var data =
+                await _alianzaRepository
+                    .ObtenerSolicitudesPendientesAsync(partidoId);
+
+            return _mapper.Map<
+                List<AlianzaPoliticaDto>>
+                (data);
+        }
+
+        public async Task<List<AlianzaPoliticaDto>>
+            ObtenerSolicitudesRealizadasAsync(
+                int partidoId)
+        {
+            var data =
+                await _alianzaRepository
+                    .ObtenerSolicitudesRealizadasAsync(partidoId);
+
+            return _mapper.Map<
+                List<AlianzaPoliticaDto>>
+                (data);
+        }
+
+        public async Task<List<AlianzaPoliticaDto>>
+            ObtenerAlianzasVigentesAsync(
+                int partidoId)
+        {
+            var data =
+                await _alianzaRepository
+                    .ObtenerAlianzasVigentesAsync(partidoId);
+
+            return _mapper.Map<
+                List<AlianzaPoliticaDto>>
+                (data);
+        }
     }
 }

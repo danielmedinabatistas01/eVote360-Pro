@@ -53,28 +53,57 @@ namespace eVote360Pro.Core.Application.Services
         public async Task UpdateAsync(int id, PartidoPoliticoDto dto)
         {
             var elecciones = await _eleccionRepository.GetAllList();
+
             if (elecciones.Any(e => e.EstadoEleccion == EstadoEleccion.Activa))
-                throw new Exception("No se permiten acciones durante elección activa.");
+                throw new Exception(
+                    "No se permiten acciones durante elección activa.");
 
-            var entity = await _partidoRepository.GetById(id);
-            if (entity == null) throw new Exception("Partido político no encontrado.");
+            var entity =
+                await _partidoRepository.GetById(id);
 
-            bool participo = elecciones.Any(e => e.EstadoEleccion == EstadoEleccion.Finalizada) || elecciones.Any(e => e.EstadoEleccion == EstadoEleccion.Activa);
-            string nombreClean = dto.Nombre.Trim();
-            string siglasClean = dto.Siglas.Trim().ToUpper();
+            if (entity == null)
+                throw new Exception(
+                    "Partido político no encontrado.");
+
+            bool participo =
+                elecciones.Any(e =>
+                    e.EstadoEleccion == EstadoEleccion.Finalizada)
+                ||
+                elecciones.Any(e =>
+                    e.EstadoEleccion == EstadoEleccion.Activa);
+
+            string nombreClean =
+                dto.Nombre.Trim();
+
+            string siglasClean =
+                dto.Siglas.Trim().ToUpper();
 
             if (participo)
             {
-                if (!entity.Nombre.Equals(nombreClean, StringComparison.OrdinalIgnoreCase) ||
-                    entity.Siglas != siglasClean ||
+                if (!entity.Nombre.Equals(
+                        nombreClean,
+                        StringComparison.OrdinalIgnoreCase)
+                    ||
+                    entity.Siglas != siglasClean
+                    ||
                     entity.LogoUrl != dto.LogoUrl)
                 {
-                    throw new Exception("No se permiten modificar siglas, nombre o logo si participó en elecciones.");
+                    throw new Exception(
+                        "No se permiten modificar siglas, nombre o logo si participó en elecciones.");
                 }
             }
+
+            entity.Nombre = nombreClean;
+            entity.Siglas = siglasClean;
+            entity.Descripcion = dto.Descripcion;
+            entity.LogoUrl = dto.LogoUrl;
+
+            await _partidoRepository.UpdateAsync(
+                id,
+                entity);
         }
 
-            public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
             {
             var elecciones = await _eleccionRepository.GetAllList();
             if (elecciones.Any(e => e.EstadoEleccion == EstadoEleccion.Activa))
@@ -105,6 +134,18 @@ namespace eVote360Pro.Core.Application.Services
         {
             var entity = await _partidoRepository.GetById(id);
             return _mapper.Map<PartidoPoliticoDto>(entity);
+        }
+
+        public async Task ActivarAsync(int id)
+        {
+            var entity = await _partidoRepository.GetById(id);
+
+            if (entity == null)
+                throw new Exception("Partido no encontrado.");
+
+            entity.EsActivo = true;
+
+            await _partidoRepository.UpdateAsync(id, entity);
         }
     }
 }

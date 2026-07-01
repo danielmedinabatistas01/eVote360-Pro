@@ -9,6 +9,7 @@ namespace eVote360Pro.Core.Application.Mappings.DtosAndViewModels
         public PartidoPoliticoDtoMappingProfile()
         {
             CreateMap<PartidoPoliticoDto, PartidoPoliticoViewModel>().ReverseMap();
+            CreateMap<PartidoPoliticoDto, SavePartidoPoliticoViewModel>().ReverseMap();
         }
     }
 }

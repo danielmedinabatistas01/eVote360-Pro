@@ -158,8 +158,18 @@ namespace eVote360_Pro.Controllers
             {
                 TempData["ErrorMessage"] = ex.Message;
             }
+            try
+            {
+                await _eleccionService.ActivarAsync(id);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         public async Task<IActionResult> Finalizar(int id)
@@ -200,8 +210,18 @@ namespace eVote360_Pro.Controllers
             {
                 TempData["ErrorMessage"] = ex.Message;
             }
+            try
+            {
+                await _eleccionService.FinalizarAsync(id);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }

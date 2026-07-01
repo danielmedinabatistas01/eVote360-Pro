@@ -11,5 +11,11 @@ namespace eVote360Pro.Core.Application.Dtos
         public int EleccionId { get; set; }
 
         public int PartidoPoliticoId { get; set; }
+
+        public string NombreCandidato { get; set; } = string.Empty;
+
+        public string NombrePuesto { get; set; } = string.Empty;
+
+        public string NombreEleccion { get; set; } = string.Empty;
     }
 }

@@ -5,5 +5,6 @@ namespace eVote360Pro.Core.Application.Interfaces
     public interface ICiudadanoService
         : IGenericService<CiudadanoDto>
     {
+        Task ActivarAsync(int id);
     }
 }

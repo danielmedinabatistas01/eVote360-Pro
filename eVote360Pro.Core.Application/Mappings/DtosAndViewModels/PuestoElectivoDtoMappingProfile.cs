@@ -9,6 +9,7 @@ namespace eVote360Pro.Core.Application.Mappings.DtosAndViewModels
         public PuestoElectivoDtoMappingProfile()
         {
             CreateMap<PuestoElectivoDto, PuestoElectivoViewModel>().ReverseMap();
+            CreateMap<PuestoElectivoDto, SavePuestoElectivoViewModel>().ReverseMap();
         }
     }
 }

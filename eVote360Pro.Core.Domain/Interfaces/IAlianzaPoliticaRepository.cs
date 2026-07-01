@@ -9,18 +9,27 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
         Task<List<AlianzaPolitica>>
             GetActivosAsync();
 
-        Task<bool>
-            ExisteAlianzaAsync(
+        Task<bool> ExisteAlianzaAsync(
                 int partidoOrigenId,
                 int partidoDestinoId);
 
-        Task<bool>
-            ExisteSolicitudPendienteAsync(
+        Task<bool> ExisteSolicitudPendienteAsync(
                 int partidoOrigenId,
+                int partidoDestinoId);
+
+        Task<List<AlianzaPolitica>> ObtenerPendientesAsync(
                 int partidoDestinoId);
 
         Task<List<AlianzaPolitica>>
-            ObtenerPendientesAsync(
-                int partidoDestinoId);
+            ObtenerSolicitudesPendientesAsync(
+                int partidoId);
+
+        Task<List<AlianzaPolitica>>
+            ObtenerSolicitudesRealizadasAsync(
+                int partidoId);
+
+        Task<List<AlianzaPolitica>>
+            ObtenerAlianzasVigentesAsync(
+                int partidoId);
     }
 }

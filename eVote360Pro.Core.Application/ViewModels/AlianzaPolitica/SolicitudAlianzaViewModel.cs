@@ -1,13 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
 
 namespace eVote360Pro.Core.Application.ViewModels.AlianzaPolitica
 {
-    public class SaveAlianzaPoliticaViewModel: BasicViewModel<int>
+    public class SaveAlianzaPoliticaViewModel : BasicViewModel<int>
     {
-        [Required]
         public int PartidoOrigenId { get; set; }
 
-        [Required]
         public int PartidoDestinoId { get; set; }
+
+        public List<SelectListItem> PartidosDisponibles { get; set; }
+            = new();
     }
 }

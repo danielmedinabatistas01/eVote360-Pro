@@ -32,9 +32,44 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsDirigente())
                 return RedirectToAction("AccessDenied", "Login");
 
-            var dtoList = await _alianzaService.GetActivosAsync();
+            var usuario = _userSession.GetUserSession();
 
-            var vm = _mapper.Map<List<AlianzaPoliticaViewModel>>(dtoList);
+            int partidoId =
+                usuario.PartidoPoliticoId!.Value;
+
+            var pendientes =
+                await _alianzaService
+                    .ObtenerSolicitudesPendientesAsync(
+                        partidoId);
+
+            var realizadas =
+                await _alianzaService
+                    .ObtenerSolicitudesRealizadasAsync(
+                        partidoId);
+
+            var vigentes =
+                await _alianzaService
+                    .ObtenerAlianzasVigentesAsync(
+                        partidoId);
+
+            var vm =
+                new AlianzaDashboardViewModel
+                {
+                    SolicitudesPendientes =
+                        _mapper.Map<
+                            List<AlianzaPoliticaViewModel>>
+                            (pendientes),
+
+                    SolicitudesRealizadas =
+                        _mapper.Map<
+                            List<AlianzaPoliticaViewModel>>
+                            (realizadas),
+
+                    AlianzasVigentes =
+                        _mapper.Map<
+                            List<AlianzaPoliticaViewModel>>
+                            (vigentes)
+                };
 
             return View(vm);
         }

@@ -1,9 +1,8 @@
-﻿@model List<eVote360Pro.Core.Application.ViewModels.Ciudadano.CiudadanoViewModel>
-
+﻿@using eVote360Pro.Core.Application.ViewModels.Ciudadano
+@model List<CiudadanoViewModel>
 @{
     ViewData["Title"] = "Ciudadanos";
 }
-
 <style>
     .page-header {
         margin-bottom: 2rem;
@@ -28,9 +27,8 @@
         border: 1px solid #E5E7EB;
         border-radius: 12px;
         padding: 1.5rem;
-        max-width: 1000px;
+        max-width: 900px;
         margin: 0 auto;
-        box-shadow: 0 4px 12px rgba(0,0,0,.04);
     }
 
     .top-actions {
@@ -38,8 +36,6 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1rem;
-        gap: .75rem;
-        flex-wrap: wrap;
     }
 
     .btn-main {
@@ -59,23 +55,6 @@
             text-decoration: none;
         }
 
-    .btn-back {
-        background: #F8FAFC;
-        color: #1B3A6B;
-        border: 1px solid #E5E7EB;
-        border-radius: 8px;
-        padding: .55rem 1rem;
-        font-size: .85rem;
-        font-weight: 600;
-        text-decoration: none;
-    }
-
-        .btn-back:hover {
-            background: #EEF2FF;
-            color: #1B3A6B;
-            text-decoration: none;
-        }
-
     .custom-table {
         width: 100%;
         border-collapse: collapse;
@@ -91,7 +70,6 @@
             font-weight: 700;
             padding: .75rem;
             border-bottom: 1px solid #E5E7EB;
-            white-space: nowrap;
         }
 
         .custom-table td {
@@ -107,7 +85,6 @@
 
     .actions {
         display: flex;
-        justify-content: flex-end;
         gap: .4rem;
         flex-wrap: wrap;
     }
@@ -120,7 +97,6 @@
         font-size: .78rem;
         font-weight: 600;
         text-decoration: none;
-        border: none;
     }
 
         .btn-edit:hover {
@@ -137,7 +113,6 @@
         font-size: .78rem;
         font-weight: 600;
         text-decoration: none;
-        border: none;
     }
 
         .btn-delete:hover {
@@ -146,50 +121,32 @@
             text-decoration: none;
         }
 
-    .badge-active {
+    .btn-success-custom {
         background: #ECFDF5;
         color: #047857;
-        border: 1px solid #A7F3D0;
-        border-radius: 999px;
+        border-radius: 6px;
         padding: .35rem .65rem;
-        font-weight: 600;
         font-size: .78rem;
+        font-weight: 600;
+        text-decoration: none;
     }
 
-    .badge-inactive {
-        background: #FEF2F2;
-        color: #B91C1C;
-        border: 1px solid #FECACA;
-        border-radius: 999px;
+    .btn-info-custom {
+        background: #EFF6FF;
+        color: #1D4ED8;
+        border-radius: 6px;
         padding: .35rem .65rem;
-        font-weight: 600;
         font-size: .78rem;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 2rem;
-        color: #6B7280;
-        background: #F8FAFC;
-        border: 1px dashed #CBD5E1;
-        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
     }
 </style>
 
-<div class="page-header">
-    <h1>Ciudadanos</h1>
-    <p>Padrón de ciudadanos habilitados para participar en el proceso electoral.</p>
-</div>
-
-<div class="content-card">
-
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">
-            <i class="bi bi-check-circle-fill"></i>
-            @TempData["SuccessMessage"]
-        </div>
-    }
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Padrón de Ciudadanos</h2>
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-person-plus"></i> Registrar Ciudadano</a>
+    </div>
 
     @if (TempData["ErrorMessage"] != null)
     {
@@ -267,14 +224,27 @@
                                           onsubmit="return confirm('¿Seguro que deseas cambiar el estado de este ciudadano?');">
                                         @Html.AntiForgeryToken()
 
-                                        <button type="submit" class="btn-delete">
-                                            <i class="bi bi-person-x"></i>
+                                    @if (ciudadano.EsActivo)
+                                    {
+                                        <a asp-action="Delete"
+                                           asp-route-id="@ciudadano.Id"
+                                           class="btn btn-danger">
+                                            <i class="bi bi-trash"></i>
                                             Desactivar
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="Delete"
+                                           asp-route-id="@ciudadano.Id"
+                                           class="btn btn-success">
+                                            <i class="bi bi-arrow-clockwise"></i>
+                                            Activar
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>

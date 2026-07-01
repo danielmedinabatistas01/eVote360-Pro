@@ -95,5 +95,17 @@ namespace eVote360Pro.Core.Application.Services
             var entity = await _puestoRepository.GetById(id);
             return _mapper.Map<PuestoElectivoDto>(entity);
         }
+
+        public async Task ActivarAsync(int id)
+        {
+            var entity = await _puestoRepository.GetById(id);
+
+            if (entity == null)
+                throw new Exception("Puesto no encontrado.");
+
+            entity.EsActivo = true;
+
+            await _puestoRepository.UpdateAsync(id, entity);
+        }
     }
 }

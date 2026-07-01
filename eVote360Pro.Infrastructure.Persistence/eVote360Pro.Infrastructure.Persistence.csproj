@@ -24,8 +24,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\eVote360Pro.Core.Application\eVote360Pro.Core.Application.csproj" />
-		<ProjectReference Include="..\eVote360Pro.Core.Domain\eVote360Pro.Core.Domain.csproj" />
+	  <ProjectReference Include="..\eVote360Pro.Core.Application\eVote360Pro.Core.Application.csproj" />
+	  <ProjectReference Include="..\eVote360Pro.Core.Domain\eVote360Pro.Core.Domain.csproj" />
 	</ItemGroup>
 
 </Project>

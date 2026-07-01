@@ -31,5 +31,6 @@ namespace eVote360Pro.Core.Application.Services
 
             return _mapper.Map<List<EleccionPuestoElectivoDTO>>(entities);
         }
+
     }
 }

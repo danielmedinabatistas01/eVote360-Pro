@@ -103,19 +103,24 @@
         <input asp-for="Id" type="hidden" />
 
             <form asp-action="@(isEdit ? "Edit" : "Create")" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <div asp-validation-summary="All"class="alert alert-danger"></div>
                 <input type="hidden" asp-for="Id" />
 
                 <div class="mb-3">
             <label asp-for="UsuarioId" class="form-label">Dirigente político</label>
                     <select asp-for="UsuarioId" class="form-select">
-                <option value="">Seleccione un dirigente</option>
+                        <option value="">Seleccione un Dirigente</option>
 
-                @foreach (var usuario in ViewBag.UsuariosDirigentes)
+                        @using eVote360Pro.Core.Application.ViewModels.Usuario
+
+                        @foreach (var user in (ViewBag.UsuariosDirigentes as List<UsuarioIndexViewModel> ?? new()))
+                        {
+                            if (user.RolUsuario == RolUsuario.Dirigente && user.Estado)
                             {
-                    <option value="@usuario.Id">
-                        @usuario.Nombre @usuario.Apellido - @usuario.NombreUsuario
-                    </option>
+                                <option value="@user.Id">
+                                    @user.Nombre @user.Apellido (@user.NombreUsuario)
+                                </option>
+                            }
                         }
                     </select>
                     <span asp-validation-for="UsuarioId" class="text-danger small"></span>
@@ -124,13 +129,22 @@
                 <div class="mb-3">
             <label asp-for="PartidoPoliticoId" class="form-label">Partido político</label>
                     <select asp-for="PartidoPoliticoId" class="form-select">
-                <option value="">Seleccione un partido</option>
+                        <option value="">Seleccione un Partido</option>
+                        @{
+                            var partidos =
+                                ViewBag.PartidosPoliticos
+                                as List<eVote360Pro.Core.Application.Dtos.PartidoPoliticoDto>
+                                ?? new();
+                        }
 
-                @foreach (var partido in ViewBag.PartidosPoliticos)
+                        @foreach (var partido in partidos)
+                        {
+                            if (partido.EsActivo)
                             {
-                    <option value="@partido.Id">
-                        @partido.Nombre
-                    </option>
+                                <option value="@partido.Id">
+                                    @partido.Nombre (@partido.Siglas)
+                                </option>
+                            }
                         }
                     </select>
                     <span asp-validation-for="PartidoPoliticoId" class="text-danger small"></span>

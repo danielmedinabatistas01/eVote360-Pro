@@ -8,8 +8,11 @@ namespace eVote360Pro.Core.Application.Mappings.DtosAndViewModels
     {
         public AsignacionDirigenteDtoMappingProfile()
         {
-            CreateMap<AsignacionDirigenteDto, AsignacionDirigenteViewModel>().ReverseMap();
-            CreateMap<AsignacionDirigenteDto, SaveAsignacionDirigenteViewModel>().ReverseMap();
+            CreateMap<SaveAsignacionDirigenteViewModel, AsignacionDirigenteDto>()
+                .ReverseMap();
+
+            CreateMap<AsignacionDirigenteViewModel, AsignacionDirigenteDto>()
+                .ReverseMap();
         }
     }
 }

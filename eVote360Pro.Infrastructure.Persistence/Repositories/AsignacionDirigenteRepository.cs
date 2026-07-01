@@ -42,5 +42,13 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
                 .AnyAsync(x =>
                     x.UsuarioId == usuarioId);
         }
-}
+
+        public async Task<List<AsignacionDirigente>>GetAllList()
+        {
+            return await _context.AsignacionesDirigentes
+                .Include(x => x.Usuario)
+                .Include(x => x.PartidoPolitico)
+                .ToListAsync();
+        }
+    }
 }

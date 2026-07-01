@@ -8,8 +8,7 @@ namespace eVote360Pro.Core.Application.Mappings.DtosAndViewModels
     {
         public VotoDtoMappingProfile()
         {
-            CreateMap<VotoViewModel, VotoDto>().ReverseMap();
-            CreateMap<SaveVotoViewModel, VotoDto>().ReverseMap();
+            CreateMap<EmitirVotoViewModel, VotoDto>().ReverseMap();
         }
     }
 }

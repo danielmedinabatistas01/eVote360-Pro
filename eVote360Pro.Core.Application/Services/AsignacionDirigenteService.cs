@@ -14,6 +14,8 @@ namespace eVote360Pro.Core.Application.Services
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IPartidoPoliticoRepository _partidoRepository;
         private readonly IMapper _mapper;
+        private readonly IUsuarioService _usuarioService;
+private readonly IPartidoPoliticoService _partidoService;
 
         public AsignacionDirigenteService(
             IAsignacionDirigenteRepository asignacionRepository,
@@ -28,7 +30,6 @@ namespace eVote360Pro.Core.Application.Services
             _partidoRepository = partidoRepository;
             _mapper = mapper;
         }
-
         public async Task AddAsync(AsignacionDirigenteDto dto)
         {
             var elecciones = await _eleccionRepository.GetAllList();
@@ -52,6 +53,13 @@ namespace eVote360Pro.Core.Application.Services
 
             var entity = _mapper.Map<AsignacionDirigente>(dto);
             await _asignacionRepository.AddAsync(entity);
+
+            usuario.PartidoPoliticoId =
+    dto.PartidoPoliticoId;
+
+            await _usuarioRepository.UpdateAsync(
+                usuario.Id,
+                usuario);
         }
 
         public async Task UpdateAsync(int id, AsignacionDirigenteDto dto)
@@ -65,6 +73,20 @@ namespace eVote360Pro.Core.Application.Services
 
             _mapper.Map(dto, entity);
             await _asignacionRepository.UpdateAsync(id, entity);
+
+            var usuario =
+                await _usuarioRepository
+                    .GetById(dto.UsuarioId);
+
+            if (usuario != null)
+            {
+                usuario.PartidoPoliticoId =
+                    dto.PartidoPoliticoId;
+
+                await _usuarioRepository.UpdateAsync(
+                    usuario.Id,
+                    usuario);
+            }
         }
 
         public async Task DeleteAsync(int id)
@@ -75,6 +97,17 @@ namespace eVote360Pro.Core.Application.Services
 
             var entity = await _asignacionRepository.GetById(id);
             if (entity == null) throw new Exception("Asignación no encontrada.");
+
+            var usuario = await _usuarioRepository.GetById(entity.UsuarioId);
+
+            if (usuario != null)
+            {
+                usuario.PartidoPoliticoId = null;
+
+                await _usuarioRepository.UpdateAsync(
+                    usuario.Id,
+                    usuario);
+            }
 
             await _asignacionRepository.DeleteAsync(id);
         }
