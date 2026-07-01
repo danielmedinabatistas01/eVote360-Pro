@@ -31,11 +31,12 @@ namespace eVote360_Pro.Controllers
                 return RedirectToAction("AccessDenied", "Login");
 
             ViewBag.HasActiveElection = await _eleccionService.ExisteEleccionActivaAsync();
+
             var usuarios = await _usuarioService.GetAllAsync();
             return View(usuarios);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             if (!_userSession.HasUser())
                 return RedirectToAction("Index", "Login");
@@ -43,12 +44,17 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
 
+            if (await _eleccionService.ExisteEleccionActivaAsync())
+            {
+                TempData["ErrorMessage"] = "No se pueden crear usuarios mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(new UsuarioCreateViewModel
             {
                 Estado = true
             });
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(UsuarioCreateViewModel vm)
@@ -58,6 +64,19 @@ namespace eVote360_Pro.Controllers
 
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
+
+            if (await _eleccionService.ExisteEleccionActivaAsync())
+            {
+                TempData["ErrorMessage"] = "No se pueden crear usuarios mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            vm.Nombre = vm.Nombre?.Trim() ?? string.Empty;
+            vm.Apellido = vm.Apellido?.Trim() ?? string.Empty;
+            vm.NombreUsuario = vm.NombreUsuario?.Trim() ?? string.Empty;
+            vm.CorreoElectronico = vm.CorreoElectronico?.Trim() ?? string.Empty;
+            vm.Contrasena = vm.Contrasena?.Trim() ?? string.Empty;
+            vm.ConfirmarContrasena = vm.ConfirmarContrasena?.Trim() ?? string.Empty;
 
             if (!ModelState.IsValid)
                 return View(vm);
@@ -81,6 +100,7 @@ namespace eVote360_Pro.Controllers
 
                 await _usuarioService.CreateAsync(dto);
 
+                TempData["SuccessMessage"] = "Usuario creado correctamente.";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -97,6 +117,12 @@ namespace eVote360_Pro.Controllers
 
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
+
+            if (await _eleccionService.ExisteEleccionActivaAsync())
+            {
+                TempData["ErrorMessage"] = "No se pueden editar usuarios mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
+            }
 
             var vm = await _usuarioService.GetByIdAsync(id);
 
@@ -116,6 +142,12 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
 
+            if (await _eleccionService.ExisteEleccionActivaAsync())
+            {
+                TempData["ErrorMessage"] = "No se pueden editar usuarios mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
+            }
+
             if (!ModelState.IsValid)
                 return View(vm);
 
@@ -128,8 +160,8 @@ namespace eVote360_Pro.Controllers
                     Apellido = vm.Apellido,
                     NombreUsuario = vm.NombreUsuario,
                     CorreoElectronico = vm.CorreoElectronico,
-                    Contrasena = vm.Contrasena ?? string.Empty,
-                    ConfirmarContrasena = vm.ConfirmarContrasena ?? string.Empty,
+                    Contrasena = vm.Contrasena,
+                    ConfirmarContrasena = vm.ConfirmarContrasena,
                     RolUsuario = vm.RolUsuario,
                     Estado = vm.Estado,
                     PartidoPoliticoId = vm.RolUsuario == RolUsuario.Dirigente
@@ -139,6 +171,7 @@ namespace eVote360_Pro.Controllers
 
                 await _usuarioService.UpdateAsync(dto);
 
+                TempData["SuccessMessage"] = "Usuario actualizado correctamente.";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -155,6 +188,12 @@ namespace eVote360_Pro.Controllers
 
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
+
+            if (await _eleccionService.ExisteEleccionActivaAsync())
+            {
+                TempData["ErrorMessage"] = "No se pueden activar usuarios mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
+            }
 
             var vm = await _usuarioService.GetActivarViewModelAsync(id);
 
@@ -174,7 +213,21 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
 
-            await _usuarioService.ActivarAsync(id);
+            if (await _eleccionService.ExisteEleccionActivaAsync())
+            {
+                TempData["ErrorMessage"] = "No se pueden activar usuarios mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                await _usuarioService.ActivarAsync(id);
+                TempData["SuccessMessage"] = "Usuario activado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
 
             return RedirectToAction(nameof(Index));
         }
@@ -186,6 +239,12 @@ namespace eVote360_Pro.Controllers
 
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
+
+            if (await _eleccionService.ExisteEleccionActivaAsync())
+            {
+                TempData["ErrorMessage"] = "No se pueden desactivar usuarios mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
+            }
 
             var vm = await _usuarioService.GetDesactivarViewModelAsync(id);
 
@@ -205,7 +264,21 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
 
-            await _usuarioService.DesactivarAsync(id);
+            if (await _eleccionService.ExisteEleccionActivaAsync())
+            {
+                TempData["ErrorMessage"] = "No se pueden desactivar usuarios mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                await _usuarioService.DesactivarAsync(id);
+                TempData["SuccessMessage"] = "Usuario desactivado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
 
             return RedirectToAction(nameof(Index));
         }

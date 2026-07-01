@@ -1,281 +1,259 @@
-    using AutoMapper;
-    using eVote360_Pro.Helpers;
-    using eVote360Pro.Core.Application.Dtos;
-    using eVote360Pro.Core.Application.Interfaces;
-    using eVote360Pro.Core.Application.ViewModels.Candidato;
-    using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using eVote360_Pro.Helpers;
+using eVote360Pro.Core.Application.Dtos;
+using eVote360Pro.Core.Application.Interfaces;
+using eVote360Pro.Core.Application.ViewModels.Candidato;
+using Microsoft.AspNetCore.Mvc;
 
-    namespace eVote360_Pro.Controllers
+namespace eVote360_Pro.Controllers
+{
+    public class CandidatoController : Controller
     {
-        public class CandidatoController
-            : Controller
+        private readonly ICandidatoService _service;
+        private readonly IMapper _mapper;
+        private readonly IUserSession _userSession;
+
+        public CandidatoController(
+            ICandidatoService service,
+            IMapper mapper,
+            IUserSession userSession)
         {
-            private readonly ICandidatoService _service;
-            private readonly IMapper _mapper;
-            private readonly IUserSession _userSession;
+            _service = service;
+            _mapper = mapper;
+            _userSession = userSession;
+        }
 
-            public CandidatoController(
-                ICandidatoService service,
-                IMapper mapper,
-                IUserSession userSession)
+        public async Task<IActionResult> Index()
+        {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsDirigente())
+                return RedirectToAction("AccessDenied", "Login");
+
+            var usuario = _userSession.GetUserSession();
+
+            if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
+                return RedirectToAction("Index", "Login");
+
+            var candidatos = await _service.GetByPartidoPoliticoAsync(usuario.PartidoPoliticoId.Value);
+            var vm = _mapper.Map<List<CandidatoViewModel>>(candidatos);
+
+            return View(vm);
+        }
+
+        public IActionResult Create()
+        {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsDirigente())
+                return RedirectToAction("AccessDenied", "Login");
+
+            var usuario = _userSession.GetUserSession();
+
+            if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
+                return RedirectToAction("Index", "Login");
+
+            var vm = new SaveCandidatoViewModel
             {
-                _service = service;
-                _mapper = mapper;
-                _userSession = userSession;
-            }
+                PartidoPoliticoId = usuario.PartidoPoliticoId.Value,
+                Estado = true
+            };
 
-            public async Task<IActionResult> Index()
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(SaveCandidatoViewModel vm)
+        {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsDirigente())
+                return RedirectToAction("AccessDenied", "Login");
+
+            var usuario = _userSession.GetUserSession();
+
+            if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
+                return RedirectToAction("Index", "Login");
+
+            vm.PartidoPoliticoId = usuario.PartidoPoliticoId.Value;
+            vm.Estado = true;
+
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            if (vm.Foto == null)
             {
-                if (!_userSession.HasUser())
-                    return RedirectToAction("Index", "Login");
-
-                if (!_userSession.IsDirigente())
-                    return RedirectToAction("AccessDenied", "Login");
-
-                var usuario = _userSession.GetUserSession();
-                if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
-                {
-                    return RedirectToAction("Index", "Login");
-                }
-
-                var candidatos = await _service.GetByPartidoPoliticoAsync(
-                        usuario.PartidoPoliticoId.Value);
-
-                var vm = _mapper.Map<List<CandidatoViewModel>>(candidatos);
-
+                ModelState.AddModelError("", "La foto del candidato es requerida.");
                 return View(vm);
             }
 
-            public IActionResult Create()
+            string extension = Path.GetExtension(vm.Foto.FileName).ToLower();
+            string[] permitidas = { ".jpg", ".jpeg", ".png" };
+
+            if (!permitidas.Contains(extension))
             {
-                if (!_userSession.HasUser())
-                    return RedirectToAction("Index", "Login");
-
-                if (!_userSession.IsDirigente())
-                    return RedirectToAction("AccessDenied", "Login");
-
-                var usuario = _userSession.GetUserSession();
-                if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
-                {
-                    return RedirectToAction("Index", "Login");
-                }
-
-                return View(new SaveCandidatoViewModel());
+                ModelState.AddModelError("", "La foto del candidato debe ser una imagen válida.");
+                return View(vm);
             }
 
-            [HttpPost]
-            public async Task<IActionResult> Create(SaveCandidatoViewModel vm)
+            try
             {
-                if (!_userSession.HasUser())
-                    return RedirectToAction("Index", "Login");
-
-                if (!_userSession.IsDirigente())
-                    return RedirectToAction("AccessDenied", "Login");
-
-                var usuario = _userSession.GetUserSession();
-                if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
-                {
-                    return RedirectToAction("Index", "Login");
-                }
+                string? fotoUrl = FileManager.Upload(vm.Foto, 0, "candidatos");
 
                 var dto = _mapper.Map<CandidatoDto>(vm);
                 dto.PartidoPoliticoId = usuario.PartidoPoliticoId.Value;
                 dto.Estado = true;
+                dto.FotoUrl = fotoUrl;
 
-                try
-                {
-                    if (!ModelState.IsValid)
-                    {
-                        return View(vm);
-                    }
+                await _service.AddAsync(dto);
 
-                    if (vm.Foto == null)
-                    {
-                        ModelState.AddModelError(
-                            "",
-                            "La foto del candidato es requerida.");
-
-                        return View(vm);
-                    }
-
-                    string extension = Path.GetExtension(vm.Foto.FileName).ToLower();
-                    string[] permitidas = { ".jpg", ".jpeg", ".png" };
-
-                    if (!permitidas.Contains(extension))
-                    {
-                        ModelState.AddModelError(
-                            "",
-                            "La foto del candidato debe ser una imagen válida.");
-
-                        return View(vm);
-                    }
-
-                    string? fotoUrl = FileManager.Upload(
-                            vm.Foto,
-                            0,
-                            "candidatos");
-
-                    dto.FotoUrl = fotoUrl;
-
-                    await _service.AddAsync(dto);
-
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    var error = ex.InnerException?.Message ?? ex.Message;
-
-                    ModelState.AddModelError("", error);
-
-                    return View(vm);
-                }
+                return RedirectToAction(nameof(Index));
             }
-
-            public async Task<IActionResult> Edit(int id)
+            catch (Exception ex)
             {
-                if (!_userSession.HasUser())
-                    return RedirectToAction("Index", "Login");
-
-                if (!_userSession.IsDirigente())
-                    return RedirectToAction("AccessDenied", "Login");
-
-                var usuario = _userSession.GetUserSession();
-                if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
-                {
-                    return RedirectToAction("Index", "Login");
-                }
-
-                var dto = await _service.GetByIdAsync(id);
-
-                if (dto == null || dto.PartidoPoliticoId != usuario.PartidoPoliticoId.Value)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-
-                var vm = _mapper.Map<SaveCandidatoViewModel>(dto);
-
+                var error = ex.InnerException?.Message ?? ex.Message;
+                ModelState.AddModelError("", error);
                 return View(vm);
             }
+        }
 
-            [HttpPost]
-            public async Task<IActionResult> Edit(SaveCandidatoViewModel vm)
+        public async Task<IActionResult> Edit(int id)
+        {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsDirigente())
+                return RedirectToAction("AccessDenied", "Login");
+
+            var usuario = _userSession.GetUserSession();
+
+            if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
+                return RedirectToAction("Index", "Login");
+
+            var dto = await _service.GetByIdAsync(id);
+
+            if (dto == null || dto.PartidoPoliticoId != usuario.PartidoPoliticoId.Value)
+                return RedirectToAction(nameof(Index));
+
+            var vm = _mapper.Map<SaveCandidatoViewModel>(dto);
+            vm.PartidoPoliticoId = usuario.PartidoPoliticoId.Value;
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(SaveCandidatoViewModel vm)
+        {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsDirigente())
+                return RedirectToAction("AccessDenied", "Login");
+
+            var usuario = _userSession.GetUserSession();
+
+            if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
+                return RedirectToAction("Index", "Login");
+
+            vm.PartidoPoliticoId = usuario.PartidoPoliticoId.Value;
+
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            try
             {
-                if (!_userSession.HasUser())
-                    return RedirectToAction("Index", "Login");
+                var existingDto = await _service.GetByIdAsync(vm.Id);
 
-                if (!_userSession.IsDirigente())
-                    return RedirectToAction("AccessDenied", "Login");
-
-                var usuario = _userSession.GetUserSession();
-                if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
-                {
-                    return RedirectToAction("Index", "Login");
-                }
-
-                try
-                {
-                    var existingDto = await _service.GetByIdAsync(vm.Id);
-                    if (existingDto == null || existingDto.PartidoPoliticoId != usuario.PartidoPoliticoId.Value)
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
-
-                    if (!ModelState.IsValid)
-                    {
-                        return View(vm);
-                    }
-
-                    string? fotoUrl = FileManager.Upload(
-                        vm.Foto,
-                        vm.Id,
-                        "candidatos",
-                        true,
-                        vm.FotoUrl);
-
-                    var dto = _mapper.Map<CandidatoDto>(vm);
-                    dto.FotoUrl = fotoUrl;
-                    dto.PartidoPoliticoId = usuario.PartidoPoliticoId.Value;
-
-                    await _service.UpdateAsync(vm.Id, dto);
-
+                if (existingDto == null || existingDto.PartidoPoliticoId != usuario.PartidoPoliticoId.Value)
                     return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", ex.Message);
 
-                    return View(vm);
-                }
+                string? fotoUrl = FileManager.Upload(
+                    vm.Foto,
+                    vm.Id,
+                    "candidatos",
+                    true,
+                    vm.FotoUrl);
+
+                var dto = _mapper.Map<CandidatoDto>(vm);
+                dto.FotoUrl = fotoUrl;
+                dto.PartidoPoliticoId = usuario.PartidoPoliticoId.Value;
+
+                await _service.UpdateAsync(vm.Id, dto);
+
+                return RedirectToAction(nameof(Index));
             }
-
-
-
-            public async Task<IActionResult> Activar(int id)
+            catch (Exception ex)
             {
-                if (!_userSession.HasUser())
-                    return RedirectToAction("Index", "Login");
-
-                if (!_userSession.IsDirigente())
-                    return RedirectToAction("AccessDenied", "Login");
-
-                var usuario = _userSession.GetUserSession();
-                if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
-                {
-                    return RedirectToAction("Index", "Login");
-                }
-
-                try
-                {
-                    var existingDto = await _service.GetByIdAsync(id);
-                    if (existingDto == null || existingDto.PartidoPoliticoId != usuario.PartidoPoliticoId.Value)
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
-
-                    await _service.ActivarCandidatoAsync(id);
-
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    TempData["Error"] = ex.Message;
-
-                    return RedirectToAction(nameof(Index));
-                }
+                ModelState.AddModelError("", ex.Message);
+                return View(vm);
             }
+        }
 
-            public async Task<IActionResult> Desactivar(int id)
+        public async Task<IActionResult> Activar(int id)
+        {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsDirigente())
+                return RedirectToAction("AccessDenied", "Login");
+
+            var usuario = _userSession.GetUserSession();
+
+            if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
+                return RedirectToAction("Index", "Login");
+
+            try
             {
-                if (!_userSession.HasUser())
-                    return RedirectToAction("Index", "Login");
+                var existingDto = await _service.GetByIdAsync(id);
 
-                if (!_userSession.IsDirigente())
-                    return RedirectToAction("AccessDenied", "Login");
-
-                var usuario = _userSession.GetUserSession();
-                if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
-                {
-                    return RedirectToAction("Index", "Login");
-                }
-
-                try
-                {
-                    var existingDto = await _service.GetByIdAsync(id);
-                    if (existingDto == null || existingDto.PartidoPoliticoId != usuario.PartidoPoliticoId.Value)
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
-
-                    await _service.DesactivarCandidatoAsync(id);
-
+                if (existingDto == null || existingDto.PartidoPoliticoId != usuario.PartidoPoliticoId.Value)
                     return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    TempData["Error"] = ex.Message;
 
+                await _service.ActivarCandidatoAsync(id);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        public async Task<IActionResult> Desactivar(int id)
+        {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsDirigente())
+                return RedirectToAction("AccessDenied", "Login");
+
+            var usuario = _userSession.GetUserSession();
+
+            if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
+                return RedirectToAction("Index", "Login");
+
+            try
+            {
+                var existingDto = await _service.GetByIdAsync(id);
+
+                if (existingDto == null || existingDto.PartidoPoliticoId != usuario.PartidoPoliticoId.Value)
                     return RedirectToAction(nameof(Index));
-                }
+
+                await _service.DesactivarCandidatoAsync(id);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(Index));
             }
         }
     }
+}

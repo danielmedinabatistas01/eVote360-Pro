@@ -1,4 +1,3 @@
-
 using eVote360Pro.Core.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
@@ -25,14 +24,14 @@ namespace eVote360Pro.Core.Application.ViewModels.Usuario
         public string NombreUsuario { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Debe ingresar la contraseña.")]
+        [StringLength(100, MinimumLength = 8, ErrorMessage = "La contraseña debe tener entre 8 y 100 caracteres.")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$",
+     ErrorMessage = "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.")]
         [DataType(DataType.Password)]
-        [MinLength(8, ErrorMessage = "La contraseña debe tener al menos 8 caracteres.")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", 
-            ErrorMessage = "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.")]
         public string Contrasena { get; set; } = string.Empty;
 
-        [Compare(nameof(Contrasena), ErrorMessage = "Las contraseñas deben coincidir.")]
         [Required(ErrorMessage = "Debe confirmar la contraseña.")]
+        [Compare(nameof(Contrasena), ErrorMessage = "Las contraseñas deben coincidir.")]
         [DataType(DataType.Password)]
         public string ConfirmarContrasena { get; set; } = string.Empty;
 

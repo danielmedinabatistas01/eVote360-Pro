@@ -1,56 +1,184 @@
 ﻿@model eVote360Pro.Core.Application.ViewModels.PartidoPolitico.SavePartidoPoliticoViewModel
 
 @{
-    bool isEdit = Model.Id != 0;
-    ViewData["Title"] = isEdit ? "Editar Partido" : "Nuevo Partido";
+    bool isEdit = Model != null && Model.Id > 0;
+    ViewData["Title"] = isEdit ? "Editar Partido Político" : "Nuevo Partido Político";
 }
-<div asp-validation-summary="All"
-     class="alert alert-danger"></div>
-<div class="container mt-4" style="max-width: 600px;">
-    <div class="card shadow">
-        <div class="card-header bg-dark text-white">
-            <h4>@(isEdit ? "Modificar Partido Político" : "Registrar Partido Político")</h4>
+
+<style>
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #1B3A6B;
+        margin: 0 0 .35rem;
+    }
+
+    .page-header p {
+        font-size: .9rem;
+        color: #6B7280;
+        margin: 0;
+    }
+
+    .content-card {
+        background: #fff;
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 1.5rem;
+        max-width: 700px;
+        margin: 0 auto;
+        box-shadow: 0 4px 12px rgba(0,0,0,.04);
+    }
+
+    .form-label {
+        color: #1B3A6B;
+        font-weight: 600;
+        font-size: .9rem;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 8px;
+        border: 1px solid #E5E7EB;
+        padding: .75rem;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #2563EB;
+        box-shadow: 0 0 0 .2rem rgba(37,99,235,.15);
+    }
+
+    .btn-main {
+        background: #2563EB;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: .65rem 1rem;
+        font-size: .9rem;
+        font-weight: 600;
+    }
+
+    .btn-main:hover {
+        background: #1D4ED8;
+        color: white;
+    }
+
+    .btn-back {
+        background: #F8FAFC;
+        color: #1B3A6B;
+        border: 1px solid #E5E7EB;
+        border-radius: 8px;
+        padding: .65rem 1rem;
+        font-size: .9rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .btn-back:hover {
+        background: #EEF2FF;
+        color: #1B3A6B;
+        text-decoration: none;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: .75rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .logo-preview {
+        width: 90px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 1px solid #E5E7EB;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="page-header">
+    <h1>@(isEdit ? "Editar Partido Político" : "Nuevo Partido Político")</h1>
+    <p>Complete la información del partido político.</p>
+</div>
+
+<div class="content-card">
+
+    <form asp-action="@(isEdit ? "Edit" : "Create")"
+          method="post"
+          enctype="multipart/form-data">
+
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="EsActivo" type="hidden" />
+        <input asp-for="LogoUrl" type="hidden" />
+
+        @if (isEdit && !string.IsNullOrEmpty(Model.LogoUrl))
+        {
+            <div class="text-center mb-3">
+                <img src="@Model.LogoUrl"
+                     class="logo-preview"
+                     onerror="this.style.display='none'" />
+            </div>
+        }
+
+        <div class="mb-3">
+            <label asp-for="Nombre" class="form-label">Nombre del Partido</label>
+            <input asp-for="Nombre"
+                   class="form-control"
+                   placeholder="Ej. Partido Revolucionario Moderno" />
+            <span asp-validation-for="Nombre" class="text-danger small"></span>
         </div>
-        <div class="card-body">
 
-            <form asp-action="@(isEdit ? "Edit" : "Create")" method="post" enctype="multipart/form-data">
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="EsActivo" />
-                <input type="hidden" asp-for="LogoUrl" />
-
-                <div class="mb-3">
-                    <label asp-for="Nombre" class="form-label">Nombre del Partido</label>
-                    <input asp-for="Nombre" class="form-control" placeholder="Ej. Partido de la Liberación Dominicana" />
-                    <span asp-validation-for="Nombre" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Siglas" class="form-label">Siglas</label>
-                    <input asp-for="Siglas" class="form-control" placeholder="Ej. PLD" />
-                    <span asp-validation-for="Siglas" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="LogoFile" class="form-label">Logo del Partido (Imagen)</label>
-                    <input asp-for="LogoFile" class="form-control" type="file" accept="image/*" />
-                    <span asp-validation-for="LogoFile" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Descripcion" class="form-label">Descripción</label>
-                    <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
-                    <span asp-validation-for="Descripcion" class="text-danger small"></span>
-                </div>
-
-                <div class="d-flex justify-content-end gap-2 mt-4">
-                    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                </div>
-            </form>
-
+        <div class="mb-3">
+            <label asp-for="Siglas" class="form-label">Siglas</label>
+            <input asp-for="Siglas"
+                   class="form-control"
+                   placeholder="Ej. PRM" />
+            <span asp-validation-for="Siglas" class="text-danger small"></span>
         </div>
-    </div>
+
+        <div class="mb-3">
+            <label asp-for="LogoFile" class="form-label">Logo del Partido</label>
+            <input asp-for="LogoFile"
+                   class="form-control"
+                   type="file"
+                   accept="image/*" />
+            <span asp-validation-for="LogoFile" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Descripcion" class="form-label">Descripción</label>
+            <textarea asp-for="Descripcion"
+                      rows="4"
+                      class="form-control"
+                      placeholder="Descripción del partido político"></textarea>
+            <span asp-validation-for="Descripcion" class="text-danger small"></span>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn-back">
+                <i class="bi bi-arrow-left"></i>
+                Volver
+            </a>
+
+            <button type="submit" class="btn-main">
+                <i class="bi bi-check-circle"></i>
+                @(isEdit ? "Guardar Cambios" : "Registrar Partido")
+            </button>
+        </div>
+
+    </form>
+
 </div>
 
 @section Scripts {

@@ -1,33 +1,168 @@
 ﻿@model eVote360Pro.Core.Application.ViewModels.AsignacionCandidato.AsignacionCandidatoViewModel
 
-<form asp-action="Edit" method="post">
+@{
+    ViewData["Title"] = "Editar Asignación";
+}
 
-    <div class="mb-3">
-        <label>Candidato</label>
+<style>
+    .page-header {
+        margin-bottom: 2rem;
+    }
 
-        <select asp-for="CandidatoId"
-                class="form-select">
-        </select>
-    </div>
+    .page-header h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #1B3A6B;
+        margin: 0 0 .35rem;
+    }
 
-    <div class="mb-3">
-        <label>Puesto Electivo</label>
+    .page-header p {
+        font-size: .9rem;
+        color: #6B7280;
+        margin: 0;
+    }
 
-        <select asp-for="PuestoElectivoId"
-                class="form-select">
-        </select>
-    </div>
+    .content-card {
+        background: #fff;
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 1.5rem;
+        max-width: 700px;
+        margin: 0 auto;
+        box-shadow: 0 4px 12px rgba(0,0,0,.04);
+    }
 
-    <div class="mb-3">
-        <label>Elección</label>
+    .form-label {
+        color: #1B3A6B;
+        font-weight: 600;
+        font-size: .9rem;
+    }
 
-        <select asp-for="EleccionId"
-                class="form-select">
-        </select>
-    </div>
+    .form-select {
+        border-radius: 8px;
+        border: 1px solid #E5E7EB;
+        padding: .75rem;
+    }
 
-    <button class="btn btn-primary">
-        Asignar
-    </button>
+    .form-select:focus {
+        border-color: #2563EB;
+        box-shadow: 0 0 0 .2rem rgba(37,99,235,.15);
+    }
 
-</form>
+    .btn-main {
+        background: #2563EB;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: .65rem 1rem;
+        font-size: .9rem;
+        font-weight: 600;
+    }
+
+    .btn-main:hover {
+        background: #1D4ED8;
+        color: white;
+    }
+
+    .btn-back {
+        background: #F8FAFC;
+        color: #1B3A6B;
+        border: 1px solid #E5E7EB;
+        border-radius: 8px;
+        padding: .65rem 1rem;
+        font-size: .9rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .btn-back:hover {
+        background: #EEF2FF;
+        color: #1B3A6B;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        gap: .75rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+    }
+</style>
+
+<div class="page-header">
+    <h1>Editar Asignación</h1>
+    <p>Actualice la asignación del candidato a un puesto electivo.</p>
+</div>
+
+<div class="content-card">
+
+    <form asp-action="Edit" method="post">
+
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <input asp-for="Id" type="hidden" />
+
+        <div class="mb-3">
+            <label asp-for="CandidatoId" class="form-label">
+                Candidato
+            </label>
+
+            <select asp-for="CandidatoId"
+                    asp-items="ViewBag.Candidatos"
+                    class="form-select">
+                <option value="">Seleccione un candidato</option>
+            </select>
+
+            <span asp-validation-for="CandidatoId" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PuestoElectivoId" class="form-label">
+                Puesto Electivo
+            </label>
+
+            <select asp-for="PuestoElectivoId"
+                    asp-items="ViewBag.Puestos"
+                    class="form-select">
+                <option value="">Seleccione un puesto</option>
+            </select>
+
+            <span asp-validation-for="PuestoElectivoId" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="EleccionId" class="form-label">
+                Elección
+            </label>
+
+            <select asp-for="EleccionId"
+                    asp-items="ViewBag.Elecciones"
+                    class="form-select">
+                <option value="">Seleccione una elección</option>
+            </select>
+
+            <span asp-validation-for="EleccionId" class="text-danger small"></span>
+        </div>
+
+        <div class="form-actions">
+            <a asp-action="Index" class="btn-back">
+                <i class="bi bi-arrow-left"></i>
+                Volver
+            </a>
+
+            <button type="submit" class="btn-main">
+                <i class="bi bi-check-circle"></i>
+                Guardar Cambios
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -30,19 +30,19 @@
         margin-bottom: 2rem;
     }
 
-        .page-header h1 {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.7rem;
-            font-weight: 700;
-            color: #1B3A6B;
-            margin: 0 0 .35rem;
-        }
+    .page-header h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: #1B3A6B;
+        margin: 0 0 .35rem;
+    }
 
-        .page-header p {
-            font-size: .9rem;
-            color: #6B7280;
-            margin: 0;
-        }
+    .page-header p {
+        font-size: .9rem;
+        color: #6B7280;
+        margin: 0;
+    }
 
     .form-label {
         font-weight: 600;
@@ -50,17 +50,19 @@
         font-size: .9rem;
     }
 
-    .form-control {
+    .form-control,
+    .form-select {
         border-radius: 8px;
         border: 1px solid #D1D5DB;
         padding: .65rem .75rem;
         font-size: .9rem;
     }
 
-        .form-control:focus {
-            border-color: #2563EB;
-            box-shadow: 0 0 0 .15rem rgba(37,99,235,.15);
-        }
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #2563EB;
+        box-shadow: 0 0 0 .15rem rgba(37,99,235,.15);
+    }
 
     .buttons {
         display: flex;
@@ -77,15 +79,12 @@
         padding: .7rem 1rem;
         font-size: .9rem;
         font-weight: 600;
-        text-decoration: none;
-        text-align: center;
     }
 
-        .btn-main:hover {
-            background: #1D4ED8;
-            color: #fff;
-            text-decoration: none;
-        }
+    .btn-main:hover {
+        background: #1D4ED8;
+        color: #fff;
+    }
 
     .btn-delete {
         flex: 1;
@@ -97,14 +96,12 @@
         font-weight: 600;
         text-decoration: none;
         text-align: center;
-        border: none;
     }
 
-        .btn-delete:hover {
-            background: #FEE2E2;
-            color: #991B1B;
-            text-decoration: none;
-        }
+    .btn-delete:hover {
+        background: #FEE2E2;
+        color: #991B1B;
+    }
 </style>
 
 <div class="create-wrapper">
@@ -116,7 +113,15 @@
         </div>
 
         <form asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            @Html.AntiForgeryToken()
+@if (!ViewData.ModelState.IsValid)
+{
+    <div asp-validation-summary="All"
+         class="alert alert-danger mb-3"
+         role="alert">
+    </div>
+}
+
             <div class="mb-3">
                 <label asp-for="Nombre" class="form-label"></label>
                 <input asp-for="Nombre" class="form-control" />
@@ -130,49 +135,86 @@
             </div>
 
             <div class="mb-3">
-                <label asp-for="NombreUsuario" class="form-label">Nombre de Usuario</label>
+                <label asp-for="NombreUsuario" class="form-label">
+                    Nombre de Usuario
+                </label>
                 <input asp-for="NombreUsuario" class="form-control" />
                 <span asp-validation-for="NombreUsuario" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="CorreoElectronico" class="form-label">Correo Electronico</label>
+                <label asp-for="CorreoElectronico" class="form-label">
+                    Correo Electrónico
+                </label>
                 <input asp-for="CorreoElectronico" class="form-control" />
                 <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="Contrasena" class="form-label">Contraseña</label>
-                <input asp-for="Contrasena" type="password" class="form-control" />
-                <span asp-validation-for="Contrasena" class="text-danger"></span>
+                <label asp-for="Contrasena" class="form-label">
+                    Contraseña
+                </label>
+
+                <input asp-for="Contrasena"
+                       type="password"
+                       class="form-control"
+                       autocomplete="new-password" />
+
+                <small class="text-muted">
+                    Debe contener al menos 8 caracteres, una letra mayúscula,
+                    una letra minúscula, un número y un carácter especial.
+                </small>
+
+                <span asp-validation-for="Contrasena"
+                      class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="ConfirmarContrasena" class="form-label">Confirmar Contraseña</label>
-                <input asp-for="ConfirmarContrasena" type="password" class="form-control" />
-                <span asp-validation-for="ConfirmarContrasena" class="text-danger"></span>
+                <label asp-for="ConfirmarContrasena"
+                       class="form-label">
+                    Confirmar Contraseña
+                </label>
+
+                <input asp-for="ConfirmarContrasena"
+                       type="password"
+                       class="form-control"
+                       autocomplete="new-password" />
+
+                <span asp-validation-for="ConfirmarContrasena"
+                      class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="RolUsuario" class="form-label">Rol de Usuario</label>
+                <label asp-for="RolUsuario"
+                       class="form-label">
+                    Rol de Usuario
+                </label>
+
                 <select asp-for="RolUsuario"
                         asp-items="Html.GetEnumSelectList<RolUsuario>()"
-                        class="form-control">
+                        class="form-select">
                     <option value="">Seleccione un rol</option>
                 </select>
-                <span asp-validation-for="RolUsuario" class="text-danger"></span>
+
+                <span asp-validation-for="RolUsuario"
+                      class="text-danger"></span>
             </div>
 
             <div class="buttons">
-                <button type="submit" class="btn-main">Guardar</button>
+                <button type="submit" class="btn-main">
+                    Guardar
+                </button>
 
-                <a asp-controller="Usuario"
-                   asp-action="Login"
-                   class="btn-delete">
+                <a asp-action="Index" class="btn-delete">
                     Cancelar
                 </a>
             </div>
 
         </form>
+
     </div>
 </div>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,53 +1,48 @@
 ﻿@using eVote360Pro.Core.Application.ViewModels.AsignacionCandidato
 @model SaveAsignacionCandidatoViewModel
 
-<form method="post">
+@{
+    ViewData["Title"] = "Nueva Asignación";
+}
 
-    <div class="content-card">
+<div class="content-card">
+    <h1>Nueva Asignación</h1>
+
+    @if (ViewBag.NombrePartido != null)
+    {
+        <div class="alert alert-info">
+            <strong>Partido:</strong> @ViewBag.NombrePartido
+        </div>
+    }
+
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
         <div asp-validation-summary="All" class="alert alert-danger"></div>
-        <h1>Nueva Asignación</h1>
 
         <div class="mb-3">
-
-            <label>Candidato</label>
-
-            <select asp-for="CandidatoId"
-                    asp-items="@(new SelectList(ViewBag.Candidatos, "Id", "Nombre"))"
-                    class="form-select">
-                <option value="">Seleccione un candidato...</option>
+            <label class="form-label">Candidato</label>
+            <select asp-for="CandidatoId" asp-items="ViewBag.Candidatos" class="form-select">
+                <option value="">Seleccione un candidato</option>
             </select>
-
         </div>
 
         <div class="mb-3">
-
-            <label>Puesto Electivo</label>
-
-            <select asp-for="PuestoElectivoId"
-                    asp-items="@(new SelectList(ViewBag.Puestos, "Id", "Nombre"))"
-                    class="form-select">
-                <option value="">Seleccione un puesto...</option>
+            <label class="form-label">Puesto Electivo</label>
+            <select asp-for="PuestoElectivoId" asp-items="ViewBag.Puestos" class="form-select">
+                <option value="">Seleccione un puesto</option>
             </select>
-
         </div>
 
         <div class="mb-3">
-
-            <label>Elección</label>
-
-            <select asp-for="EleccionId"
-                    asp-items="@(new SelectList(ViewBag.Elecciones, "Id", "Nombre"))"
-                    class="form-select">
-                <option value="">Seleccione una elección...</option>
+            <label class="form-label">Elección</label>
+            <select asp-for="EleccionId" asp-items="ViewBag.Elecciones" class="form-select">
+                <option value="">Seleccione una elección</option>
             </select>
-
         </div>
 
-        <button class="btn-main"
-                type="submit">
+        <button class="btn-main" type="submit">
             Guardar
         </button>
-
-    </div>
-
-</form>
+    </form>
+</div>

@@ -2,12 +2,13 @@ using AutoMapper;
 using eVote360Pro.Core.Application.Dtos;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.ViewModels.AsignacionCandidato;
+using eVote360Pro.Core.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace eVote360_Pro.Controllers
 {
-    public class AsignacionCandidatoController
-        : Controller
+    public class AsignacionCandidatoController : Controller
     {
         private readonly IAsignacionCandidatoService _service;
         private readonly ICandidatoService _candidatoService;
@@ -41,19 +42,27 @@ namespace eVote360_Pro.Controllers
                 return RedirectToAction("AccessDenied", "Login");
 
             var usuario = _userSession.GetUserSession();
+
             if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
-            {
                 return RedirectToAction("Index", "Login");
-            }
 
             var dtoList = await _service.GetAllAsync();
-            var candidatos = await _candidatoService.GetByPartidoPoliticoAsync(usuario.PartidoPoliticoId.Value);
-            var candidatoIds = candidatos.Select(c => c.Id).ToHashSet();
 
-            var filteredList = dtoList.Where(x => candidatoIds.Contains(x.CandidatoId)).ToList();
+            var candidatos = await _candidatoService.GetByPartidoPoliticoAsync(
+                usuario.PartidoPoliticoId.Value);
+
+            var candidatoIds = candidatos
+                .Select(c => c.Id)
+                .ToHashSet();
+
+            var filteredList = dtoList
+                .Where(x => candidatoIds.Contains(x.CandidatoId))
+                .ToList();
+
             var vm = _mapper.Map<List<AsignacionCandidatoViewModel>>(filteredList);
 
             ViewBag.HasActiveElection = await _eleccionService.ExisteEleccionActivaAsync();
+
             return View(vm);
         }
 
@@ -65,24 +74,24 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsDirigente())
                 return RedirectToAction("AccessDenied", "Login");
 
-            var usuario = _userSession.GetUserSession();
-            if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
+            if (await _eleccionService.ExisteEleccionActivaAsync())
             {
-                return RedirectToAction("Index", "Login");
+                TempData["Error"] = "No se pueden crear asignaciones mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
             }
 
-            var candidatos = await _candidatoService.GetByPartidoPoliticoAsync(usuario.PartidoPoliticoId.Value);
-            var puestos = await _puestoService.GetAllAsync();
-            var elecciones = await _eleccionService.GetAllAsync();
+            var usuario = _userSession.GetUserSession();
 
-            ViewBag.Candidatos = candidatos.Where(x => x.Estado).ToList();
-            ViewBag.Puestos = puestos.Where(x => x.EsActivo).ToList();
-            ViewBag.Elecciones = elecciones.Where(x => x.EstadoEleccion == eVote360Pro.Core.Domain.Enums.EstadoEleccion.Pendiente).ToList();
+            if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
+                return RedirectToAction("Index", "Login");
+
+            await LoadDropdowns(usuario.PartidoPoliticoId.Value);
 
             return View(new SaveAsignacionCandidatoViewModel());
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SaveAsignacionCandidatoViewModel vm)
         {
             if (!_userSession.HasUser())
@@ -91,50 +100,38 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsDirigente())
                 return RedirectToAction("AccessDenied", "Login");
 
-            var usuario = _userSession.GetUserSession();
-            if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
+            if (await _eleccionService.ExisteEleccionActivaAsync())
             {
-                return RedirectToAction("Index", "Login");
+                TempData["Error"] = "No se pueden crear asignaciones mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
             }
+
+            var usuario = _userSession.GetUserSession();
+
+            if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
+                return RedirectToAction("Index", "Login");
 
             int partidoDirigenteId = usuario.PartidoPoliticoId.Value;
 
+            if (!ModelState.IsValid)
+            {
+                await LoadDropdowns(partidoDirigenteId);
+                return View(vm);
+            }
+
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    var candidatos = await _candidatoService.GetByPartidoPoliticoAsync(partidoDirigenteId);
-                    var puestos = await _puestoService.GetAllAsync();
-                    var elecciones = await _eleccionService.GetAllAsync();
-
-                    ViewBag.Candidatos = candidatos.Where(x => x.Estado).ToList();
-                    ViewBag.Puestos = puestos.Where(x => x.EsActivo).ToList();
-                    ViewBag.Elecciones = elecciones.Where(x => x.EstadoEleccion == eVote360Pro.Core.Domain.Enums.EstadoEleccion.Pendiente).ToList();
-
-                    return View(vm);
-                }
-
                 var dto = _mapper.Map<AsignacionCandidatoDto>(vm);
 
-                await _service.AsignarCandidatoAsync(
-                        dto,
-                        partidoDirigenteId);
+                await _service.AsignarCandidatoAsync(dto, partidoDirigenteId);
 
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(
-                    "",
-                    ex.Message);
+                ModelState.AddModelError("", ex.Message);
 
-                var candidatos = await _candidatoService.GetByPartidoPoliticoAsync(partidoDirigenteId);
-                var puestos = await _puestoService.GetAllAsync();
-                var elecciones = await _eleccionService.GetAllAsync();
-
-                ViewBag.Candidatos = candidatos.Where(x => x.Estado).ToList();
-                ViewBag.Puestos = puestos.Where(x => x.EsActivo).ToList();
-                ViewBag.Elecciones = elecciones.Where(x => x.EstadoEleccion == eVote360Pro.Core.Domain.Enums.EstadoEleccion.Pendiente).ToList();
+                await LoadDropdowns(partidoDirigenteId);
 
                 return View(vm);
             }
@@ -148,19 +145,24 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsDirigente())
                 return RedirectToAction("AccessDenied", "Login");
 
-            var usuario = _userSession.GetUserSession();
-            if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
+            if (await _eleccionService.ExisteEleccionActivaAsync())
             {
-                return RedirectToAction("Index", "Login");
-            }
-
-            var dto = await _service.GetByIdAsync(id);
-            if (dto == null)
-            {
+                TempData["Error"] = "No se pueden eliminar asignaciones mientras exista una elección activa.";
                 return RedirectToAction(nameof(Index));
             }
 
+            var usuario = _userSession.GetUserSession();
+
+            if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
+                return RedirectToAction("Index", "Login");
+
+            var dto = await _service.GetByIdAsync(id);
+
+            if (dto == null)
+                return RedirectToAction(nameof(Index));
+
             var vm = _mapper.Map<AsignacionCandidatoViewModel>(dto);
+
             return View(vm);
         }
 
@@ -175,19 +177,22 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsDirigente())
                 return RedirectToAction("AccessDenied", "Login");
 
-            var usuario = _userSession.GetUserSession();
-            if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
+            if (await _eleccionService.ExisteEleccionActivaAsync())
             {
-                return RedirectToAction("Index", "Login");
+                TempData["Error"] = "No se pueden eliminar asignaciones mientras exista una elección activa.";
+                return RedirectToAction(nameof(Index));
             }
+
+            var usuario = _userSession.GetUserSession();
+
+            if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
+                return RedirectToAction("Index", "Login");
 
             try
             {
-                int partidoDirigenteId = usuario.PartidoPoliticoId.Value;
-
                 await _service.EliminarAsignacionAsync(
-                        id,
-                        partidoDirigenteId);
+                    id,
+                    usuario.PartidoPoliticoId.Value);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -197,6 +202,40 @@ namespace eVote360_Pro.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+        }
+
+        private async Task LoadDropdowns(int partidoDirigenteId)
+        {
+            var candidatos = await _candidatoService.GetByPartidoPoliticoAsync(partidoDirigenteId);
+            var puestos = await _puestoService.GetAllAsync();
+            var elecciones = await _eleccionService.GetAllAsync();
+
+            ViewBag.Candidatos = candidatos
+                .Where(x => x.Estado)
+                .Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = $"{x.Nombre} {x.Apellido}"
+                })
+                .ToList();
+
+            ViewBag.Puestos = puestos
+                .Where(x => x.EsActivo)
+                .Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.Nombre
+                })
+                .ToList();
+
+            ViewBag.Elecciones = elecciones
+                .Where(x => x.EstadoEleccion == EstadoEleccion.Pendiente)
+                .Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.Nombre
+                })
+                .ToList();
         }
     }
 }

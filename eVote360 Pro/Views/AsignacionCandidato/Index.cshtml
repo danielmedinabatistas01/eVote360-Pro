@@ -142,23 +142,20 @@
 <div class="page-container">
 
     <div class="content-card">
-
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>Asignaciones</h2>
-
-            @if (ViewBag.HasActiveElection == true)
-            {
-                <a href="#" class="btn-main disabled" style="pointer-events: none; opacity: 0.6;">
-                    Agregar Asignación
-                </a>
-            }
-            else
-            {
-                <a asp-action="Create" class="btn-main">
-                    Agregar Asignación
-                </a>
-            }
-        </div>
+@if (ViewBag.HasActiveElection == true)
+{
+    <a href="#" class="btn-main disabled" style="pointer-events: none; opacity: 0.6;">
+        Agregar Asignación
+    </a>
+}
+else
+{
+    <a asp-controller="AsignacionCandidato"
+       asp-action="Create"
+       class="btn-main">
+        Agregar Asignación
+    </a>
+}
 
         @if (ViewBag.HasActiveElection == true)
         {

@@ -72,19 +72,24 @@ namespace eVote360Pro.Web.Controllers
             return View(new eVote360Pro.Core.Application.ViewModels.ProcesoVotacion.IniciarVotacionViewModel());
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(eVote360Pro.Core.Application.ViewModels.ProcesoVotacion.IniciarVotacionViewModel vm)
+        public async Task<IActionResult> Index(IniciarVotacionViewModel vm)
         {
-            if (!ModelState.IsValid)
+            vm.DocumentoIdentidad = vm.DocumentoIdentidad?.Trim() ?? string.Empty;
+
+            ModelState.Clear();
+
+            if (!TryValidateModel(vm))
             {
+                ModelState.AddModelError("", "Debe ingresar un documento de identidad válido.");
                 return View(vm);
             }
 
             try
             {
                 var activeElection = await _eleccionService.GetEleccionActivaAsync();
+
                 if (activeElection == null)
                 {
                     ModelState.AddModelError("", "No hay una elección activa en este momento.");
@@ -92,6 +97,7 @@ namespace eVote360Pro.Web.Controllers
                 }
 
                 var ciudadano = await _ciudadanoRepository.GetByCedulaAsync(vm.DocumentoIdentidad);
+
                 if (ciudadano == null)
                 {
                     ModelState.AddModelError("", "La cédula ingresada no se encuentra registrada.");
@@ -105,15 +111,15 @@ namespace eVote360Pro.Web.Controllers
                 }
 
                 bool yaVoto = await _votoService.CiudadanoYaVotoAsync(ciudadano.Id, activeElection.Id);
+
                 if (yaVoto)
                 {
                     ModelState.AddModelError("", "El ciudadano ya votó en esta elección.");
                     return View(vm);
                 }
 
-
                 HttpContext.Session.SetInt32("CiudadanoId", ciudadano.Id);
-                HttpContext.Session.SetString("CiudadanoEmail", ciudadano.CorreoElectronico);
+                HttpContext.Session.SetString("CiudadanoEmail", ciudadano.CorreoElectronico ?? string.Empty);
                 HttpContext.Session.SetString("CiudadanoNombre", $"{ciudadano.Nombre} {ciudadano.Apellido}");
                 HttpContext.Session.SetString("Cedula", vm.DocumentoIdentidad);
                 HttpContext.Session.SetInt32("EleccionId", activeElection.Id);

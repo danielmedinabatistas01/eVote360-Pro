@@ -1,7 +1,8 @@
 ﻿@model eVote360Pro.Core.Application.ViewModels.Candidato.SaveCandidatoViewModel
 
 @{
-    ViewData["Title"] = "Nuevo Candidato";
+    bool isEdit = Model != null && Model.Id > 0;
+    ViewData["Title"] = isEdit ? "Editar Candidato" : "Nuevo Candidato";
 }
 
 <style>
@@ -72,10 +73,10 @@
         text-decoration: none;
     }
 
-        .btn-main:hover {
-            background: #1D4ED8;
-            color: white;
-        }
+    .btn-main:hover {
+        background: #1D4ED8;
+        color: white;
+    }
 
     .btn-secondary-custom {
         background: #F3F4F6;
@@ -92,90 +93,87 @@
         margin-top: 1.5rem;
     }
 
-    .validation-summary-errors {
-        color: #DC2626;
+    .foto-preview {
+        width: 95px;
+        height: 95px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 1px solid #E5E7EB;
         margin-bottom: 1rem;
     }
 </style>
 
 <div class="page-wrapper">
-
-    ```
     <div class="content-card">
 
         <div class="page-header">
-
             <div class="icon-box">
                 <i class="bi bi-person-plus-fill fs-2 text-primary"></i>
-        </div>
+            </div>
 
-            <h1>Nuevo Candidato</h1>
+            <h1>@(isEdit ? "Editar Candidato" : "Nuevo Candidato")</h1>
 
             <p>
-                Registre un nuevo candidato para participar en el proceso electoral.
+                Registre o actualice los datos del candidato de su partido político.
             </p>
-
         </div>
 
-        <form asp-action="Create"
+        <form asp-action="@(isEdit ? "Edit" : "Create")"
               method="post"
               enctype="multipart/form-data">
 
-            <div asp-validation-summary="ModelOnly"
-                 class="text-danger">
-        </div>
+            @Html.AntiForgeryToken()
 
-        <div class="mb-3">
-                <label asp-for="Nombre"></label>
+            <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+            <input asp-for="Id" type="hidden" />
+            <input asp-for="PartidoPoliticoId" type="hidden" />
+            <input asp-for="FotoUrl" type="hidden" />
+            <input asp-for="Estado" type="hidden" />
+
+            @if (isEdit && !string.IsNullOrEmpty(Model.FotoUrl))
+            {
+                <div class="text-center">
+                    <img src="@Model.FotoUrl"
+                         class="foto-preview"
+                         onerror="this.style.display='none'" />
+                </div>
+            }
+
+            <div class="mb-3">
+                <label asp-for="Nombre" class="form-label">Nombre</label>
                 <input asp-for="Nombre" class="form-control" />
                 <span asp-validation-for="Nombre" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="Apellido"></label>
+                <label asp-for="Apellido" class="form-label">Apellido</label>
                 <input asp-for="Apellido" class="form-control" />
                 <span asp-validation-for="Apellido" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="Foto"></label>
-            <input asp-for="Foto"
-                   type="file"
-                   class="form-control" />
+                <label asp-for="Foto" class="form-label">Foto del candidato</label>
+                <input asp-for="Foto"
+                       type="file"
+                       class="form-control"
+                       accept=".jpg,.jpeg,.png,image/*" />
                 <span asp-validation-for="Foto" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="PartidoPoliticoId"></label>
-                <select asp-for="PartidoPoliticoId"
-                        class="form-select">
-                    <option value="">Seleccione un partido</option>
-                </select>
-
-                <span asp-validation-for="PartidoPoliticoId"
-                      class="text-danger">
-                </span>
-        </div>
-
             <div class="actions">
+                <button type="submit" class="btn-main">
+                    <i class="bi bi-check-circle"></i>
+                    @(isEdit ? "Guardar Cambios" : "Guardar")
+                </button>
 
-        <button type="submit"
-                class="btn-main">
-            Guardar
-        </button>
-
-                <a asp-action="Index"
-                   class="btn-secondary-custom">
+                <a asp-action="Index" class="btn-secondary-custom">
                     Cancelar
                 </a>
+            </div>
+        </form>
 
     </div>
-
-</form>
-
-    </div>
-    ```
-
 </div>
 
 @section Scripts {

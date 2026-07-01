@@ -150,6 +150,7 @@ namespace eVote360_Pro.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePost(int id)
         {
             if (!_userSession.HasUser())
@@ -160,6 +161,14 @@ namespace eVote360_Pro.Controllers
 
             try
             {
+                bool hasActiveElection = await _eleccionService.ExisteEleccionActivaAsync();
+
+                if (hasActiveElection)
+                {
+                    TempData["ErrorMessage"] = "No se pueden modificar partidos políticos mientras exista una elección activa.";
+                    return RedirectToAction(nameof(Index));
+                }
+
                 var dto = await _service.GetByIdAsync(id);
 
                 if (dto == null)
@@ -175,7 +184,6 @@ namespace eVote360_Pro.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-
                 return RedirectToAction(nameof(Index));
             }
         }
