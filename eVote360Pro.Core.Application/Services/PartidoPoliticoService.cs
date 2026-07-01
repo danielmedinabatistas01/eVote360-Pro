@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using eVote360Pro.Core.Application.Dtos;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Domain.Entities;
@@ -13,6 +13,7 @@ namespace eVote360Pro.Core.Application.Services
         private readonly ICandidatoRepository _candidatoRepository;
         private readonly IEleccionRepository _eleccionRepository;
         private readonly IAsignacionDirigenteRepository _dirigenteRepository;
+        private readonly IAsignacionCandidatoRepository _asignacionCandidatoRepository;
         private readonly IMapper _mapper;
 
         public PartidoPoliticoService(
@@ -20,12 +21,14 @@ namespace eVote360Pro.Core.Application.Services
             ICandidatoRepository candidatoRepository,
             IEleccionRepository eleccionRepository,
             IAsignacionDirigenteRepository dirigenteRepository,
+            IAsignacionCandidatoRepository asignacionCandidatoRepository,
             IMapper mapper)
         {
             _partidoRepository = partidoRepository;
             _candidatoRepository = candidatoRepository;
             _eleccionRepository = eleccionRepository;
             _dirigenteRepository = dirigenteRepository;
+            _asignacionCandidatoRepository = asignacionCandidatoRepository;
             _mapper = mapper;
         }
 
@@ -65,12 +68,9 @@ namespace eVote360Pro.Core.Application.Services
                 throw new Exception(
                     "Partido político no encontrado.");
 
-            bool participo =
-                elecciones.Any(e =>
-                    e.EstadoEleccion == EstadoEleccion.Finalizada)
-                ||
-                elecciones.Any(e =>
-                    e.EstadoEleccion == EstadoEleccion.Activa);
+            var asignaciones = await _asignacionCandidatoRepository.GetAllList();
+            bool participo = asignaciones.Any(ac => ac.PartidoPoliticoId == id && 
+                (ac.Eleccion?.EstadoEleccion == EstadoEleccion.Activa || ac.Eleccion?.EstadoEleccion == EstadoEleccion.Finalizada));
 
             string nombreClean =
                 dto.Nombre.Trim();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +13,7 @@ namespace eVote360Pro.Core.Application.Interfaces
 
         Task<bool> ValidarIdentidadOcrAsync(
             string numeroDocumento,
-            string rutaImagen);
+            byte[] imageBytes);
 
         Task<string> GenerarCodigoAsync(
             int ciudadanoId,

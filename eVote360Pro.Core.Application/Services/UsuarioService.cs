@@ -1,4 +1,4 @@
-﻿using eVote360Pro.Core.Application.Dtos.User;
+using eVote360Pro.Core.Application.Dtos.User;
 using eVote360Pro.Core.Application.DTOs;
 using eVote360Pro.Core.Application.DTOs.Email;
 using eVote360Pro.Core.Application.Helpers;
@@ -14,13 +14,16 @@ namespace eVote360Pro.Core.Application.Services
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IEmailService _emailService;
+        private readonly IEleccionRepository _eleccionRepository;
 
         public UsuarioService(
             IUsuarioRepository usuarioRepository,
-            IEmailService emailService)
+            IEmailService emailService,
+            IEleccionRepository eleccionRepository)
         {
             _usuarioRepository = usuarioRepository;
             _emailService = emailService;
+            _eleccionRepository = eleccionRepository;
         }
 
         public async Task<List<UsuarioIndexViewModel>> GetAllAsync()
@@ -96,6 +99,11 @@ namespace eVote360Pro.Core.Application.Services
 
         public async Task CreateAsync(UsuarioDto dto)
         {
+            if (await _eleccionRepository.ExisteEleccionActivaAsync())
+            {
+                throw new Exception("No se pueden modificar usuarios mientras exista una elección activa.");
+            }
+
             if (await _usuarioRepository.ExisteNombreUsuarioAsync(dto.NombreUsuario))
             {
                 throw new Exception("Ya existe un usuario con este nombre de usuario.");
@@ -145,6 +153,11 @@ namespace eVote360Pro.Core.Application.Services
 
         public async Task UpdateAsync(UsuarioDto dto)
         {
+            if (await _eleccionRepository.ExisteEleccionActivaAsync())
+            {
+                throw new Exception("No se pueden modificar usuarios mientras exista una elección activa.");
+            }
+
             if (await _usuarioRepository.ExisteNombreUsuarioAsync(dto.NombreUsuario, dto.Id))
             {
                 throw new Exception("Ya existe otro usuario con este nombre de usuario.");
@@ -180,6 +193,11 @@ namespace eVote360Pro.Core.Application.Services
 
         public async Task ActivarAsync(int id)
         {
+            if (await _eleccionRepository.ExisteEleccionActivaAsync())
+            {
+                throw new Exception("No se pueden modificar usuarios mientras exista una elección activa.");
+            }
+
             var usuario = await _usuarioRepository.GetById(id);
 
             if (usuario == null)
@@ -192,6 +210,11 @@ namespace eVote360Pro.Core.Application.Services
 
         public async Task DesactivarAsync(int id)
         {
+            if (await _eleccionRepository.ExisteEleccionActivaAsync())
+            {
+                throw new Exception("No se pueden modificar usuarios mientras exista una elección activa.");
+            }
+
             var usuario = await _usuarioRepository.GetById(id);
 
             if (usuario == null)

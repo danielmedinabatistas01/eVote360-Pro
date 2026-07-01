@@ -208,68 +208,7 @@
                 }
             }
 
-            public async Task<IActionResult> Delete(int id)
-            {
-                if (!_userSession.HasUser())
-                    return RedirectToAction("Index", "Login");
 
-                if (!_userSession.IsDirigente())
-                    return RedirectToAction("AccessDenied", "Login");
-
-                var usuario = _userSession.GetUserSession();
-                if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
-                {
-                    return RedirectToAction("Index", "Login");
-                }
-
-                var dto = await _service.GetByIdAsync(id);
-
-                if (dto == null || dto.PartidoPoliticoId != usuario.PartidoPoliticoId.Value)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-
-                var vm = _mapper.Map<CandidatoViewModel>(dto);
-
-                return View(vm);
-            }
-
-            [HttpPost]
-            public async Task<IActionResult> Delete(CandidatoViewModel vm)
-            {
-                if (!_userSession.HasUser())
-                    return RedirectToAction("Index", "Login");
-
-                if (!_userSession.IsDirigente())
-                    return RedirectToAction("AccessDenied", "Login");
-
-                var usuario = _userSession.GetUserSession();
-                if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
-                {
-                    return RedirectToAction("Index", "Login");
-                }
-
-                try
-                {
-                    var existingDto = await _service.GetByIdAsync(vm.Id);
-                    if (existingDto == null || existingDto.PartidoPoliticoId != usuario.PartidoPoliticoId.Value)
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
-
-                    await _service.DeleteAsync(vm.Id);
-
-                    FileManager.Delete(vm.Id, "candidatos");
-
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    TempData["Error"] = ex.Message;
-
-                    return RedirectToAction(nameof(Index));
-                }
-            }
 
             public async Task<IActionResult> Activar(int id)
             {

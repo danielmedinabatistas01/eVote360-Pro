@@ -1,75 +1,374 @@
 @model eVote360Pro.Core.Application.ViewModels.Voto.EmitirVotoViewModel
 
 @{
-    ViewData["Title"] = "Selección de candidatos";
+    Layout = null;
+    ViewData["Title"] = "Boleta Electoral";
 }
 
-<div class="confirm-wrapper">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>eVote360 Pro - Boleta Electoral</title>
 
-    <div class="content-card">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-        <h1>Selección de candidatos</h1>
+    <style>
+        body {
+            background: #F1F5F9;
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+        }
 
-        <p>
-            Seleccione los candidatos correspondientes para cada puesto electivo.
-        </p>
+        .page-wrapper {
+            padding: 2rem 1rem;
+        }
 
-        <form asp-action="Seleccion"
-              method="post">
+        .content-card {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,.05), 0 8px 10px -6px rgba(0,0,0,.05);
+        }
 
-            <div asp-validation-summary="ModelOnly"
-                 class="text-danger mb-3">
+        .step-progress-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .step-progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #E2E8F0;
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+
+        .step-indicator {
+            position: relative;
+            z-index: 2;
+            background: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #64748B;
+            transition: all 0.3s ease;
+        }
+
+        .step-indicator.active {
+            border-color: #2563EB;
+            color: #2563EB;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+        }
+
+        .step-indicator.completed {
+            background: #2563EB;
+            border-color: #2563EB;
+            color: white;
+        }
+
+        .candidate-card {
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid #E2E8F0;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            background: white;
+        }
+
+        .candidate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px -5px rgba(0,0,0,.08);
+            border-color: #94A3B8;
+        }
+
+        .candidate-card.selected {
+            border-color: #2563EB;
+            background: #EFF6FF;
+            box-shadow: 0 0 0 2px #2563EB;
+        }
+
+        .candidate-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 28px;
+            height: 28px;
+            background: #2563EB;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .candidate-photo {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #F1F5F9;
+            transition: all 0.3s ease;
+        }
+
+        .candidate-card.selected .candidate-photo {
+            border-color: #3B82F6;
+        }
+
+        .party-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .btn-action {
+            padding: 0.75rem 1.75rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+        }
+
+        .none-icon-wrapper {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #F8FAFC;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px dashed #CBD5E1;
+            transition: all 0.3s ease;
+        }
+
+        .candidate-card.selected .none-icon-wrapper {
+            background: #DBEAFE;
+            border-color: #3B82F6;
+            border-style: solid;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-wrapper">
+        <div class="content-card">
+
+            <!-- Progress Indicators -->
+            <div class="step-progress-bar" id="progressBar">
+                @for (int i = 0; i < Model.Selecciones.Count; i++)
+                {
+                    <div class="step-indicator @(i == 0 ? "active" : "")" id="indicator-@i">@(i + 1)</div>
+                }
             </div>
 
-            <input type="hidden" asp-for="CiudadanoId" />
-            <input type="hidden" asp-for="EleccionId" />
+            <form asp-controller="ProcesoVotacion" asp-action="Seleccion" method="post" id="ballotForm">
+                @Html.AntiForgeryToken()
 
-            @for (int i = 0; i < Model.Selecciones.Count; i++)
-            {
-                <div class="mb-3 text-start">
+                <input type="hidden" asp-for="CiudadanoId" />
+                <input type="hidden" asp-for="EleccionId" />
 
-                    <label class="form-label">
-                        @Model.Selecciones[i].NombrePuesto
-                    </label>
+                @for (int i = 0; i < Model.Selecciones.Count; i++)
+                {
+                    <div class="puesto-panel" id="panel-@i" style="display: @(i == 0 ? "block" : "none");">
+                        <input type="hidden" asp-for="Selecciones[i].PuestoElectivoId" />
+                        <input type="hidden" asp-for="Selecciones[i].NombrePuesto" />
+                        <input type="hidden" id="input-@i" asp-for="Selecciones[i].CandidatoId" />
 
-                    <input type="hidden" asp-for="Selecciones[i].PuestoElectivoId" />
-                    <input type="hidden" asp-for="Selecciones[i].NombrePuesto" />
+                        <div class="text-center mb-5">
+                            <span class="badge bg-primary px-3 py-2 rounded-pill mb-2 party-badge">Boleta Oficial</span>
+                            <h2 class="fw-bold text-dark">@Model.Selecciones[i].NombrePuesto</h2>
+                            <p class="text-muted">Por favor, seleccione un candidato haciendo clic en su tarjeta o elija "Ninguno" para votar en blanco.</p>
+                        </div>
 
-                    <select class="form-select"
-                            asp-for="Selecciones[i].CandidatoId">
+                        <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center mb-5">
+                            
+                            <!-- "Ninguno" (Blank Vote) Option Card -->
+                            <div class="col">
+                                <div class="card h-100 candidate-card" onclick="selectCandidate(@i, null)" id="card-@i-none">
+                                    <div class="card-body d-flex flex-column align-items-center text-center p-4 py-5">
+                                        <div class="none-icon-wrapper mb-3">
+                                            <i class="bi bi-x-circle fs-1 text-secondary"></i>
+                                        </div>
+                                        <h5 class="card-title fw-bold text-dark mb-1">Ninguno</h5>
+                                        <span class="badge bg-secondary px-3 py-1 rounded-pill mt-2">Voto en Blanco</span>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <option value="">
-                            Ninguno
-                        </option>
+                            <!-- Candidate Cards -->
+                            @foreach (var candidato in Model.Selecciones[i].CandidatosExtendidos)
+                            {
+                                <div class="col">
+                                    <div class="card h-100 candidate-card" onclick="selectCandidate(@i, @candidato.Id)" id="card-@i-@candidato.Id">
+                                        <div class="position-absolute top-0 end-0 m-3 z-3">
+                                            @if (!string.IsNullOrEmpty(candidato.PartidoLogoUrl))
+                                            {
+                                                <img src="@candidato.PartidoLogoUrl" alt="@candidato.PartidoSiglas" class="rounded-circle border bg-white shadow-sm" style="width: 42px; height: 42px; object-fit: cover;" />
+                                            }
+                                        </div>
+                                        <div class="card-body d-flex flex-column align-items-center text-center p-4">
+                                            <img src="@(string.IsNullOrEmpty(candidato.FotoUrl) ? "https://via.placeholder.com/100" : candidato.FotoUrl)" 
+                                                 alt="@candidato.Nombre" class="candidate-photo mb-3 shadow-sm" />
+                                            
+                                            <h5 class="card-title fw-bold text-dark mb-1">@candidato.Nombre @candidato.Apellido</h5>
+                                            <span class="badge bg-primary px-3 py-1 rounded-pill mt-2">@candidato.PartidoNombre (@candidato.PartidoSiglas)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
 
-                        @foreach (var candidato in Model.Selecciones[i].Candidatos)
-                        {
-                            <option value="@candidato.Value">
-                                @candidato.Text
-                            </option>
-                        }
+                        </div>
 
-                    </select>
+                        <!-- Panel Buttons -->
+                        <div class="d-flex justify-content-between align-items-center border-top pt-4">
+                            @if (i > 0)
+                            {
+                                <button type="button" class="btn btn-outline-secondary btn-action" onclick="showPanel(@(i - 1))">
+                                    <i class="bi bi-arrow-left me-2"></i> Anterior
+                                </button>
+                            }
+                            else
+                            {
+                                <a asp-action="Puestos" class="btn btn-outline-secondary btn-action">
+                                    <i class="bi bi-arrow-left me-2"></i> Volver a Lista
+                                </a>
+                            }
 
-                </div>
-            }
+                            @if (i < Model.Selecciones.Count - 1)
+                            {
+                                <button type="button" class="btn btn-primary btn-action" onclick="nextPanel(@i)">
+                                    Siguiente Cargo <i class="bi bi-arrow-right ms-2"></i>
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-success btn-action px-5 shadow-sm" onclick="return validateAndSubmit()">
+                                    <i class="bi bi-check2-circle me-2"></i> Emitir Votos
+                                </button>
+                            }
+                        </div>
 
-            <div class="buttons">
+                    </div>
+                }
+            </form>
 
-                <a asp-action="Puestos"
-                   class="btn-delete">
-                    Volver
-                </a>
-
-                <button type="submit"
-                        class="btn-main">
-                    Emitir voto
-                </button>
-
-            </div>
-
-        </form>
-
+        </div>
     </div>
 
-</div>
+    <!-- Modal alert for selection -->
+    <div class="modal fade" id="validationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <i class="bi bi-exclamation-circle-fill text-warning fs-1 mb-3 d-inline-block"></i>
+                    <h4 class="fw-bold mb-2">Selección Requerida</h4>
+                    <p class="text-muted">Por favor, seleccione un candidato o la opción "Ninguno" antes de continuar o emitir su voto.</p>
+                    <button type="button" class="btn btn-primary px-4 py-2 mt-3 rounded-3" data-bs-dismiss="modal">Entendido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const totalPuestos = @Model.Selecciones.Count;
+        let selections = {};
+
+        function selectCandidate(puestoIndex, candidatoId) {
+            // Set the hidden input value
+            const input = document.getElementById(`input-${puestoIndex}`);
+            input.value = candidatoId === null ? "" : candidatoId;
+
+            // Remove selected class from all cards in this panel
+            const panel = document.getElementById(`panel-${puestoIndex}`);
+            panel.querySelectorAll('.candidate-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selected class to the chosen card
+            const selectedCardId = candidatoId === null ? `card-${puestoIndex}-none` : `card-${puestoIndex}-${candidatoId}`;
+            const selectedCard = document.getElementById(selectedCardId);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+            }
+
+            // Record selection
+            selections[puestoIndex] = true;
+        }
+
+        function showPanel(index) {
+            // Hide all panels
+            document.querySelectorAll('.puesto-panel').forEach((panel, idx) => {
+                panel.style.display = idx === index ? 'block' : 'none';
+            });
+
+            // Update progress indicators
+            for (let i = 0; i < totalPuestos; i++) {
+                const indicator = document.getElementById(`indicator-${i}`);
+                if (i < index) {
+                    indicator.className = "step-indicator completed";
+                    indicator.innerHTML = "✓";
+                } else if (i === index) {
+                    indicator.className = "step-indicator active";
+                    indicator.innerHTML = i + 1;
+                } else {
+                    indicator.className = "step-indicator";
+                    indicator.innerHTML = i + 1;
+                }
+            }
+        }
+
+        function nextPanel(currentIndex) {
+            // Validate selection
+            if (!selections[currentIndex]) {
+                const validationModal = new bootstrap.Modal(document.getElementById('validationModal'));
+                validationModal.show();
+                return;
+            }
+            showPanel(currentIndex + 1);
+        }
+
+        function validateAndSubmit() {
+            // Validate last panel selection
+            const lastIndex = totalPuestos - 1;
+            if (!selections[lastIndex]) {
+                const validationModal = new bootstrap.Modal(document.getElementById('validationModal'));
+                validationModal.show();
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

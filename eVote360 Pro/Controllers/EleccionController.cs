@@ -1,4 +1,4 @@
-﻿using eVote360Pro.Core.Application.DTOs;
+using eVote360Pro.Core.Application.DTOs;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.ViewModels.Eleccion;
 using eVote360Pro.Core.Domain.Enums;
@@ -158,18 +158,8 @@ namespace eVote360_Pro.Controllers
             {
                 TempData["ErrorMessage"] = ex.Message;
             }
-            try
-            {
-                await _eleccionService.ActivarAsync(id);
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
-
-                return RedirectToAction(nameof(Index));
-            }
+            
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Finalizar(int id)
@@ -210,18 +200,8 @@ namespace eVote360_Pro.Controllers
             {
                 TempData["ErrorMessage"] = ex.Message;
             }
-            try
-            {
-                await _eleccionService.FinalizarAsync(id);
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = ex.Message;
-
-                return RedirectToAction(nameof(Index));
-            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }

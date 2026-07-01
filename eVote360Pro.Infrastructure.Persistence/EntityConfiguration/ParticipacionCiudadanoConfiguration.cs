@@ -4,14 +4,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
 {
-    public class VotoConfiguration
-        : IEntityTypeConfiguration<Voto>
+    public class ParticipacionCiudadanoConfiguration : IEntityTypeConfiguration<ParticipacionCiudadano>
     {
-        public void Configure(EntityTypeBuilder<Voto> builder)
+        public void Configure(EntityTypeBuilder<ParticipacionCiudadano> builder)
         {
-            builder.ToTable("Votos");
+            builder.ToTable("ParticipacionCiudadanos");
 
             builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.CiudadanoId)
+                .IsRequired();
 
             builder.Property(x => x.EleccionId)
                 .IsRequired();
@@ -20,13 +22,13 @@ namespace eVote360Pro.Infrastructure.Persistence.EntityConfiguration
                 .IsRequired();
 
             builder.HasOne(x => x.Eleccion)
-                .WithMany(x => x.Votos)
+                .WithMany(x => x.Participaciones)
                 .HasForeignKey(x => x.EleccionId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(x => x.VotoDetalles)
-                .WithOne(x => x.Voto)
-                .HasForeignKey(x => x.VotoId)
+            builder.HasOne(x => x.Ciudadano)
+                .WithMany(x => x.Participaciones)
+                .HasForeignKey(x => x.CiudadanoId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

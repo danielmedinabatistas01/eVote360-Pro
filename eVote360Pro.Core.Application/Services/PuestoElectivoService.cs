@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using eVote360Pro.Core.Application.Dtos;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Domain.Entities;
@@ -12,17 +12,20 @@ namespace eVote360Pro.Core.Application.Services
         private readonly IPuestoElectivoRepository _puestoRepository;
         private readonly ICandidatoRepository _candidatoRepository;
         private readonly IEleccionRepository _eleccionRepository;
+        private readonly IAsignacionCandidatoRepository _asignacionCandidatoRepository;
         private readonly IMapper _mapper;
 
         public PuestoElectivoService(
             IPuestoElectivoRepository puestoRepository,
             ICandidatoRepository candidatoRepository,
             IEleccionRepository eleccionRepository,
+            IAsignacionCandidatoRepository asignacionCandidatoRepository,
             IMapper mapper)
         {
             _puestoRepository = puestoRepository;
             _candidatoRepository = candidatoRepository;
             _eleccionRepository = eleccionRepository;
+            _asignacionCandidatoRepository = asignacionCandidatoRepository;
             _mapper = mapper;
         }
 
@@ -52,7 +55,9 @@ namespace eVote360Pro.Core.Application.Services
             var entity = await _puestoRepository.GetById(id);
             if (entity == null) throw new Exception("Puesto electivo no encontrado.");
 
-            bool participo = elecciones.Any(e => e.EstadoEleccion == EstadoEleccion.Finalizada) || elecciones.Any(e => e.EstadoEleccion == EstadoEleccion.Activa);
+            var asignaciones = await _asignacionCandidatoRepository.GetAllList();
+            bool participo = asignaciones.Any(ac => ac.PuestoElectivoId == id && 
+                (ac.Eleccion?.EstadoEleccion == EstadoEleccion.Activa || ac.Eleccion?.EstadoEleccion == EstadoEleccion.Finalizada));
             string nombreClean = dto.Nombre.Trim();
 
             if (participo && !entity.Nombre.Equals(nombreClean, StringComparison.OrdinalIgnoreCase))

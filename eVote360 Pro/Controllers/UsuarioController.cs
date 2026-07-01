@@ -1,4 +1,4 @@
-﻿using eVote360Pro.Core.Application.DTOs;
+using eVote360Pro.Core.Application.DTOs;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Application.ViewModels.Usuario;
 using eVote360Pro.Core.Domain.Enums;
@@ -9,13 +9,16 @@ namespace eVote360_Pro.Controllers
     public class UsuarioController : Controller
     {
         private readonly IUsuarioService _usuarioService;
+        private readonly IEleccionService _eleccionService;
         private readonly IUserSession _userSession;
 
         public UsuarioController(
             IUsuarioService usuarioService,
+            IEleccionService eleccionService,
             IUserSession userSession)
         {
             _usuarioService = usuarioService;
+            _eleccionService = eleccionService;
             _userSession = userSession;
         }
 
@@ -27,8 +30,8 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
 
+            ViewBag.HasActiveElection = await _eleccionService.ExisteEleccionActivaAsync();
             var usuarios = await _usuarioService.GetAllAsync();
-
             return View(usuarios);
         }
 

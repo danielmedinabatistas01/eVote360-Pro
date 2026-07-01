@@ -10,15 +10,18 @@ namespace eVote360_Pro.Controllers
     public class CiudadanoController : Controller
     {
         private readonly ICiudadanoService _service;
+        private readonly IEleccionService _eleccionService;
         private readonly IMapper _mapper;
         private readonly IUserSession _userSession;
 
         public CiudadanoController(
             ICiudadanoService service,
+            IEleccionService eleccionService,
             IMapper mapper,
             IUserSession userSession)
         {
             _service = service;
+            _eleccionService = eleccionService;
             _mapper = mapper;
             _userSession = userSession;
         }
@@ -31,6 +34,7 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
 
+            ViewBag.HasActiveElection = await _eleccionService.ExisteEleccionActivaAsync();
             var ciudadanos = await _service.GetAllAsync();
             return View(_mapper.Map<List<CiudadanoViewModel>>(ciudadanos));
         }
@@ -54,7 +58,7 @@ namespace eVote360_Pro.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CiudadanoViewModel vm)
+        public async Task<IActionResult> Create(SaveCiudadanoViewModel vm)
         {
             if (!_userSession.HasUser())
                 return RedirectToAction("Index", "Login");

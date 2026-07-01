@@ -160,24 +160,22 @@ namespace eVote360Pro.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            string? ruta = null;
-            string? rutaFisica = null;
             try
             {
-                ruta = FileManager.Upload(vm.ImagenCedula, 0, "cedulas");
-                if (string.IsNullOrEmpty(ruta))
+                if (vm.ImagenCedula == null || vm.ImagenCedula.Length == 0)
                 {
                     ModelState.AddModelError("", "Debe cargar una imagen válida.");
                     return View(vm);
                 }
 
-                rutaFisica = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", ruta);
+                using var memoryStream = new MemoryStream();
+                await vm.ImagenCedula.CopyToAsync(memoryStream);
+                byte[] imageBytes = memoryStream.ToArray();
 
-                bool coincide = await _procesoService.ValidarIdentidadOcrAsync(vm.Cedula, rutaFisica);
+                bool coincide = await _procesoService.ValidarIdentidadOcrAsync(vm.Cedula, imageBytes);
                 if (!coincide)
                 {
                     ModelState.AddModelError("", "La cédula en la imagen no coincide con la ingresada.");
-                    if (System.IO.File.Exists(rutaFisica)) System.IO.File.Delete(rutaFisica);
                     return View(vm);
                 }
 
@@ -197,15 +195,11 @@ namespace eVote360Pro.Web.Controllers
                         <p>Si usted no inició este proceso, ignore este mensaje.</p>"
                 });
 
-
-                if (System.IO.File.Exists(rutaFisica)) System.IO.File.Delete(rutaFisica);
-
                 return RedirectToAction(nameof(Codigo));
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                if (rutaFisica != null && System.IO.File.Exists(rutaFisica)) System.IO.File.Delete(rutaFisica);
                 return View(vm);
             }
         }
@@ -358,7 +352,8 @@ namespace eVote360Pro.Web.Controllers
                 {
                     PuestoElectivoId = puesto.Id,
                     NombrePuesto = puesto.Nombre,
-                    Candidatos = new List<SelectListItem>()
+                    Candidatos = new List<SelectListItem>(),
+                    CandidatosExtendidos = new List<CandidatoVotoViewModel>()
                 };
 
                 var postAssignments = assignments.Where(a => a.PuestoElectivoId == puesto.Id).ToList();
@@ -374,6 +369,17 @@ namespace eVote360Pro.Web.Controllers
                     {
                         Value = candidato.Id.ToString(),
                         Text = $"{candidato.Nombre} {candidato.Apellido} ({partidoSiglas})"
+                    });
+
+                    seleccion.CandidatosExtendidos.Add(new CandidatoVotoViewModel
+                    {
+                        Id = candidato.Id,
+                        Nombre = candidato.Nombre,
+                        Apellido = candidato.Apellido,
+                        FotoUrl = candidato.FotoUrl,
+                        PartidoNombre = partido?.Nombre ?? "Independiente",
+                        PartidoSiglas = partidoSiglas,
+                        PartidoLogoUrl = partido?.LogoUrl ?? ""
                     });
                 }
 

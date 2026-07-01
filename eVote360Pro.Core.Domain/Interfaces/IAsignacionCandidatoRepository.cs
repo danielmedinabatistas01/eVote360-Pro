@@ -1,4 +1,4 @@
-﻿using eVote360Pro.Core.Domain.Entities;
+using eVote360Pro.Core.Domain.Entities;
 
 
 namespace eVote360Pro.Core.Domain.Interfaces
@@ -48,6 +48,6 @@ namespace eVote360Pro.Core.Domain.Interfaces
         Task<List<AsignacionCandidato>>
     GetAllByEleccionAsync(int eleccionId);
 
-
+        Task<bool> ExisteAsignacionAliadaAsync(int partidoOrigenId, int partidoDestinoId);
     }
 }

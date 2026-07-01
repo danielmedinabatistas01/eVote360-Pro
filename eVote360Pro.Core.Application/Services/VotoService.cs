@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using eVote360Pro.Core.Application.Dtos;
 using eVote360Pro.Core.Application.Interfaces;
 using eVote360Pro.Core.Domain.Entities;
@@ -16,10 +16,13 @@ namespace eVote360Pro.Core.Application.Services
 
         private readonly ICiudadanoRepository _ciudadanoRepository;
 
+        private readonly IParticipacionCiudadanoRepository _participacionRepository;
+
         public VotoService(
             IVotoRepository votoRepository,
             IEleccionRepository eleccionRepository,
             ICiudadanoRepository ciudadanoRepository,
+            IParticipacionCiudadanoRepository participacionRepository,
             IMapper mapper)
             : base(votoRepository, mapper)
         {
@@ -28,13 +31,13 @@ namespace eVote360Pro.Core.Application.Services
             _eleccionRepository = eleccionRepository;
 
             _ciudadanoRepository = ciudadanoRepository;
+
+            _participacionRepository = participacionRepository;
         }
 
         public async Task<bool> CiudadanoYaVotoAsync(int ciudadanoId, int eleccionId)
         {
-
-
-            return await _votoRepository
+            return await _participacionRepository
                 .CiudadanoYaVotoAsync(
                     ciudadanoId,
                     eleccionId);
@@ -106,6 +109,13 @@ namespace eVote360Pro.Core.Application.Services
             voto.FechaVotacion =DateTime.Now;
 
             await _votoRepository.AddAsync(voto);
+
+            await _participacionRepository.AddAsync(new ParticipacionCiudadano
+            {
+                CiudadanoId = dto.CiudadanoId,
+                EleccionId = dto.EleccionId,
+                FechaVotacion = DateTime.Now
+            });
 
             return voto.Id;
         }

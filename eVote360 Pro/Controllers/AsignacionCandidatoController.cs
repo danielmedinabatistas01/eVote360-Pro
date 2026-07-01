@@ -53,6 +53,7 @@ namespace eVote360_Pro.Controllers
             var filteredList = dtoList.Where(x => candidatoIds.Contains(x.CandidatoId)).ToList();
             var vm = _mapper.Map<List<AsignacionCandidatoViewModel>>(filteredList);
 
+            ViewBag.HasActiveElection = await _eleccionService.ExisteEleccionActivaAsync();
             return View(vm);
         }
 
@@ -140,6 +141,33 @@ namespace eVote360_Pro.Controllers
         }
 
         public async Task<IActionResult> Delete(int id)
+        {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsDirigente())
+                return RedirectToAction("AccessDenied", "Login");
+
+            var usuario = _userSession.GetUserSession();
+            if (usuario == null || !usuario.PartidoPoliticoId.HasValue)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            var dto = await _service.GetByIdAsync(id);
+            if (dto == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var vm = _mapper.Map<AsignacionCandidatoViewModel>(dto);
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePost(int id)
         {
             if (!_userSession.HasUser())
                 return RedirectToAction("Index", "Login");

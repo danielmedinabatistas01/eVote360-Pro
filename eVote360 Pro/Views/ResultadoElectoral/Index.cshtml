@@ -1,4 +1,4 @@
-﻿@using eVote360Pro.Core.Application.ViewModels.ResultadoElectoral
+@using eVote360Pro.Core.Application.ViewModels.ResultadoElectoral
 @model ResultadoElectoralIndexViewModel
 @{
     ViewData["Title"] = "Resultados Electorales";
@@ -128,11 +128,24 @@
                                 Empate
                             </span>
                         }
+                        else if (item.EsGanador)
+                        {
+                            if (item.CandidatoId == null)
+                            {
+                                <span class="text-primary fw-bold">
+                                    Opción más votada
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="winner">
+                                    Ganador
+                                </span>
+                            }
+                        }
                         else
                         {
-                            <span class="winner">
-                                Ganador
-                            </span>
+                            <span>—</span>
                         }
                     </td>
                 </tr>
