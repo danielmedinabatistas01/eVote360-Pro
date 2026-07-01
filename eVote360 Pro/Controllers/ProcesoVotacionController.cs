@@ -492,8 +492,7 @@ namespace eVote360Pro.Web.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
-                return View(vm);
+                return Content(ex.ToString());
             }
         }
 

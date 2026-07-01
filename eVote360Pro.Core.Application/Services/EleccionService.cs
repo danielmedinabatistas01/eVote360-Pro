@@ -16,12 +16,14 @@ namespace eVote360Pro.Core.Application.Services
         private readonly IAsignacionCandidatoRepository _asignacionCandidatoRepository;
         private readonly IPuestoElectivoRepository _puestoRepository;
         private readonly IPartidoPoliticoRepository _partidoRepository;
+        private readonly IEleccionPuestoElectivoRepository _eleccionPuestoRepository;
 
         public EleccionService(
             IEleccionRepository eleccionRepository,
             IAsignacionCandidatoRepository asignacionCandidatoRepository,
             IPuestoElectivoRepository puestoRepository,
             IPartidoPoliticoRepository partidoRepository,
+            IEleccionPuestoElectivoRepository eleccionPuestoRepository,
             IMapper mapper)
             : base(eleccionRepository, mapper)
         {
@@ -29,6 +31,7 @@ namespace eVote360Pro.Core.Application.Services
             _asignacionCandidatoRepository = asignacionCandidatoRepository;
             _puestoRepository = puestoRepository;
             _partidoRepository = partidoRepository;
+            _eleccionPuestoRepository = eleccionPuestoRepository;
         }
 
         public async Task<List<EleccionIndexViewModel>> GetAllAsync()
@@ -165,7 +168,24 @@ namespace eVote360Pro.Core.Application.Services
         {
             dto.Nombre = dto.Nombre.Trim();
 
-            await base.AddAsync(dto);
+            var entity = _mapper.Map<Eleccion>(dto);
+
+            var eleccion = await _eleccionRepository.AddAsync(entity);
+
+            if (eleccion == null)
+                throw new Exception("No fue posible crear la elección.");
+
+            var puestos = await _puestoRepository.ObtenerActivosAsync();
+
+            foreach (var puesto in puestos)
+            {
+                await _eleccionPuestoRepository.AddAsync(
+                    new EleccionPuestoElectivo
+                    {
+                        EleccionId = eleccion.Id,
+                        PuestoElectivoId = puesto.Id
+                    });
+            }
         }
 
         public override async Task UpdateAsync(int id, EleccionDTO dto)
