@@ -10,6 +10,17 @@ namespace eVote360Pro.Core.Application.Mappings.EntitesAndDtos
         {
             CreateMap<AsignacionDirigente, AsignacionDirigenteDto>()
                 .ReverseMap();
+
+            CreateMap<AsignacionDirigente, AsignacionDirigenteDto>()
+                 .ForMember(
+                    dest => dest.NombreDirigente,
+                    opt => opt.MapFrom(src =>
+                        src.Usuario.Nombre + " " + src.Usuario.Apellido))
+
+                .ForMember(
+                    dest => dest.NombrePartido,
+                    opt => opt.MapFrom(src =>
+                        src.PartidoPolitico.Nombre));
         }
     }
 }

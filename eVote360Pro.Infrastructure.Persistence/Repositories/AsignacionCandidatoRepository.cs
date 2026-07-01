@@ -32,8 +32,19 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
         public async Task<List<AsignacionCandidato>>
       ObtenerPorEleccionAsync(int eleccionId)
         {
-            return await _context.Set<AsignacionCandidato>()
+            return await _context.AsignacionesCandidatos
                 .Include(x => x.Candidato)
+                .Include(x => x.PuestoElectivo)
+                .Include(x => x.PartidoPolitico)
+                .Include(x => x.Eleccion)
+                .Where(x => x.EleccionId == eleccionId)
+                .ToListAsync();
+        }
+
+        public async Task<List<AsignacionCandidato>>
+GetAllByEleccionAsync(int eleccionId)
+        {
+            return await _context.AsignacionesCandidatos
                 .Where(x => x.EleccionId == eleccionId)
                 .ToListAsync();
         }
@@ -142,6 +153,17 @@ namespace eVote360Pro.Infrastructure.Persistence.Repositories
                     x.CandidatoId ==
                     candidatoId);
         }
+
+    
+    public async Task<List<AsignacionCandidato>> GetAllList()
+        {
+            return await _context.AsignacionesCandidatos
+                .Include(x => x.Candidato)
+                .Include(x => x.PuestoElectivo)
+                .Include(x => x.Eleccion)
+                .ToListAsync();
+        }
+
 
     }
 }

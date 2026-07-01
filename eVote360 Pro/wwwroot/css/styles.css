@@ -1,0 +1,93 @@
+.page-header {
+    margin-bottom: 2rem;
+}
+
+    .page-header h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #1B3A6B;
+        margin: 0 0 .35rem;
+    }
+
+    .page-header p {
+        font-size: .9rem;
+        color: #6B7280;
+        margin: 0;
+    }
+
+.content-card {
+    background: #fff;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.top-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.btn-main {
+    background: #2563EB;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: .55rem 1rem;
+    font-size: .85rem;
+    font-weight: 600;
+}
+
+    .btn-main:hover {
+        background: #1D4ED8;
+        color: white;
+    }
+
+.btn-back {
+    background: #F3F4F6;
+    color: #374151;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    padding: .55rem 1rem;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .custom-table thead {
+        background: #EFF4FF;
+    }
+
+    .custom-table th {
+        color: #1B3A6B;
+        padding: .75rem;
+    }
+
+    .custom-table td {
+        padding: .75rem;
+    }
+
+.actions {
+    display: flex;
+    gap: .4rem;
+}
+
+.btn-edit {
+    background: #FFFBEB;
+    color: #B45309;
+    border-radius: 6px;
+    padding: .35rem .65rem;
+}
+
+.btn-delete {
+    background: #FEF2F2;
+    color: #B91C1C;
+    border-radius: 6px;
+    padding: .35rem .65rem;
+}

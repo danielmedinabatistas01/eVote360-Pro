@@ -4,7 +4,8 @@
     bool isEdit = Model.Id != 0;
     ViewData["Title"] = isEdit ? "Editar Partido" : "Nuevo Partido";
 }
-
+<div asp-validation-summary="All"
+     class="alert alert-danger"></div>
 <div class="container mt-4" style="max-width: 600px;">
     <div class="card shadow">
         <div class="card-header bg-dark text-white">

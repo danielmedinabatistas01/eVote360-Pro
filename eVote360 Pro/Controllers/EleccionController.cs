@@ -139,9 +139,18 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
 
-            await _eleccionService.ActivarAsync(id);
+            try
+            {
+                await _eleccionService.ActivarAsync(id);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         public async Task<IActionResult> Finalizar(int id)
@@ -170,9 +179,18 @@ namespace eVote360_Pro.Controllers
             if (!_userSession.IsAdmin())
                 return RedirectToAction("AccessDenied", "Login");
 
-            await _eleccionService.FinalizarAsync(id);
+            try
+            {
+                await _eleccionService.FinalizarAsync(id);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }

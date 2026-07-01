@@ -28,5 +28,11 @@ namespace eVote360Pro.Core.Application.Interfaces
 
         Task EliminarAlianzaAsync(
             int alianzaId);
+
+        Task<List<AlianzaPoliticaDto>> ObtenerSolicitudesPendientesAsync(int partidoId);
+
+        Task<List<AlianzaPoliticaDto>> ObtenerSolicitudesRealizadasAsync(int partidoId);
+
+        Task<List<AlianzaPoliticaDto>> ObtenerAlianzasVigentesAsync(int partidoId);
     }
 }

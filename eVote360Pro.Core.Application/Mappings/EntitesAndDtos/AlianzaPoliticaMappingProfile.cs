@@ -15,7 +15,15 @@ namespace eVote360Pro.Core.Application.Mappings.EntitesAndDtos
         public AlianzaPoliticaMappingProfile()
         {
             CreateMap<AlianzaPolitica, AlianzaPoliticaDto>()
-                .ReverseMap();
+                .ForMember(
+                    dest => dest.PartidoOrigen,
+                    opt => opt.MapFrom(src =>
+                        src.PartidoOrigen.Nombre))
+
+                .ForMember(
+                    dest => dest.PartidoDestino,
+                    opt => opt.MapFrom(src =>   
+                        src.PartidoDestino.Nombre));
         }
     }
 }

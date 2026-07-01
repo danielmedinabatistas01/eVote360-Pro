@@ -14,15 +14,21 @@ namespace eVote360Pro.Core.Application.Services
     {
         private readonly IEleccionRepository _eleccionRepository;
         private readonly IAsignacionCandidatoRepository _asignacionCandidatoRepository;
+        private readonly IPuestoElectivoRepository _puestoRepository;
+        private readonly IPartidoPoliticoRepository _partidoRepository;
 
         public EleccionService(
-       IEleccionRepository eleccionRepository,
-       IAsignacionCandidatoRepository asignacionCandidatoRepository,
-       IMapper mapper)
-       : base(eleccionRepository, mapper)
+            IEleccionRepository eleccionRepository,
+            IAsignacionCandidatoRepository asignacionCandidatoRepository,
+            IPuestoElectivoRepository puestoRepository,
+            IPartidoPoliticoRepository partidoRepository,
+            IMapper mapper)
+            : base(eleccionRepository, mapper)
         {
             _eleccionRepository = eleccionRepository;
             _asignacionCandidatoRepository = asignacionCandidatoRepository;
+            _puestoRepository = puestoRepository;
+            _partidoRepository = partidoRepository;
         }
 
         public async Task<List<EleccionIndexViewModel>> GetAllAsync()
@@ -34,7 +40,7 @@ namespace eVote360Pro.Core.Application.Services
                 Id = x.Id,
                 Nombre = x.Nombre,
                 FechaRealizacion = x.FechaRealizacion,
-                EstadoEleccion = x.EstadoEleccion,
+                EstadoEleccion = x.EstadoEleccion
             }).ToList();
         }
 
@@ -86,7 +92,7 @@ namespace eVote360Pro.Core.Application.Services
 
         public async Task ActivarAsync(int id)
         {
-            var eleccion = await _eleccionRepository.GetByIdWithPuestosAsync(id);
+            var eleccion = await _eleccionRepository.GetById(id);
 
             if (eleccion == null)
                 throw new Exception("La elección no existe.");
@@ -94,33 +100,51 @@ namespace eVote360Pro.Core.Application.Services
             if (eleccion.EstadoEleccion != EstadoEleccion.Pendiente)
                 throw new Exception("Solo se pueden activar elecciones pendientes.");
 
-            var existeActiva = await _eleccionRepository.ExisteEleccionActivaAsync();
-
-            if (existeActiva)
+            if (await _eleccionRepository.ExisteEleccionActivaAsync())
                 throw new Exception("Ya existe una elección activa.");
 
-            if (eleccion.PuestosElectivos == null || !eleccion.PuestosElectivos.Any())
-                throw new Exception("La elección debe tener puestos electivos asignados antes de activarse.");
+            var puestos = await _puestoRepository.ObtenerActivosAsync();
 
-            var asignaciones = await _asignacionCandidatoRepository.ObtenerPorEleccionAsync(eleccion.Id);
+            if (!puestos.Any())
+                throw new Exception("Debe existir al menos un puesto electivo activo.");
+
+
+            var partidos = (await _partidoRepository.GetAllList())
+                .Where(x => x.EsActivo)
+                .ToList();
+
+            if (partidos.Count < 2)
+                throw new Exception("Debe haber al menos dos partidos políticos activos.");
+
+
+            var asignaciones = await _asignacionCandidatoRepository
+                .ObtenerPorEleccionAsync(eleccion.Id);
 
             if (!asignaciones.Any())
-                throw new Exception("La elección debe tener candidatos asignados antes de activarse.");
+                throw new Exception("No existen candidatos asignados para esta elección.");
 
-            foreach (var puesto in eleccion.PuestosElectivos)
+            foreach (var partido in partidos)
             {
-                bool tieneCandidato = asignaciones.Any(x =>
-                    x.PuestoElectivoId == puesto.PuestoElectivoId);
+                foreach (var puesto in puestos)
+                {
+                    bool existeAsignacion = asignaciones.Any(x =>
+                        x.PartidoPoliticoId == partido.Id &&
+                        x.PuestoElectivoId == puesto.Id &&
+                        x.Candidato != null &&
+                        x.Candidato.Estado);
 
-                if (!tieneCandidato)
-                    throw new Exception("Todos los puestos electivos deben tener al menos un candidato asignado.");
+                    if (!existeAsignacion)
+                    {
+                        throw new Exception(
+                            $"El partido '{partido.Nombre}' no tiene un candidato activo asignado para el puesto '{puesto.Nombre}'.");
+                    }
+                }
             }
 
             eleccion.EstadoEleccion = EstadoEleccion.Activa;
 
             await _eleccionRepository.UpdateAsync(eleccion.Id, eleccion);
         }
-
 
         public async Task FinalizarAsync(int id)
         {
@@ -140,12 +164,14 @@ namespace eVote360Pro.Core.Application.Services
         public override async Task AddAsync(EleccionDTO dto)
         {
             dto.Nombre = dto.Nombre.Trim();
+
             await base.AddAsync(dto);
         }
 
         public override async Task UpdateAsync(int id, EleccionDTO dto)
         {
             dto.Nombre = dto.Nombre.Trim();
+
             await base.UpdateAsync(id, dto);
         }
 

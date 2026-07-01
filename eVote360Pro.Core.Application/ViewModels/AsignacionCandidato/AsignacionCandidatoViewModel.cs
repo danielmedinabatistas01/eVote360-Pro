@@ -13,5 +13,11 @@ namespace eVote360Pro.Core.Application.ViewModels.AsignacionCandidato
         public int PuestoElectivoId { get; set; }
 
         public int EleccionId { get; set; }
+
+        public string NombreCandidato { get; set; } = string.Empty;
+
+        public string NombrePuesto { get; set; } = string.Empty;
+
+        public string NombreEleccion { get; set; } = string.Empty;
     }
 }

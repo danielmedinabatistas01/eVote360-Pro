@@ -126,6 +126,23 @@ namespace eVote360_Pro.Controllers
                 return View("Save", vm);
             }
         }
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (!_userSession.HasUser())
+                return RedirectToAction("Index", "Login");
+
+            if (!_userSession.IsAdmin())
+                return RedirectToAction("AccessDenied", "Login");
+
+            var dto = await _service.GetByIdAsync(id);
+
+            if (dto == null)
+                return RedirectToAction(nameof(Index));
+
+            var vm = _mapper.Map<SavePartidoPoliticoViewModel>(dto);
+
+            return View(vm);
+        }
 
         [HttpPost]
         public async Task<IActionResult> DeletePost(int id)
@@ -138,12 +155,22 @@ namespace eVote360_Pro.Controllers
 
             try
             {
-                await _service.DeleteAsync(id);
+                var dto = await _service.GetByIdAsync(id);
+
+                if (dto == null)
+                    return RedirectToAction(nameof(Index));
+
+                if (dto.EsActivo)
+                    await _service.DeleteAsync(id);
+                else
+                    await _service.ActivarAsync(id);
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
+
                 return RedirectToAction(nameof(Index));
             }
         }

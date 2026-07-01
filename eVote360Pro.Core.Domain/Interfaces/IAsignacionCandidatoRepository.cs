@@ -45,6 +45,9 @@ namespace eVote360Pro.Core.Domain.Interfaces
                 int asignacionId,
                 int partidoId);
 
+        Task<List<AsignacionCandidato>>
+    GetAllByEleccionAsync(int eleccionId);
+
 
     }
 }

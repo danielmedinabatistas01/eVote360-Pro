@@ -16,7 +16,6 @@ namespace eVote360Pro.Core.Application.Mappings.DtosAndViewModels
         public CodigoVerificacionMappingProfile()
         {
             CreateMap<CodigoVerificacionViewModel, CodigoVerificacionDto>().ReverseMap();
-            CreateMap<SaveCodigoVerificacionViewModel, CodigoVerificacionDto>().ReverseMap();
         }
     }
 }

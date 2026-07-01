@@ -92,5 +92,17 @@ namespace eVote360Pro.Core.Application.Services
             var entity = await _ciudadanoRepository.GetById(id);
             return _mapper.Map<CiudadanoDto>(entity);
         }
+
+        public async Task ActivarAsync(int id)
+        {
+            var entity = await _ciudadanoRepository.GetById(id);
+
+            if (entity == null)
+                throw new Exception("Ciudadano no encontrado.");
+
+            entity.EsActivo = true;
+
+            await _ciudadanoRepository.UpdateAsync(id, entity);
+        }
     }
 }

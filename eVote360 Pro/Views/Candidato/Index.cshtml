@@ -94,9 +94,17 @@
 
                             |
 
-                            <a asp-action="Delete"
+
+                            <a asp-action="Activar"
                                asp-route-id="@item.Id">
-                                Eliminar
+                                Activar
+                            </a>
+
+                             |
+
+                            <a asp-action="Desactivar"
+                               asp-route-id="@item.Id">
+                                Desactivar
                             </a>
 
                         </td>

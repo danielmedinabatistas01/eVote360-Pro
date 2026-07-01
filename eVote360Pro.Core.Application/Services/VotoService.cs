@@ -103,7 +103,7 @@ namespace eVote360Pro.Core.Application.Services
             var voto =
                 _mapper.Map<Voto>(dto);
 
-            voto.FechaVoto =DateTime.Now;
+            voto.FechaVotacion =DateTime.Now;
 
             await _votoRepository.AddAsync(voto);
 

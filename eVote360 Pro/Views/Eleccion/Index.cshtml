@@ -144,6 +144,18 @@
     }
 </style>
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error:</strong> @TempData["ErrorMessage"]
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+        </button>
+    </div>
+}
+
 <div class="page-header">
     <h1>Elecciones</h1>
     <p>Listado de procesos electorales registrados.</p>

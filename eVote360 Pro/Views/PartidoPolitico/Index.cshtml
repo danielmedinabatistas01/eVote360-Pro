@@ -3,6 +3,144 @@
 @{
     ViewData["Title"] = "Partidos Políticos";
 }
+<style>
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+        .page-header h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1B3A6B;
+            margin: 0 0 .35rem;
+        }
+
+        .page-header p {
+            font-size: .9rem;
+            color: #6B7280;
+            margin: 0;
+        }
+
+    .content-card {
+        background: #fff;
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 1.5rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .top-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .btn-main {
+        background: #2563EB;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: .55rem 1rem;
+        font-size: .85rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-main:hover {
+            background: #1D4ED8;
+            color: #fff;
+            text-decoration: none;
+        }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: .85rem;
+    }
+
+        .custom-table thead {
+            background: #EFF4FF;
+        }
+
+        .custom-table th {
+            color: #1B3A6B;
+            font-weight: 700;
+            padding: .75rem;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .custom-table td {
+            padding: .75rem;
+            border-bottom: 1px solid #F3F4F6;
+            color: #374151;
+            vertical-align: middle;
+        }
+
+        .custom-table tbody tr:hover {
+            background: #F9FAFB;
+        }
+
+    .actions {
+        display: flex;
+        gap: .4rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-edit {
+        background: #FFFBEB;
+        color: #B45309;
+        border-radius: 6px;
+        padding: .35rem .65rem;
+        font-size: .78rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-edit:hover {
+            background: #FEF3C7;
+            color: #92400E;
+            text-decoration: none;
+        }
+
+    .btn-delete {
+        background: #FEF2F2;
+        color: #B91C1C;
+        border-radius: 6px;
+        padding: .35rem .65rem;
+        font-size: .78rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-delete:hover {
+            background: #FEE2E2;
+            color: #991B1B;
+            text-decoration: none;
+        }
+
+    .btn-success-custom {
+        background: #ECFDF5;
+        color: #047857;
+        border-radius: 6px;
+        padding: .35rem .65rem;
+        font-size: .78rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .btn-info-custom {
+        background: #EFF6FF;
+        color: #1D4ED8;
+        border-radius: 6px;
+        padding: .35rem .65rem;
+        font-size: .78rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+</style>
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -10,7 +148,6 @@
         <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Nuevo Partido</a>
     </div>
 
-    <!-- ¡ESTO CAPTURA EL ERROR DE NEGOCIO DEL SERVICIO! -->
     @if (TempData["ErrorMessage"] != null)
     {
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -61,10 +198,24 @@
                                 <td class="text-end">
                                     <a asp-action="Edit" asp-route-id="@partido.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i> Editar</a>
 
-                                    <!-- Formulario en POST para el borrado seguro según rúbrica -->
-                                    <form asp-action="DeletePost" asp-route-id="@partido.Id" method="post" class="d-inline" onsubmit="return confirm('¿Seguro que deseas desactivar este partido político?');">
-                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Desactivar</button>
-                                    </form>
+                                    @if (partido.EsActivo)
+                                    {
+                                        <a asp-action="Delete"
+                                           asp-route-id="@partido.Id"
+                                           class="btn btn-danger">
+                                            <i class="bi bi-trash"></i>
+                                            Desactivar
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="Delete"
+                                           asp-route-id="@partido.Id"
+                                           class="btn btn-success">
+                                            <i class="bi bi-arrow-clockwise"></i>
+                                            Activar
+                                        </a>
+                                    }
                                 </td>
                             </tr>
                         }

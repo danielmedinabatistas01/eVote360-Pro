@@ -20,6 +20,10 @@ namespace eVote360Pro.Core.Application.Dtos
 
         public DateTime? FechaRespuesta { get; set; }
 
+        public string PartidoOrigen { get; set; } = string.Empty;
+
+        public string PartidoDestino { get; set; } = string.Empty;
+
         public bool Vigente { get; set; }
     }
 }
