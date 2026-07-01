@@ -2,27 +2,27 @@
 @model AlianzaDashboardViewModel
 
 @{
-    Layout = null;
     ViewData["Title"] = "Alianzas Políticas";
 }
+
 <style>
     .page-header {
         margin-bottom: 2rem;
     }
 
-        .page-header h1 {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #1B3A6B;
-            margin: 0 0 .35rem;
-        }
+    .page-header h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #1B3A6B;
+        margin: 0 0 .35rem;
+    }
 
-        .page-header p {
-            font-size: .9rem;
-            color: #6B7280;
-            margin: 0;
-        }
+    .page-header p {
+        font-size: .9rem;
+        color: #6B7280;
+        margin: 0;
+    }
 
     .content-card {
         background: #fff;
@@ -39,117 +39,14 @@
         align-items: center;
         margin-bottom: 1rem;
     }
-
-    .btn-main {
-        background: #2563EB;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        padding: .55rem 1rem;
-        font-size: .85rem;
-        font-weight: 600;
-        text-decoration: none;
-    }
-
-        .btn-main:hover {
-            background: #1D4ED8;
-            color: #fff;
-            text-decoration: none;
-        }
-
-    .custom-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: .85rem;
-    }
-
-        .custom-table thead {
-            background: #EFF4FF;
-        }
-
-        .custom-table th {
-            color: #1B3A6B;
-            font-weight: 700;
-            padding: .75rem;
-            border-bottom: 1px solid #E5E7EB;
-        }
-
-        .custom-table td {
-            padding: .75rem;
-            border-bottom: 1px solid #F3F4F6;
-            color: #374151;
-            vertical-align: middle;
-        }
-
-        .custom-table tbody tr:hover {
-            background: #F9FAFB;
-        }
-
-    .actions {
-        display: flex;
-        gap: .4rem;
-        flex-wrap: wrap;
-    }
-
-    .btn-edit {
-        background: #FFFBEB;
-        color: #B45309;
-        border-radius: 6px;
-        padding: .35rem .65rem;
-        font-size: .78rem;
-        font-weight: 600;
-        text-decoration: none;
-    }
-
-        .btn-edit:hover {
-            background: #FEF3C7;
-            color: #92400E;
-            text-decoration: none;
-        }
-
-    .btn-delete {
-        background: #FEF2F2;
-        color: #B91C1C;
-        border-radius: 6px;
-        padding: .35rem .65rem;
-        font-size: .78rem;
-        font-weight: 600;
-        text-decoration: none;
-    }
-
-        .btn-delete:hover {
-            background: #FEE2E2;
-            color: #991B1B;
-            text-decoration: none;
-        }
-
-    .btn-success-custom {
-        background: #ECFDF5;
-        color: #047857;
-        border-radius: 6px;
-        padding: .35rem .65rem;
-        font-size: .78rem;
-        font-weight: 600;
-        text-decoration: none;
-    }
-
-    .btn-info-custom {
-        background: #EFF6FF;
-        color: #1D4ED8;
-        border-radius: 6px;
-        padding: .35rem .65rem;
-        font-size: .78rem;
-        font-weight: 600;
-        text-decoration: none;
-    }
 </style>
+
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between mb-4">
         <h2>Alianzas Políticas</h2>
 
-        <a asp-action="CrearSolicitud"
-           class="btn btn-primary">
+        <a asp-action="CrearSolicitud" class="btn btn-primary">
             Nueva Solicitud
         </a>
     </div>
@@ -161,15 +58,13 @@
         </div>
     }
 
-
     <div class="card mb-4">
         <div class="card-header bg-warning">
             <strong>Solicitudes pendientes de responder</strong>
         </div>
 
         <div class="card-body">
-
-            @if (!Model.SolicitudesPendientes.Any())
+            @if (Model == null || !Model.SolicitudesPendientes.Any())
             {
                 <p>No existen solicitudes pendientes.</p>
             }
@@ -186,39 +81,28 @@
                     </thead>
 
                     <tbody>
-
                         @foreach (var item in Model.SolicitudesPendientes)
                         {
                             <tr>
                                 <td>@item.PartidoOrigen</td>
                                 <td>@item.Estado</td>
                                 <td>@item.FechaSolicitud.ToShortDateString()</td>
-
                                 <td>
-
-                                    <a asp-action="Aceptar"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-success btn-sm">
+                                    <a asp-action="Aceptar" asp-route-id="@item.Id" class="btn btn-success btn-sm">
                                         Aceptar
                                     </a>
 
-                                    <a asp-action="Rechazar"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-danger btn-sm">
+                                    <a asp-action="Rechazar" asp-route-id="@item.Id" class="btn btn-danger btn-sm">
                                         Rechazar
                                     </a>
-
                                 </td>
                             </tr>
                         }
-
                     </tbody>
                 </table>
             }
-
         </div>
     </div>
-
 
     <div class="card mb-4">
         <div class="card-header bg-info text-white">
@@ -226,15 +110,13 @@
         </div>
 
         <div class="card-body">
-
-            @if (!Model.SolicitudesRealizadas.Any())
+            @if (Model == null || !Model.SolicitudesRealizadas.Any())
             {
                 <p>No existen solicitudes realizadas.</p>
             }
             else
             {
                 <table class="table">
-
                     <thead>
                         <tr>
                             <th>Partido Destino</th>
@@ -245,57 +127,38 @@
                     </thead>
 
                     <tbody>
-
                         @foreach (var item in Model.SolicitudesRealizadas)
                         {
                             <tr>
-
                                 <td>@item.PartidoDestino</td>
-
                                 <td>@item.Estado</td>
-
+                                <td>@item.FechaSolicitud.ToShortDateString()</td>
                                 <td>
-                                    @item.FechaSolicitud.ToShortDateString()
-                                </td>
-
-                                <td>
-
-                                    <a asp-action="EliminarSolicitud"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-danger btn-sm">
+                                    <a asp-action="EliminarSolicitud" asp-route-id="@item.Id" class="btn btn-danger btn-sm">
                                         Cancelar
                                     </a>
-
                                 </td>
-
                             </tr>
                         }
-
                     </tbody>
-
                 </table>
             }
-
         </div>
     </div>
 
-
     <div class="card">
-
         <div class="card-header bg-success text-white">
             <strong>Alianzas Vigentes</strong>
         </div>
 
         <div class="card-body">
-
-            @if (!Model.AlianzasVigentes.Any())
+            @if (Model == null || !Model.AlianzasVigentes.Any())
             {
                 <p>No existen alianzas vigentes.</p>
             }
             else
             {
                 <table class="table">
-
                     <thead>
                         <tr>
                             <th>Partido Origen</th>
@@ -306,43 +169,23 @@
                     </thead>
 
                     <tbody>
-
                         @foreach (var item in Model.AlianzasVigentes)
                         {
                             <tr>
-
                                 <td>@item.PartidoOrigen</td>
-
                                 <td>@item.PartidoDestino</td>
-
                                 <td>@item.Estado</td>
-
                                 <td>
-
-                                    <a asp-action="EliminarAlianza"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-danger btn-sm">
+                                    <a asp-action="EliminarAlianza" asp-route-id="@item.Id" class="btn btn-danger btn-sm">
                                         Eliminar Alianza
                                     </a>
-
                                 </td>
-
                             </tr>
                         }
-
                     </tbody>
-
                 </table>
             }
-
         </div>
-
     </div>
 
 </div>
-
-    </main>
-    ```
-
-</body>
-</html>

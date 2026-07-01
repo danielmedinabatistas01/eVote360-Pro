@@ -1,47 +1,23 @@
 ﻿@using eVote360Pro.Core.Application.ViewModels.Ciudadano
 @model List<CiudadanoViewModel>
+
 @{
     ViewData["Title"] = "Ciudadanos";
 }
+
 <style>
-    .page-header {
-        margin-bottom: 2rem;
-    }
-
-        .page-header h1 {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #1B3A6B;
-            margin: 0 0 .35rem;
-        }
-
-        .page-header p {
-            font-size: .9rem;
-            color: #6B7280;
-            margin: 0;
-        }
-
-    .content-card {
-        background: #fff;
-        border: 1px solid #E5E7EB;
-        border-radius: 12px;
-        padding: 1.5rem;
-        max-width: 900px;
-        margin: 0 auto;
-    }
-
     .top-actions {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1rem;
+        gap: .75rem;
+        flex-wrap: wrap;
     }
 
     .btn-main {
         background: #2563EB;
         color: #fff;
-        border: none;
         border-radius: 8px;
         padding: .55rem 1rem;
         font-size: .85rem;
@@ -49,11 +25,16 @@
         text-decoration: none;
     }
 
-        .btn-main:hover {
-            background: #1D4ED8;
-            color: #fff;
-            text-decoration: none;
-        }
+    .btn-back {
+        background: #F8FAFC;
+        color: #1B3A6B;
+        border: 1px solid #E5E7EB;
+        border-radius: 8px;
+        padding: .55rem 1rem;
+        font-size: .85rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
 
     .custom-table {
         width: 100%;
@@ -61,27 +42,16 @@
         font-size: .85rem;
     }
 
-        .custom-table thead {
-            background: #EFF4FF;
-        }
+    .custom-table thead {
+        background: #EFF4FF;
+    }
 
-        .custom-table th {
-            color: #1B3A6B;
-            font-weight: 700;
-            padding: .75rem;
-            border-bottom: 1px solid #E5E7EB;
-        }
-
-        .custom-table td {
-            padding: .75rem;
-            border-bottom: 1px solid #F3F4F6;
-            color: #374151;
-            vertical-align: middle;
-        }
-
-        .custom-table tbody tr:hover {
-            background: #F9FAFB;
-        }
+    .custom-table th,
+    .custom-table td {
+        padding: .75rem;
+        border-bottom: 1px solid #E5E7EB;
+        vertical-align: middle;
+    }
 
     .actions {
         display: flex;
@@ -89,69 +59,24 @@
         flex-wrap: wrap;
     }
 
-    .btn-edit {
-        background: #FFFBEB;
-        color: #B45309;
-        border-radius: 6px;
-        padding: .35rem .65rem;
-        font-size: .78rem;
-        font-weight: 600;
-        text-decoration: none;
-    }
-
-        .btn-edit:hover {
-            background: #FEF3C7;
-            color: #92400E;
-            text-decoration: none;
-        }
-
-    .btn-delete {
-        background: #FEF2F2;
-        color: #B91C1C;
-        border-radius: 6px;
-        padding: .35rem .65rem;
-        font-size: .78rem;
-        font-weight: 600;
-        text-decoration: none;
-    }
-
-        .btn-delete:hover {
-            background: #FEE2E2;
-            color: #991B1B;
-            text-decoration: none;
-        }
-
-    .btn-success-custom {
-        background: #ECFDF5;
-        color: #047857;
-        border-radius: 6px;
-        padding: .35rem .65rem;
-        font-size: .78rem;
-        font-weight: 600;
-        text-decoration: none;
-    }
-
-    .btn-info-custom {
-        background: #EFF6FF;
-        color: #1D4ED8;
-        border-radius: 6px;
-        padding: .35rem .65rem;
-        font-size: .78rem;
-        font-weight: 600;
-        text-decoration: none;
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: #6B7280;
+        background: #F8FAFC;
+        border: 1px dashed #CBD5E1;
+        border-radius: 12px;
     }
 </style>
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Padrón de Ciudadanos</h2>
-        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-person-plus"></i> Registrar Ciudadano</a>
     </div>
 
     @if (TempData["ErrorMessage"] != null)
     {
         <div class="alert alert-danger">
-            <i class="bi bi-exclamation-triangle-fill"></i>
             <strong>Error:</strong> @TempData["ErrorMessage"]
         </div>
     }
@@ -162,9 +87,7 @@
             Registrar Ciudadano
         </a>
 
-        <a asp-controller="HomeAdministrador"
-           asp-action="Index"
-           class="btn-back">
+        <a asp-controller="HomeAdministrador" asp-action="Index" class="btn-back">
             <i class="bi bi-arrow-left"></i>
             Volver al Home
         </a>
@@ -173,7 +96,6 @@
     @if (Model == null || !Model.Any())
     {
         <div class="empty-state">
-            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
             No hay ciudadanos inscritos en el padrón.
         </div>
     }
@@ -198,57 +120,45 @@
                             <td class="fw-semibold">@ciudadano.NumeroIdentificacion</td>
                             <td>@ciudadano.Nombre</td>
                             <td>@ciudadano.Apellido</td>
+
                             <td>
                                 @if (ciudadano.EsActivo)
                                 {
-                                    <span class="badge-active">Activo</span>
+                                    <span class="badge bg-success">Activo</span>
                                 }
                                 else
                                 {
-                                    <span class="badge-inactive">Inactivo</span>
+                                    <span class="badge bg-secondary">Inactivo</span>
                                 }
                             </td>
-                            <td>
-                                <div class="actions">
-                                    <a asp-action="Edit"
-                                       asp-route-id="@ciudadano.Id"
-                                       class="btn-edit">
+
+                            <td class="text-end">
+                                <div class="actions justify-content-end">
+                                    <a asp-action="Edit" asp-route-id="@ciudadano.Id" class="btn btn-warning btn-sm">
                                         <i class="bi bi-pencil"></i>
                                         Editar
                                     </a>
 
-                                    <form asp-action="DeletePost"
-                                          asp-route-id="@ciudadano.Id"
-                                          method="post"
-                                          class="d-inline"
-                                          onsubmit="return confirm('¿Seguro que deseas cambiar el estado de este ciudadano?');">
-                                        @Html.AntiForgeryToken()
-
                                     @if (ciudadano.EsActivo)
                                     {
-                                        <a asp-action="Delete"
-                                           asp-route-id="@ciudadano.Id"
-                                           class="btn btn-danger">
+                                        <a asp-action="Delete" asp-route-id="@ciudadano.Id" class="btn btn-danger btn-sm">
                                             <i class="bi bi-trash"></i>
                                             Desactivar
                                         </a>
                                     }
                                     else
                                     {
-                                        <a asp-action="Delete"
-                                           asp-route-id="@ciudadano.Id"
-                                           class="btn btn-success">
+                                        <a asp-action="Delete" asp-route-id="@ciudadano.Id" class="btn btn-success btn-sm">
                                             <i class="bi bi-arrow-clockwise"></i>
                                             Activar
                                         </a>
                                     }
-                                </td>
-                            </tr>
-                        }
+                                </div>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
         </div>
     }
-
 </div>

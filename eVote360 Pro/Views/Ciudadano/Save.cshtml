@@ -3,6 +3,9 @@
 
 @{
     ViewData["Title"] = Model.Id == 0 ? "Registrar Ciudadano" : "Editar Ciudadano";
+    bool isEdit = Model != null && Model.Id > 0;
+    ViewData["Title"] = isEdit ? "Editar Ciudadano" : "Registrar Ciudadano";
+
 }
 
 <div class="container mt-4">
